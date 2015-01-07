@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<!-- META -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
+
+	<title>Rene Buy</title>
+	<!-- <link rel="shortcut icon" href="/favicon.ico?v=2" type="image/x-icon"> -->
+	
+	<script data-require="angular.js@*" data-semver="1.2.0-rc3-nonmin" src="http://code.angularjs.org/1.2.0-rc.3/angular.js"></script>
+	<script data-require="ng-table@*" data-semver="0.3.0" src="http://bazalt-cms.com/assets/ng-table/0.3.0/ng-table.js"></script>
+	<script data-require="angular-resource@1.2.0-rc.3" data-semver="1.2.0-rc.3" src="http://code.angularjs.org/1.2.0-rc.3/angular-resource.js"></script>
+
+	<link data-require="ng-table@*" data-semver="0.3.0" rel="stylesheet" href="http://bazalt-cms.com/assets/ng-table/0.3.0/ng-table.css" />
+	<link data-require="bootstrap-css@*" data-semver="3.0.0" rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
+
+	<link rel="stylesheet" href="main.css" />
+	<script src="core.js"></script>
+
+</head>
+<body ng-app="main">
+	<div ng-controller="ProductCtrl">
+		<div id="productNav">
+			
+		</div>
+		<div id="productList">
+			<div class="col-lg-3 col-sm-6" ng-repeat="product in products">
+			<div class="product-tile">
+				<h4 class="productName">{{product.name}}</h4>
+				<img src="{{product.photos[0]}}" alt="{{product.name}}">
+				<ul>
+					<li ng-repeat="store in product.stores">
+						<a href="{{store.detailUrl}}" target="_blank">{{store.storeName}}</a>
+						<span class="price">{{store.prices[0] | currency}}</span>
+						RRP:<span class="rrp">{{store.rrp | currency}}</span>
+					</li>
+					<li>
+						Taobao
+						<span><a href="http://s.taobao.com/search?q={{product.name}}&style=list" target="_blank">Price</a></span>
+					</li>
+				</ul>
+			</div>
+			</div>
+		</div>
+		
+		
+		<!--  
+		<table ng-table="tableParams" class="table">
+			<tr ng-repeat="product in $data">
+				<td data-title="'Title'">
+					<a href="http://www.chemistwarehouse.com.au/product.asp?id={{product.cwId}}" target="_blank">{{product.title}}</a>
+				</td>
+				<td data-title="'Price'">{{product.price}}</td>
+				<td data-title="'RRP'">{{product.rrp}}</td>
+				<td data-title="'Weight'"></td>
+			</tr>
+		</table>
+		-->
+	</div>
+	
+	<script type="text/javascript">	
+		
+	</script>
+</body>
+</html>
