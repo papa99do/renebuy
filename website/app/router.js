@@ -17,19 +17,35 @@ function handleError(err, res) {
 }
 
 function handleResult(result, res) {
-	console.log(result);
+	//console.log(result);
 	res.json(result);
 }
 
 // configuration of the router
 var router = express.Router();
 
-router.route('/products')
+router.route('/product')
 .get(function(req, res) {
-	Product.find(function(err, products) {
+	console.log(req.query.q);
+	
+	var callback = function(err, products) {
 		if (err) {handleError(err, res); return;}
 		handleResult(products, res);
-	});
+	};
+	
+	if (req.query.q) {
+		Product.textSearch(req.query.q, function(err, result) {
+			if (err) {handleError(err, res); return;}
+			console.log(result);
+			var products = result.results.map(function(value) {return value.obj;});
+			handleResult(products, res);
+		});
+	} else {
+		Product.find().limit(16).exec(function(err, products) {
+			if (err) {handleError(err, res); return;}
+			handleResult(products, res);
+		});
+	}
 }).post(function(req, res) {
 	console.log('Creating product: ', req.body);
 	/* An example of the request body:

@@ -1,4 +1,6 @@
-body {padding: 10px;}
+#product-list {
+	padding: 10px 0px;
+}
 
 .product-tile {
 	padding: 5px;

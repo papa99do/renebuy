@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var textSearch = require('mongoose-text-search');
 var Schema = mongoose.Schema;
 
 var ProductInStoreSchema = new Schema({
@@ -15,7 +16,10 @@ var ProcuctSchema = new Schema({
 	nameInChinese: String,
 	photos: {type: [String], default: []},
 	weight: Number,
-	stores: {type: [ProductInStoreSchema], default: []}
+	stores: {type: [ProductInStoreSchema], default: [], _id: false}
 });
+
+ProcuctSchema.plugin(textSearch);
+ProcuctSchema.index({ name: 'text' });
 
 module.exports = mongoose.model('product', ProcuctSchema);

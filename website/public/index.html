@@ -10,10 +10,8 @@
 	<!-- <link rel="shortcut icon" href="/favicon.ico?v=2" type="image/x-icon"> -->
 	
 	<script data-require="angular.js@*" data-semver="1.2.0-rc3-nonmin" src="http://code.angularjs.org/1.2.0-rc.3/angular.js"></script>
-	<script data-require="ng-table@*" data-semver="0.3.0" src="http://bazalt-cms.com/assets/ng-table/0.3.0/ng-table.js"></script>
 	<script data-require="angular-resource@1.2.0-rc.3" data-semver="1.2.0-rc.3" src="http://code.angularjs.org/1.2.0-rc.3/angular-resource.js"></script>
 
-	<link data-require="ng-table@*" data-semver="0.3.0" rel="stylesheet" href="http://bazalt-cms.com/assets/ng-table/0.3.0/ng-table.css" />
 	<link data-require="bootstrap-css@*" data-semver="3.0.0" rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
 
 	<link rel="stylesheet" href="main.css" />
@@ -22,9 +20,22 @@
 </head>
 <body ng-app="main">
 	<div ng-controller="ProductCtrl">
-		<div id="productNav">
-			
-		</div>
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="#">
+		        ReneBuy
+		      </a>
+		    </div>
+			<form class="navbar-form navbar-left" role="search">
+			    <div class="form-group">
+			      <input type="text" class="form-control" ng-model="searchText" placeholder="Search">
+			    </div>
+			  <button type="submit" ng-click="search()" class="btn btn-default">Submit</button>
+			</form>
+		  </div>
+		</nav>
+		
 		<div id="productList">
 			<div class="col-lg-3 col-sm-6" ng-repeat="product in products">
 			<div class="product-tile">
@@ -44,24 +55,7 @@
 			</div>
 			</div>
 		</div>
-		
-		
-		<!--  
-		<table ng-table="tableParams" class="table">
-			<tr ng-repeat="product in $data">
-				<td data-title="'Title'">
-					<a href="http://www.chemistwarehouse.com.au/product.asp?id={{product.cwId}}" target="_blank">{{product.title}}</a>
-				</td>
-				<td data-title="'Price'">{{product.price}}</td>
-				<td data-title="'RRP'">{{product.rrp}}</td>
-				<td data-title="'Weight'"></td>
-			</tr>
-		</table>
-		-->
 	</div>
-	
-	<script type="text/javascript">	
-		
-	</script>
+
 </body>
 </html>
