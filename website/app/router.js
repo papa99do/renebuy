@@ -26,7 +26,6 @@ var router = express.Router();
 
 router.route('/product')
 .get(function(req, res) {
-	console.log(req.query.q);
 	
 	if (req.query.q) {
 		var opt = req.query.sm ? {
@@ -42,6 +41,13 @@ router.route('/product')
 			var products = result.results.map(function(value) {return value.obj;});
 			handleResult(products, res);
 		});
+	} else if (req.query.all) {
+		
+		Product.find().select('name stores').exec(function(err, products) {
+			if (err) {handleError(err, res); return;}
+			handleResult(products, res);
+		});
+		
 	} else {
 		Product.find().limit(16).exec(function(err, products) {
 			if (err) {handleError(err, res); return;}
@@ -96,6 +102,43 @@ router.route('/product')
 			handleResult(savedProduct, res);
 		});
 	});
+});
+
+router.route('/productPrice')
+.post(function(req, res) {
+	console.log('Updating product price: ', req.body);
+	
+	/* An Example of request body
+		{
+			"id": "DD03FFXXXX",
+			"store": "CW",
+			"newPrice": 3.99
+		}
+	 */
+	
+	Product.findById(req.body.id, function(err, product) {
+		if (err) {handleError(err, res); return;}
+		if (!product) {handleError('Product not found', res); return;}
+		
+		for (var i = 0; i < product.stores.length; i++) {
+			if (product.stores[i].storeName === req.body.store) {
+				product.stores[i].price = req.body.newPrice;
+				if (req.body.newPrice < product.stores[i].lowestPrice) {
+					product.stores[i].lowestPrice = req.body.newPrice;
+				}
+				
+				product.save(function(err, savedProduct) {
+					if(err) {handleError(err, res); return;}
+					handleResult(savedProduct, res);
+				});
+				
+				break;
+				
+			}
+		}
+
+	});
+	
 });
 
 module.exports = router;
