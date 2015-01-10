@@ -21,13 +21,18 @@
 	background: -moz-linear-gradient(top, white 0%, white 55%, #D5E4F3 130%);
 }
 
+.product-tile img {
+	height: 150px;
+	width: 150px;
+}
+
 .rrp {
 	text-decoration: line-through;
-	font: bold 1.2em verdana;
+	font: bold 1em verdana;
 	color: red;
 }
 
 .price {
-	font: bold 1.5em verdana;
+	font: bold 1em verdana;
 	color: green;
 }

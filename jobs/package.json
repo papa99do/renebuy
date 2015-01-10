@@ -1,0 +1,14 @@
+{
+  "name"         : "ReneBuyJobs",
+  "version"      : "0.1.0",
+  "description"  : "Rene's toolkit for puchasing agent: the jobs",
+  "main"         : "schedulor.js",
+  "author"       : "Yihan <yihanzhao@gmail.com>",
+  "dependencies" : {
+    "mongoose"   : "~3.6.2",
+	"mongoose-text-search": "~0.0.2",
+	"cheerio"    : "~0.18.0",
+	"request"	 : "~2.51.0",
+	"loglevel"	 : "~1.2.0"
+  }
+}

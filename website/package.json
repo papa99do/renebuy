@@ -1,7 +1,7 @@
 {
-  "name"         : "ReneBuy",
+  "name"         : "ReneBuyWebsite",
   "version"      : "0.1.0",
-  "description"  : "Rene's toolkit for puchasing agent",
+  "description"  : "Rene's toolkit for puchasing agent: the website",
   "main"         : "server.js",
   "author"       : "Yihan <yihanzhao@gmail.com>",
   "dependencies" : {

@@ -29,29 +29,42 @@
 		    </div>
 			<form class="navbar-form navbar-left" role="search">
 			    <div class="form-group">
-			      <input type="text" class="form-control" ng-model="searchText" placeholder="Search">
+			      <input type="text" class="form-control" ng-model="searchText" size="40">
 			    </div>
-			  <button type="submit" ng-click="search()" class="btn btn-default">Submit</button>
+			  <button type="submit" ng-click="search()" class="btn btn-default">Search</button>
 			</form>
 		  </div>
 		</nav>
 		
 		<div id="productList">
-			<div class="col-lg-3 col-sm-6" ng-repeat="product in products">
+			<div class="col-lg-6 col-sm-12" ng-repeat="product in products">
 			<div class="product-tile">
 				<h4 class="productName">{{product.name}}</h4>
-				<img src="{{product.photos[0]}}" alt="{{product.name}}">
-				<ul>
-					<li ng-repeat="store in product.stores">
-						<a href="{{store.detailUrl}}" target="_blank">{{store.storeName}}</a>
-						<span class="price">{{store.prices[0] | currency}}</span>
-						RRP:<span class="rrp">{{store.rrp | currency}}</span>
-					</li>
-					<li>
-						Taobao
-						<span><a href="http://s.taobao.com/search?q={{product.name}}&style=list" target="_blank">Price</a></span>
-					</li>
-				</ul>
+				<div class="row">
+					
+				
+				<div class="col-lg-3 col-sm-3">
+					<img src="{{product.photos[0]}}" alt="{{product.name}}">
+				</div>
+				<div class="col-lg-9 col-sm-9">
+					<div class="categroy">
+						Category <span ng-repeat="c in product.category"> &gt; {{c}} </span>
+					</div>
+					<ul id="prices">
+						<li>RRP: <span class="rrp">{{product.rrp | currency}}</span></li>
+						<li ng-repeat="store in product.stores">
+							<a href="{{store.detailUrl}}" target="_blank">{{store.storeName}}</a>
+							<span class="price">{{store.price | currency}}</span>
+							({{(product.rrp - store.price) / product.rrp | percentage:0}} off)
+							(L:<span class="price">{{store.lowestPrice | currency}}</span>)
+						</li>
+						<li>
+							<span><a href="http://s.taobao.com/search?q={{product.name}}&style=list" target="_blank">Taobao Price Indicator</a></span>
+						</li>
+					</ul>
+				
+				</div>
+				</div>
 			</div>
 			</div>
 		</div>
