@@ -38,7 +38,7 @@ $(document).ready(function() {
         var product = {
             store: 'PO',
             productId: id,
-            name: productElem.find('.name').text(),
+            name: productElem.find('.name').text().trim(),
             price: price,
             rrp: rrp,
             photos: [photoUrl],
@@ -67,11 +67,17 @@ $(document).ready(function() {
         
         function showPopup(product, similarProducts) {
             $('#reneBuyId').val('');
+            $('#productWeight').val('');
+            $('#productHighTax').removeAttr('checked');
             $('.message').html('');
             $('#productName').val(product.name);
             
             if (similarProducts.length > 0) {
-            	$('#productCategory').val(similarProducts[0].category.join(' > '));	
+            	$('#productCategory').val(similarProducts[0].category.join(' > '));
+                if (similarProducts[0].name === product.name) {
+                	$('#productWeight').val(similarProducts[0].weight);
+                    if (similarProducts[0].isHighTax) {$('#productHighTax').prop('checked', true)}
+                }
             } else {
             	$('#productCategory').val('');	
             }
@@ -101,7 +107,12 @@ $(document).ready(function() {
 			<input type="hidden" id="reneBuyId" value="">                           	\
 			<input type="hidden" id="productCache" value="">                           	\
 			<div><label for="productName">Name:</label><input type="text" id="productName" value="" size="50"></div> \
+			<span style="font-size:small; color:grey;">The following fields are valid and required only when creating new product:</span> \
             <div><label for="productCategory">Category:</label><input type="text" id="productCategory" value="" size="50"></div>\
+			<div>\
+            	<label for="productWeight">Weight:</label><input type="text" id="productWeight" value="" size="5">g \
+				<label style="width: 6em;"><input type="checkbox" id="productHighTax"> High tax</label>\
+            </div>\
 			<div style="width: 100%; text-align: center;">\
             	<button id="gmConfirmBtn" type="button">Add to Renebuy</button>  	  \
             	<button id="gmCloseDlgBtn" type="button">Close</button>         	  \
@@ -120,6 +131,8 @@ $(document).ready(function() {
         if (id) {product.id = id};
         product.name = $('#productName').val();
         product.category = $('#productCategory').val();
+        product.weight = parseInt($('#productWeight').val());
+        product.isHighTax = $('#productHighTax').is(":checked");
         
         console.log('aaaaaaa', product);
         
@@ -165,7 +178,7 @@ $(document).ready(function() {
 			font-size: 				large; \
             position:               fixed;                          \
 			display:                none;                           \
-            top:                    30%;                            \
+            top:                    10%;                            \
             left:                   20%;                            \
             padding:                2em;                            \
             background:             powderblue;                     \
@@ -188,7 +201,7 @@ $(document).ready(function() {
 			text-align: end; \
             padding-right:                 1em ;                      \
         }                                                           \
-        #gmPopupContainer div { padding-bottom: 0.5em; } \
+        #gmPopupContainer div { padding-bottom: 0.2em 0;  } \
         #gmPopupContainer input[type="text"] { font-size: large; } \
         #gmPopupContainer div.message { font-size: large } \
         #errorMessage {color: red } \

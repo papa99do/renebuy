@@ -29,7 +29,7 @@ router.route('/product')
 	
 	if (req.query.q) {
 		var opt = req.query.sm ? {
-			project : 'name category',
+			project : 'name category weight isHighTax',
 			limit: 3
 		} : {
 			limit: 10
