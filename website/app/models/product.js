@@ -15,6 +15,7 @@ var ProcuctSchema = new Schema({
 	nameInChinese: String,
 	photos: {type: [String], default: []},
 	weight: Number,
+	isHighTax: Boolean,
 	rrp: Number,
 	category: [String],
 	stores: {type: [ProductInStoreSchema], default: [], _id: false}

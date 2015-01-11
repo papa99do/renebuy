@@ -66,7 +66,9 @@ router.route('/product')
 		"detailUrl": "http://xxx.com/abcd.html",
 		"productId": "12345",
 		"photos": ["http://xxx.com/abc.jpg"]
-		"category": "Category1 > Category2 > Category3"
+		"category": "Category1 > Category2 > Category3",
+		"weight": 300,  // 300g
+		"isHighTax": true
 	}
 	*/
 	
@@ -83,8 +85,16 @@ router.route('/product')
 				}
 			}
 		} else {
-			var categories = req.body.category ? req.body.category.split('>').map(function(val) {return val.trim();}) : [];
-			product = new Product({name: req.body.name, rrp: req.body.rrp, category: categories});
+			var categories = req.body.category ? req.body.category.split('>')
+				.map(function(val) {return val.trim();}) : [];
+				
+			product = new Product({
+				name: req.body.name, 
+				rrp: req.body.rrp, 
+				category: categories,
+				weight: req.body.weight,
+				isHighTax: req.body.isHighTax
+			});
 		}
 		
 		product.stores.push({
@@ -120,11 +130,16 @@ router.route('/productPrice')
 		if (err) {handleError(err, res); return;}
 		if (!product) {handleError('Product not found', res); return;}
 		
+		updateStorePrice(product, req.body.store, req.body.newPrice)
+
+	});
+	
+	function updateStorePrice(product, store, newPrice) {
 		for (var i = 0; i < product.stores.length; i++) {
-			if (product.stores[i].storeName === req.body.store) {
-				product.stores[i].price = req.body.newPrice;
-				if (req.body.newPrice < product.stores[i].lowestPrice) {
-					product.stores[i].lowestPrice = req.body.newPrice;
+			if (product.stores[i].storeName === store) {
+				product.stores[i].price = newPrice;
+				if (newPrice < product.stores[i].lowestPrice) {
+					product.stores[i].lowestPrice = newPrice;
 				}
 				
 				product.save(function(err, savedProduct) {
@@ -132,12 +147,10 @@ router.route('/productPrice')
 					handleResult(savedProduct, res);
 				});
 				
-				break;
-				
+				break;		
 			}
 		}
-
-	});
+	}
 	
 });
 
