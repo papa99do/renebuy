@@ -63,9 +63,7 @@
 						</li>
 					</ul>
 					<div>
-						Weight: <input type="text" ng-model="product.weight" size="1">g, 
-						Tax type: {{product.isHighTax ? 'High' : 'Low'}}, 
-						<!-- Postage: {{product.unitPostage / 1000 * product.weight | currency}} -->
+						Weight: <input type="text" ng-model="product.weight" size="1" ng-blur="updateWeight(product)">g, 
 						Postage: {{postage(product) | currency}}
 					</div>
 					<div>

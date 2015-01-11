@@ -114,6 +114,24 @@ router.route('/product')
 	});
 });
 
+router.route('/product/:id')
+.post(function(req, res) {
+	Product.findById(req.params.id, function(err, product) {
+		if (err) {handleError(err, res); return;}
+		if (!product) {handleError('Product not found', res); return;}
+		
+		if (req.query.weight) {
+			product.weight = req.body.newWeight;
+			
+			product.save(function(err, savedProduct) {
+				if(err) {handleError(err, res); return;}
+				handleResult(savedProduct, res);
+			});
+		}
+	});
+});
+
+// TODO change to use "POST /product/:id?price=true"
 router.route('/productPrice')
 .post(function(req, res) {
 	console.log('Updating product price: ', req.body);

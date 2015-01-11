@@ -5,10 +5,12 @@ controller('ProductCtrl', function($scope, $timeout, $resource) {
 	$scope.realTimeExchangeRate = 5.1;
 	$scope.ratio = 1.2;
 	
-	var Products = $resource('/api/product/:id', {id: '@id'});
+	var Product = $resource('/api/product/:id', {id: '@id'}, {
+		updateWeight: {method: 'POST', params:{weight: true}}
+	});
 	
 	$scope.search = function() {
-		Products.query({q: $scope.searchText}, function(products) {
+		Product.query({q: $scope.searchText}, function(products) {
 			products.forEach(function(product) {estimatePrices(product); });
 			$scope.products = products;
 		});
@@ -36,6 +38,14 @@ controller('ProductCtrl', function($scope, $timeout, $resource) {
 	$scope.reneBuyPriceInRmb = function(product) {
 		var reneBuyPrice = $scope.postage(product) + product.buyPrice * $scope.ratio;
 		return Math.ceil(reneBuyPrice * $scope.exchangeRate);
+	}
+	
+	$scope.updateWeight = function(product) {
+		console.log('tttt',product._id, product.weight);
+		Product.updateWeight({id: product._id}, JSON.stringify({newWeight: product.weight}), function(result) {
+			console.log('rrr', result);
+		})
+		
 	}
 	
 	
