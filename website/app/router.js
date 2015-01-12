@@ -4,7 +4,7 @@ var Product  = require('./models/product');
 var _ = require('underscore');
 
 // configuration =================
-var mongoUrl = process.env.MONGOHQ_URL || 'mongodb://localhost:27017/renebuy';
+var mongoUrl = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/renebuy';
 
 mongoose.connect(mongoUrl);
 mongoose.set('debug', true);
