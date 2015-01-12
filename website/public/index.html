@@ -14,8 +14,10 @@
 
 	<link data-require="bootstrap-css@*" data-semver="3.0.0" rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
 
-	<link rel="stylesheet" href="main.css" />
-	<script src="core.js"></script>
+	<link rel="stylesheet" href="css/xeditable.css" />
+	<link rel="stylesheet" href="css/main.css" />
+	<script src="js/xeditable.js"></script>
+	<script src="js/core.js"></script>
 
 </head>
 <body ng-app="main">
@@ -47,8 +49,11 @@
 					<img src="{{product.photos[0]}}" alt="{{product.name}}">
 				</div>
 				<div class="col-lg-9 col-sm-9">
-					<div class="categroy">
-						Category <span ng-repeat="c in product.category"> &gt; {{c}} </span>
+					<div>
+						Category: 
+						<a href="#" editable-text="product.categoryStr" onaftersave="updateCategory(product)">
+						    {{ product.categoryStr }}
+						</a>
 					</div>
 					<ul id="prices">
 						<li>RRP: <span class="rrp">{{product.rrp | currency}}</span></li>
@@ -67,7 +72,7 @@
 						Postage: {{postage(product) | currency}}
 					</div>
 					<div>
-						ReneBuyPrice: {{reneBuyPriceInRmb(product) | currency:'RMB '}} 
+						ReneBuyPrice: <span class="price">{{reneBuyPriceInRmb(product) | currency:'RMB '}} </span>
 					</div>
 				</div>
 				</div>

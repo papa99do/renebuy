@@ -116,19 +116,56 @@ router.route('/product')
 
 router.route('/product/:id')
 .post(function(req, res) {
+	console.log('Updating product: ', req.query, req.body);
+	
 	Product.findById(req.params.id, function(err, product) {
 		if (err) {handleError(err, res); return;}
 		if (!product) {handleError('Product not found', res); return;}
 		
 		if (req.query.weight) {
-			product.weight = req.body.newWeight;
-			
-			product.save(function(err, savedProduct) {
-				if(err) {handleError(err, res); return;}
-				handleResult(savedProduct, res);
-			});
+			/* {"newWeight": 200} */
+			updateWeight(product);
+		} else if (req.query.category) {
+			/* {"newCategory": "Category1 > Category2 > Category3"} */
+			updateCategory(product);
+		} else if (req.query.price) {
+			/* {"store": "CW", newPrice: 2.99} */
+			updateStorePrice(product);
 		}
 	});
+	
+	function updateWeight(product) {
+		product.weight = req.body.newWeight;
+		saveProduct(product);
+	}
+	
+	function updateCategory(product) {
+		product.category = req.body.newCategory ? req.body.newCategory.split('>')
+			.map(function(val) {return val.trim();}) : [];
+		saveProduct(product);
+	}
+	
+	function updateStorePrice(product) {
+		for (var i = 0; i < product.stores.length; i++) {
+			if (product.stores[i].storeName === req.body.store) {
+				product.stores[i].price = req.body.newPrice;
+				if (req.body.newPrice < product.stores[i].lowestPrice) {
+					product.stores[i].lowestPrice = req.body.newPrice;
+				}
+				
+				saveProduct(product);
+				
+				break;		
+			}
+		}
+	}
+	
+	function saveProduct(product) {
+		product.save(function(err, savedProduct) {
+			if(err) {handleError(err, res); return;}
+			handleResult(savedProduct, res);
+		});
+	}
 });
 
 // TODO change to use "POST /product/:id?price=true"
