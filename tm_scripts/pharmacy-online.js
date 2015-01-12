@@ -10,7 +10,7 @@
 // @grant       GM_addStyle
 // ==/UserScript==
 
-var reneBuyUrl = "http://localhost:3001/api/product";
+var reneBuyUrl = "http://renebuy.herokuapp.com/api/product";
 
 $(document).ready(function() {
     
