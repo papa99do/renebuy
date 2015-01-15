@@ -5,7 +5,7 @@ var smartRequest = require('./smart-request')(1);
 log.setLevel('info');
 
 var GET_PRODUCTS_URL='http://localhost:3001/api/product?all=true';
-var UPDATE_PRICE_URL='http://localhost:3001/api/productPrice';
+var UPDATE_PRICE_URL='http://localhost:3001/api/product/';
 var CW_PRICE_URL = 'http://www.chemistwarehouse.com.au/inc_product_updater_json_shortlive.asp?callback=getPrice&ID=';
 
 smartRequest(GET_PRODUCTS_URL, {raw: true}, function(productsJson) {
@@ -35,8 +35,8 @@ function updatePrice(product, store, newPrice) {
 	if (newPrice !== store.price) {
 		request.post({
 			headers: {'content-type' : 'application/json'},
-			url:     UPDATE_PRICE_URL,
-			body:    JSON.stringify({id: product._id, store: store.storeName, newPrice: newPrice})
+			url:     UPDATE_PRICE_URL + product._id + '?price=true',
+			body:    JSON.stringify({store: store.storeName, newPrice: newPrice})
 		}, function(error, response, body){
 			if (error) {
 				console.error('ERROR when updating price for [%s] in [%s] to $%d : %s', 

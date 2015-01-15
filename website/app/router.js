@@ -168,45 +168,4 @@ router.route('/product/:id')
 	}
 });
 
-// TODO change to use "POST /product/:id?price=true"
-router.route('/productPrice')
-.post(function(req, res) {
-	console.log('Updating product price: ', req.body);
-	
-	/* An Example of request body
-		{
-			"id": "DD03FFXXXX",
-			"store": "CW",
-			"newPrice": 3.99
-		}
-	 */
-	
-	Product.findById(req.body.id, function(err, product) {
-		if (err) {handleError(err, res); return;}
-		if (!product) {handleError('Product not found', res); return;}
-		
-		updateStorePrice(product, req.body.store, req.body.newPrice)
-
-	});
-	
-	function updateStorePrice(product, store, newPrice) {
-		for (var i = 0; i < product.stores.length; i++) {
-			if (product.stores[i].storeName === store) {
-				product.stores[i].price = newPrice;
-				if (newPrice < product.stores[i].lowestPrice) {
-					product.stores[i].lowestPrice = newPrice;
-				}
-				
-				product.save(function(err, savedProduct) {
-					if(err) {handleError(err, res); return;}
-					handleResult(savedProduct, res);
-				});
-				
-				break;		
-			}
-		}
-	}
-	
-});
-
 module.exports = router;
