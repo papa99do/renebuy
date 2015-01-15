@@ -17,6 +17,7 @@ var ProcuctSchema = new Schema({
 	weight: Number,
 	isHighTax: Boolean,
 	rrp: Number,
+	priceAdjustment: {type: Number, default: 0},
 	category: [String],
 	stores: {type: [ProductInStoreSchema], default: [], _id: false}
 });

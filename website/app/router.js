@@ -131,8 +131,16 @@ router.route('/product/:id')
 		} else if (req.query.price) {
 			/* {"store": "CW", newPrice: 2.99} */
 			updateStorePrice(product);
+		} else if (req.query.priceAdjustment) {
+			/* {"newPriceAdjustment": 2} */
+			updatePriceAdjustment(product);
 		}
 	});
+	
+	function updatePriceAdjustment(product) {
+		product.priceAdjustment = req.body.newPriceAdjustment;
+		saveProduct(product);
+	}
 	
 	function updateWeight(product) {
 		product.weight = req.body.newWeight;

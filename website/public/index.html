@@ -9,10 +9,10 @@
 	<title>Rene Buy</title>
 	<!-- <link rel="shortcut icon" href="/favicon.ico?v=2" type="image/x-icon"> -->
 	
-	<script data-require="angular.js@*" data-semver="1.2.0-rc3-nonmin" src="http://code.angularjs.org/1.2.0-rc.3/angular.js"></script>
-	<script data-require="angular-resource@1.2.0-rc.3" data-semver="1.2.0-rc.3" src="http://code.angularjs.org/1.2.0-rc.3/angular-resource.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.8/angular.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.8/angular-resource.js"></script>
 
-	<link data-require="bootstrap-css@*" data-semver="3.0.0" rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.css" />
 
 	<link rel="stylesheet" href="css/xeditable.css" />
 	<link rel="stylesheet" href="css/main.css" />
@@ -68,11 +68,13 @@
 						</li>
 					</ul>
 					<div>
-						Weight: <input type="text" ng-model="product.weight" size="1" ng-blur="updateWeight(product)">g, 
+						Weight: <input type="text" ng-model="product.weight" size="1" ng-change="updateWeight(product)" ng-model-options="{ updateOn: 'blur' }">g, 
 						Postage: {{postage(product) | currency}}
 					</div>
 					<div>
 						ReneBuyPrice: <span class="price">{{reneBuyPriceInRmb(product) | currency:'RMB '}} </span>
+						+ <input type="text" ng-model="product.priceAdjustment" size="1" ng-change="updatePriceAdjustment(product)" ng-model-options="{ updateOn: 'blur' }">
+						= <span class="price">{{reneBuyPriceInRmbWithAdjustment(product) | currency:''}} </span>
 					</div>
 				</div>
 				</div>

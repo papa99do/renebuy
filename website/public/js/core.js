@@ -7,7 +7,8 @@ controller('ProductCtrl', function($scope, $timeout, $resource) {
 	
 	var Product = $resource('/api/product/:id', {id: '@id'}, {
 		updateWeight: {method: 'POST', params:{weight: true}},
-		updateCategory: {method: 'POST', params:{category: true}}
+		updateCategory: {method: 'POST', params:{category: true}},
+		updatePriceAdjustment: {method: 'POST', params:{priceAdjustment: true}}
 	});
 	
 	$scope.search = function() {
@@ -43,17 +44,25 @@ controller('ProductCtrl', function($scope, $timeout, $resource) {
 		return Math.ceil(reneBuyPrice * $scope.exchangeRate);
 	};
 	
+	$scope.reneBuyPriceInRmbWithAdjustment = function(product) {
+		return $scope.reneBuyPriceInRmb(product) + parseFloat(product.priceAdjustment);
+	}
+	
 	$scope.updateWeight = function(product) {
-		console.log('www',product._id, product.weight);
 		Product.updateWeight({id: product._id}, JSON.stringify({newWeight: product.weight}), function(result) {
-			console.log('wwwrrr', result);
+			console.log('Weight changed to: %dg for [%s]', parseInt(product.weight), product.name);
 		});	
 	};
 	
 	$scope.updateCategory = function(product) {
-		console.log('ccc',product._id, product.categoryStr);
 		Product.updateCategory({id: product._id}, JSON.stringify({newCategory: product.categoryStr}), function(result) {
-			console.log('cccrrr', result);
+			console.log('Category changed to: %s for [%s]', product.categoryStr, product.name);
+		});
+	};
+	
+	$scope.updatePriceAdjustment = function(product) {
+		Product.updatePriceAdjustment({id: product._id}, JSON.stringify({newPriceAdjustment: product.priceAdjustment}), function(result) {
+			console.log('Price adjustment changed to %d for [%s]' , parseFloat(product.priceAdjustment), product.name);
 		});
 	};
 	
