@@ -123,32 +123,40 @@ router.route('/product/:id')
 		if (!product) {handleError('Product not found', res); return;}
 		
 		if (req.query.weight) {
-			/* {"newWeight": 200} */
+			/* {"weight": 200} */
 			updateWeight(product);
 		} else if (req.query.category) {
-			/* {"newCategory": "Category1 > Category2 > Category3"} */
+			/* {"category": "Category1 > Category2 > Category3"} */
 			updateCategory(product);
 		} else if (req.query.price) {
-			/* {"store": "CW", newPrice: 2.99} */
+			/* {"store": "CW", "price": 2.99} */
 			updateStorePrice(product);
 		} else if (req.query.priceAdjustment) {
-			/* {"newPriceAdjustment": 2} */
+			/* {"priceAdjustment": 2} */
 			updatePriceAdjustment(product);
+		} else if (req.query.nameInChinese) {
+			/* {"nameInChinese": "好东西"} */
+			updateNameInChinese(product);
 		}
 	});
 	
+	function updateNameInChinese(product) {
+		product.nameInChinese = req.body.nameInChinese;
+		saveProduct(product);
+	}
+	
 	function updatePriceAdjustment(product) {
-		product.priceAdjustment = req.body.newPriceAdjustment;
+		product.priceAdjustment = req.body.priceAdjustment;
 		saveProduct(product);
 	}
 	
 	function updateWeight(product) {
-		product.weight = req.body.newWeight;
+		product.weight = req.body.weight;
 		saveProduct(product);
 	}
 	
 	function updateCategory(product) {
-		product.category = req.body.newCategory ? req.body.newCategory.split('>')
+		product.category = req.body.category ? req.body.category.split('>')
 			.map(function(val) {return val.trim();}) : [];
 		saveProduct(product);
 	}
@@ -156,9 +164,9 @@ router.route('/product/:id')
 	function updateStorePrice(product) {
 		for (var i = 0; i < product.stores.length; i++) {
 			if (product.stores[i].storeName === req.body.store) {
-				product.stores[i].price = req.body.newPrice;
-				if (req.body.newPrice < product.stores[i].lowestPrice) {
-					product.stores[i].lowestPrice = req.body.newPrice;
+				product.stores[i].price = req.body.price;
+				if (req.body.price < product.stores[i].lowestPrice) {
+					product.stores[i].lowestPrice = req.body.price;
 				}
 				
 				saveProduct(product);

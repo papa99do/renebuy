@@ -41,7 +41,14 @@
 		<div id="productList">
 			<div class="col-lg-6 col-sm-12" ng-repeat="product in products">
 			<div class="product-tile">
-				<h4 class="productName">{{product.name}}</h4>
+				<h4 class="productName">
+					{{product.name}}
+				</h4>
+				<h5>
+					<a href="#" editable-text="product.nameInChinese" onaftersave="updateNameInChinese(product)">
+					    {{product.nameInChinese || '点此输入中文名称'}}
+					</a>
+				</h5>
 				<div class="row">
 					
 				

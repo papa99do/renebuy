@@ -8,7 +8,8 @@ controller('ProductCtrl', function($scope, $timeout, $resource) {
 	var Product = $resource('/api/product/:id', {id: '@id'}, {
 		updateWeight: {method: 'POST', params:{weight: true}},
 		updateCategory: {method: 'POST', params:{category: true}},
-		updatePriceAdjustment: {method: 'POST', params:{priceAdjustment: true}}
+		updatePriceAdjustment: {method: 'POST', params:{priceAdjustment: true}},
+		updateNameInChinese: {method: 'POST', params:{nameInChinese: true}}
 	});
 	
 	$scope.search = function() {
@@ -49,20 +50,26 @@ controller('ProductCtrl', function($scope, $timeout, $resource) {
 	}
 	
 	$scope.updateWeight = function(product) {
-		Product.updateWeight({id: product._id}, JSON.stringify({newWeight: product.weight}), function(result) {
+		Product.updateWeight({id: product._id}, JSON.stringify({weight: product.weight}), function(result) {
 			console.log('Weight changed to: %dg for [%s]', parseInt(product.weight), product.name);
 		});	
 	};
 	
 	$scope.updateCategory = function(product) {
-		Product.updateCategory({id: product._id}, JSON.stringify({newCategory: product.categoryStr}), function(result) {
+		Product.updateCategory({id: product._id}, JSON.stringify({category: product.categoryStr}), function(result) {
 			console.log('Category changed to: %s for [%s]', product.categoryStr, product.name);
 		});
 	};
 	
 	$scope.updatePriceAdjustment = function(product) {
-		Product.updatePriceAdjustment({id: product._id}, JSON.stringify({newPriceAdjustment: product.priceAdjustment}), function(result) {
+		Product.updatePriceAdjustment({id: product._id}, JSON.stringify({priceAdjustment: product.priceAdjustment}), function(result) {
 			console.log('Price adjustment changed to %d for [%s]' , parseFloat(product.priceAdjustment), product.name);
+		});
+	};
+	
+	$scope.updateNameInChinese = function(product) {
+		Product.updateNameInChinese({id: product._id}, JSON.stringify({nameInChinese: product.nameInChinese}), function(result) {
+			console.log('Chinese name changed to %s for [%s]' , product.nameInChinese, product.name);
 		});
 	};
 	

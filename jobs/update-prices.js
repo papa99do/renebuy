@@ -36,7 +36,7 @@ function updatePrice(product, store, newPrice) {
 		request.post({
 			headers: {'content-type' : 'application/json'},
 			url:     UPDATE_PRICE_URL + product._id + '?price=true',
-			body:    JSON.stringify({store: store.storeName, newPrice: newPrice})
+			body:    JSON.stringify({store: store.storeName, price: newPrice})
 		}, function(error, response, body){
 			if (error) {
 				console.error('ERROR when updating price for [%s] in [%s] to $%d : %s', 
