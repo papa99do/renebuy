@@ -21,6 +21,7 @@
 </head>
 <body ng-app="pricelist">
 	<div ng-controller="PriceListCtrl">
+		<h4>Price list for: {{category}}</h4>
 		<table class="table table-bordered">
 			<thead>
 				<tr>
@@ -29,10 +30,11 @@
 					<th>Name(Chinese)</th>
 					<th ng-if="detail">Price</th>
 					<th ng-if="detail">Postage</th>
-					<th ng-if="detail">Cost</th>
-					<th ng-if="detail">Cost(RMB)</th>
-					<th ng-if="detail">Base Price(RMB)</th>
-					<th>My Price(RMB)</th>
+					<th ng-if="detail">Cost$</th>
+					<th ng-if="detail">Cost&yen;</th>
+					<th ng-if="detail">Price+20%</th>
+					<th>My Price</th>
+					<th ng-if="detail">Profit</th>
 				</tr>
 			</thead>
 			<tbody ng-repeat="(category, productList) in categoryMap">
@@ -43,9 +45,10 @@
 					<td ng-if="detail">{{::product.buyPrice | currency}}</td>
 					<td ng-if="detail">{{::postage(product) | currency}}</td>
 					<td ng-if="detail">{{::cost(product) | currency}}</td>
-					<td ng-if="detail">{{::costInRmb(product) | currency:''}}</td>
-					<td ng-if="detail">{{::reneBuyPriceInRmb(product) | currency:''}}</td>
-					<td>{{::reneBuyPriceInRmbWithAdjustment(product) | currency:''}}</td>
+					<td ng-if="detail">{{::costInRmb(product) | currency:'&yen;'}}</td>
+					<td ng-if="detail">{{::reneBuyPriceInRmb(product) | currency:'&yen;'}}</td>
+					<td>{{::reneBuyPriceInRmbWithAdjustment(product) | currency:'&yen;'}}</td>
+					<td ng-if="detail">{{::profit(product) | currency: '&yen;'}} ({{::profit(product) / costInRmb(product) | percentage:0}})</td>
 				</tr>
 			</tbody>
 		</table>

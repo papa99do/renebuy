@@ -7,7 +7,7 @@ var app = angular.module('pricelist', ['ngResource'], function($locationProvider
 controller('PriceListCtrl', function($scope, $resource, $location) {
 	
 	$scope.exchangeRate = 5.5;
-	$scope.realTimeExchangeRate = 5.1;
+	$scope.realTimeExchangeRate = 5.2;
 	$scope.ratio = 1.2;
 	
 	var Product = $resource('/api/product');
@@ -52,7 +52,7 @@ controller('PriceListCtrl', function($scope, $resource, $location) {
 	};
 	
 	$scope.costInRmb = function(product) {
-		return Math.ceil((product.buyPrice + $scope.postage(product)) * $scope.exchangeRate);
+		return Math.ceil((product.buyPrice + $scope.postage(product)) * $scope.realTimeExchangeRate);
 	};
 	
 	$scope.reneBuyPriceInRmb = function(product) {
@@ -62,5 +62,14 @@ controller('PriceListCtrl', function($scope, $resource, $location) {
 	
 	$scope.reneBuyPriceInRmbWithAdjustment = function(product) {
 		return $scope.reneBuyPriceInRmb(product) + parseFloat(product.priceAdjustment);
-	}
-});
+	};
+	
+	$scope.profit = function(product) {
+		return $scope.reneBuyPriceInRmbWithAdjustment(product) - $scope.costInRmb(product);
+	};
+})
+.filter('percentage', ['$filter', function ($filter) {
+	return function (input, decimals) {
+	    return $filter('number')(input * 100, decimals) + '%';
+	};
+}]);

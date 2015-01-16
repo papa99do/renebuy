@@ -21,38 +21,46 @@ function handleResult(result, res) {
 	res.json(result);
 }
 
+function splitCategory(category) {
+	return category ? category.split('>').map(function(val) {return val.trim();}) : [];
+}
+
 // configuration of the router
 var router = express.Router();
 
 router.route('/product')
 .get(function(req, res) {
 	
+	function returnProducts(err, products) {
+		if (err) {handleError(err, res); return;}
+		handleResult(products, res);
+	}
+	
 	if (req.query.q) {
-		var opt = req.query.sm ? {
+		var opt = req.query.sm ? { /* used by similar product */
 			project : 'name category weight isHighTax',
 			limit: 3
-		} : {
+		} : { /* used by search */
 			limit: 10
 		};
 		
 		Product.textSearch(req.query.q, opt, function(err, result) {
 			if (err) {handleError(err, res); return;}
-			console.log(result);
 			var products = result.results.map(function(value) {return value.obj;});
 			handleResult(products, res);
 		});
+		
 	} else if (req.query.all) {
+		/* used by update price */
+		Product.find().select('name stores').exec(returnProducts);
 		
-		Product.find().select('name stores').exec(function(err, products) {
-			if (err) {handleError(err, res); return;}
-			handleResult(products, res);
-		});
-		
+	} else if (req.query.category) { /* used by price list */
+		var categories = splitCategory(req.query.category);
+		//console.log('Search by category: ', categories);
+		Product.find({category: {$all: categories}}).exec(returnProducts);
 	} else {
-		Product.find().limit(16).exec(function(err, products) {
-			if (err) {handleError(err, res); return;}
-			handleResult(products, res);
-		});
+		/* used by default search */
+		Product.find().limit(16).exec(returnProducts);
 	}
 }).post(function(req, res) {
 	console.log('Creating product: ', req.body);
