@@ -21,8 +21,15 @@
 </head>
 <body ng-app="pricelist">
 	<div ng-controller="PriceListCtrl">
-		<h4>Price list for: {{category}}</h4>
-		<table class="table table-bordered">
+		<div class="row">
+			<h4 class="col-sm-6">Price list for: {{category}}</h4>
+			<div class="col-sm-6">
+				<a id="dlink"  style="display:none;"></a>
+				<button class="btn btn-primary btn-sm pull-right" ng-click="tableToExcel('priceTable', 'Price list for: {{category}}', 'price-list.xls')" title="export the following table to excel file">Export to Excel</button>
+			</div>
+		</div>
+		
+		<table class="table table-bordered" id="priceTable">
 			<thead>
 				<tr>
 					<th>Category</th>
