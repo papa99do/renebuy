@@ -19,6 +19,7 @@ controller('PriceListCtrl', function($scope, $resource, $location) {
 	};
 	
 	$scope.category = $location.search().category;
+	$scope.detail = $location.search().detail;
 	$scope.categoryMap = {};
 	$scope.search();
 	
@@ -44,6 +45,14 @@ controller('PriceListCtrl', function($scope, $resource, $location) {
 	
 	$scope.postage = function(product) {
 		return product.unitPostage / 1000 * (product.weight || 0);
+	};
+	
+	$scope.cost = function(product) {
+		return product.buyPrice + $scope.postage(product);
+	};
+	
+	$scope.costInRmb = function(product) {
+		return Math.ceil((product.buyPrice + $scope.postage(product)) * $scope.exchangeRate);
 	};
 	
 	$scope.reneBuyPriceInRmb = function(product) {

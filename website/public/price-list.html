@@ -22,11 +22,30 @@
 <body ng-app="pricelist">
 	<div ng-controller="PriceListCtrl">
 		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Category</th>
+					<th>Name</th>
+					<th>Name(Chinese)</th>
+					<th ng-if="detail">Price</th>
+					<th ng-if="detail">Postage</th>
+					<th ng-if="detail">Cost</th>
+					<th ng-if="detail">Cost(RMB)</th>
+					<th ng-if="detail">Base Price(RMB)</th>
+					<th>My Price(RMB)</th>
+				</tr>
+			</thead>
 			<tbody ng-repeat="(category, productList) in categoryMap">
 				<tr ng-repeat="product in productList">
 					<td ng-if="$index===0" rowspan="{{productList.length}}">{{product.category[2]}}</td>
-					<td>{{product.name}}</td>
-					<td>{{reneBuyPriceInRmb(product) | currency:''}}</td>
+					<td>{{::product.name}}</td>
+					<td>{{::product.nameInChinese}}</td>
+					<td ng-if="detail">{{::product.buyPrice | currency}}</td>
+					<td ng-if="detail">{{::postage(product) | currency}}</td>
+					<td ng-if="detail">{{::cost(product) | currency}}</td>
+					<td ng-if="detail">{{::costInRmb(product) | currency:''}}</td>
+					<td ng-if="detail">{{::reneBuyPriceInRmb(product) | currency:''}}</td>
+					<td>{{::reneBuyPriceInRmbWithAdjustment(product) | currency:''}}</td>
 				</tr>
 			</tbody>
 		</table>
