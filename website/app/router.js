@@ -28,6 +28,41 @@ function splitCategory(category) {
 // configuration of the router
 var router = express.Router();
 
+router.route('/category').get(function(req, res) {
+	Product.find().select('category').exec(function(err, products) {
+		if (err) {handleError(err, res); return;}
+		var categoryTreeRootNode = {name: 'All categories', children: []};
+		
+		function findChild(parentNode, name) {
+			for (var i = 0; i < parentNode.children.length; i++) {
+				if (parentNode.children[i].name == name) {
+					return parentNode.children[i];
+				}
+			}
+			
+			return null;
+		}
+		
+		products.forEach(function(product) {
+			var fullName = '', treeNode = categoryTreeRootNode;
+			
+			product.category.forEach(function (c) {
+				var node = findChild(treeNode, c);
+				fullName = fullName ? fullName + '>' + c : c;
+				if (!node) {
+					node = {name: c, fullName: fullName, count: 1, children: []};
+					treeNode.children.push(node);
+				} else {
+					node.count++;
+				}
+				treeNode = node;
+			});
+		});
+		
+		handleResult(categoryTreeRootNode.children, res);
+	});
+});
+
 router.route('/product')
 .get(function(req, res) {
 	
@@ -58,6 +93,7 @@ router.route('/product')
 		var categories = splitCategory(req.query.category);
 		//console.log('Search by category: ', categories);
 		Product.find({category: {$all: categories}}).exec(returnProducts);
+		
 	} else {
 		/* used by default search */
 		Product.find().limit(16).exec(returnProducts);

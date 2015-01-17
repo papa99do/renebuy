@@ -1,27 +1,37 @@
-var app = angular.module('pricelist', ['ngResource'], function($locationProvider) {
-    $locationProvider.html5Mode({
-	  enabled: true,
-	  requireBase: false
-	});
-}).
-controller('PriceListCtrl', function($scope, $resource, $location) {
+var app = angular.module('pricelist', ['ngResource', 'treeControl'])
+.controller('PriceListCtrl', function($scope, $resource) {
 	
 	$scope.exchangeRate = 5.5;
 	$scope.realTimeExchangeRate = 5.2;
 	$scope.ratio = 1.2;
 	
 	var Product = $resource('/api/product');
+	var Category = $resource('/api/category');
 	
-	$scope.search = function() {
+	$scope.search = function(categoryFullName, detail) {
+		console.log('search prices for ', categoryFullName);
+		$scope.categoryMap = {};
+		$scope.category = categoryFullName;
+		$scope.detail = detail;
 		Product.query({category : $scope.category}, function(products) {
 			products.forEach(function(product) {enhance(product);});
+			$scope.priceListFetched = true;
 		});
 	};
+		
+	$scope.treeOptions = {
+	    nodeChildren: "children",
+	    dirSelectable: false
+	};
 	
-	$scope.category = $location.search().category;
-	$scope.detail = $location.search().detail;
-	$scope.categoryMap = {};
-	$scope.search();
+	$scope.showSelected = function(sel) {
+		$scope.selectedNode = sel;
+	};
+	
+	Category.query(function(result) {
+		console.log('Category tree', result);
+		$scope.categoryTree = result;		
+	});
 	
 	function enhance(product) {
 		product.unitPostage = product.isHighTax ? 12 : 10;

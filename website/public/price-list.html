@@ -15,12 +15,25 @@
 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.css" />
 
+	<link rel="stylesheet" href="css/tree-control-attribute.css" />
 	<link rel="stylesheet" href="css/price-list.css" />
+	<script src="js/angular-tree-control.js"></script>
 	<script src="js/price-list.js"></script>
 
 </head>
 <body ng-app="pricelist">
-	<div ng-controller="PriceListCtrl">
+	<div ng-controller="PriceListCtrl" class="row">
+		<div treecontrol class="tree-light col-sm-2"
+		   tree-model="categoryTree"
+		   options="treeOptions"
+		   on-selection="showSelected(node)">
+		   {{node.name}} ({{node.count}}) 
+			<a href="#" ng-click="search(node.fullName, true)" title="Price list with more details"><span class="glyphicon glyphicon-eye-open"></span></a>
+			<a href="#" ng-click="search(node.fullName, false)" title="Price list"><span class="glyphicon glyphicon-eye-close"></span></a>
+		</div>
+		
+		<div class="col-sm-10" ng-show="priceListFetched">
+
 		<div class="row">
 			<h4 class="col-sm-6">Price list for: {{category}}</h4>
 			<div class="col-sm-6">
@@ -59,6 +72,8 @@
 				</tr>
 			</tbody>
 		</table>
+		
+		</div>
 	</div>
 </body>
 </html>
