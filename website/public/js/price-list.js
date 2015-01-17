@@ -8,7 +8,7 @@ var app = angular.module('pricelist', ['ngResource', 'treeControl'])
 	var Product = $resource('/api/product');
 	var Category = $resource('/api/category');
 	
-	$scope.search = function(categoryFullName, detail) {
+	$scope.search = function(categoryFullName, detail, $event) {
 		console.log('search prices for ', categoryFullName);
 		$scope.categoryMap = {};
 		$scope.category = categoryFullName;
@@ -17,6 +17,7 @@ var app = angular.module('pricelist', ['ngResource', 'treeControl'])
 			products.forEach(function(product) {enhance(product);});
 			$scope.priceListFetched = true;
 		});
+		$event.stopPropagation();
 	};
 		
 	$scope.treeOptions = {
@@ -62,7 +63,7 @@ var app = angular.module('pricelist', ['ngResource', 'treeControl'])
 	};
 	
 	$scope.costInRmb = function(product) {
-		return Math.ceil((product.buyPrice + $scope.postage(product)) * $scope.realTimeExchangeRate);
+		return Math.ceil((product.buyPrice + $scope.postage(product)) * $scope.exchangeRate);
 	};
 	
 	$scope.reneBuyPriceInRmb = function(product) {
