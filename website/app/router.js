@@ -96,7 +96,7 @@ router.route('/product')
 		
 	} else {
 		/* used by default search */
-		Product.find().exec(returnProducts);
+		Product.find().sort({'_id': -1}).exec(returnProducts);
 	}
 }).post(function(req, res) {
 	console.log('Creating product: ', req.body);
