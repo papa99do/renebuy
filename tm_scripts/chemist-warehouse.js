@@ -10,7 +10,7 @@
 // @grant       GM_addStyle
 // ==/UserScript==
 
-var reneBuyUrl = "http://renebuy.herokuapp.com/api/product";
+var reneBuyUrl = "http://renebuy.yihanzhao.com/api/product";
 
 $(document).ready(function() {
     
@@ -75,12 +75,14 @@ $(document).ready(function() {
             $('#reneBuyId').val('');
             $('#productWeight').val('');
             $('#productHighTax').removeAttr('checked');
+			$('#nameInChinese').val('');
             $('.message').html('');
             $('#productName').val(product.name);
             
             if (similarProducts.length > 0) {
             	$('#productCategory').val(similarProducts[0].category.join(' > '));
                 if (similarProducts[0].name === product.name) {
+					$('#nameInChinese').val(similarProducts[0].nameInChinese);
                 	$('#productWeight').val(similarProducts[0].weight);
                     if (similarProducts[0].isHighTax) {$('#productHighTax').prop('checked', true)}
                 }
@@ -114,6 +116,7 @@ $(document).ready(function() {
 			<input type="hidden" id="productCache" value="">                           	\
 			<div><label for="productName">Name:</label><input type="text" id="productName" value="" size="50"></div> \
 			<span style="font-size:small; color:grey;">The following fields are valid and required only when creating new product:</span> \
+            <div><label for="nameInChinese">中文名称:</label><input type="text" id="nameInChinese" value="" size="50"></div>\
             <div><label for="productCategory">Category:</label><input type="text" id="productCategory" value="" size="50"></div>\
 			<div>\
             	<label for="productWeight">Weight:</label><input type="text" id="productWeight" value="" size="5">g \
@@ -136,6 +139,7 @@ $(document).ready(function() {
         var id = $('#reneBuyId').val();
         if (id) {product.id = id};
         product.name = $('#productName').val();
+		product.nameInChinese = $('#nameInChinese').val();
         product.category = $('#productCategory').val();
         product.weight = parseInt($('#productWeight').val());
         product.isHighTax = $('#productHighTax').is(":checked");

@@ -73,10 +73,10 @@ router.route('/product')
 	
 	if (req.query.q) {
 		var opt = req.query.sm ? { /* used by similar product */
-			project : 'name category weight isHighTax',
+			project : 'name nameInChinese category weight isHighTax',
 			limit: 3
 		} : { /* used by search */
-			limit: 10
+			limit: 20
 		};
 		
 		Product.textSearch(req.query.q, opt, function(err, result) {
@@ -96,7 +96,7 @@ router.route('/product')
 		
 	} else {
 		/* used by default search */
-		Product.find().limit(16).exec(returnProducts);
+		Product.find().exec(returnProducts);
 	}
 }).post(function(req, res) {
 	console.log('Creating product: ', req.body);
@@ -112,7 +112,8 @@ router.route('/product')
 		"photos": ["http://xxx.com/abc.jpg"]
 		"category": "Category1 > Category2 > Category3",
 		"weight": 300,  // 300g
-		"isHighTax": true
+		"isHighTax": true,
+		"nameInChinese": "神奇碗"
 	}
 	*/
 	
@@ -137,7 +138,8 @@ router.route('/product')
 				rrp: req.body.rrp, 
 				category: categories,
 				weight: req.body.weight,
-				isHighTax: req.body.isHighTax
+				isHighTax: req.body.isHighTax,
+				nameInChinese: req.body.nameInChinese
 			});
 		}
 		
