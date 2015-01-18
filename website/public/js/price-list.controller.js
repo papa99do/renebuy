@@ -1,5 +1,4 @@
-var app = angular.module('pricelist', ['ngResource', 'treeControl'])
-.controller('PriceListCtrl', function($scope, $resource) {
+renebuyApp.controller('PriceListCtrl', function($scope, $resource) {
 	
 	$scope.exchangeRate = 5.5;
 	$scope.realTimeExchangeRate = 5.2;
@@ -30,7 +29,6 @@ var app = angular.module('pricelist', ['ngResource', 'treeControl'])
 	};
 	
 	Category.query(function(result) {
-		console.log('Category tree', result);
 		$scope.categoryTree = result;		
 	});
 	
@@ -90,11 +88,14 @@ var app = angular.module('pricelist', ['ngResource', 'treeControl'])
 	                return c[p];
 	            })
 	        };
-	
-	    return function (table, name, filename) {
-	        if (!table.nodeType) table = document.getElementById(table);
+		
+	    return function () {
+	        var table = document.getElementById('priceTable'),
+				name = 'Price list ' + $scope.category,
+				filename = 'price-list.xls';
+				
 	        var ctx = {
-	            worksheet: name || 'Worksheet',
+	            worksheet: name,
 	            table: table.innerHTML
 	        };
 	    	document.getElementById("dlink").href = uri + base64(format(template, ctx));
@@ -103,9 +104,4 @@ var app = angular.module('pricelist', ['ngResource', 'treeControl'])
 	    };
 	})();
 	
-})
-.filter('percentage', ['$filter', function ($filter) {
-	return function (input, decimals) {
-	    return $filter('number')(input * 100, decimals) + '%';
-	};
-}]);
+});

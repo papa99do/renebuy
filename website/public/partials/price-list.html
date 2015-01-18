@@ -1,0 +1,53 @@
+<div class="row">
+	<div treecontrol class="tree-light col-sm-2"
+	   tree-model="categoryTree"
+	   options="treeOptions"
+	   on-selection="showSelected(node)">
+	   {{node.name}} ({{node.count}}) 
+		<a ng-click="search(node.fullName, true, $event)" title="Price list with more details"><span class="glyphicon glyphicon-eye-open"></span></a>
+		<a ng-click="search(node.fullName, false, $event)" title="Price list"><span class="glyphicon glyphicon-eye-close"></span></a>
+	</div>
+	
+	<div class="col-sm-10" ng-show="priceListFetched" id="priceListResult">
+
+	<div class="row">
+		<h4 class="col-sm-6">Price list for: {{category}}</h4>
+		<div class="col-sm-6">
+			<a id="dlink"  style="display:none;"></a>
+			<button class="btn btn-primary btn-sm pull-right" ng-click="tableToExcel()" title="export the following table to excel file">Export to Excel</button>
+		</div>
+	</div>
+	
+	<table class="table" id="priceTable">
+		<thead>
+			<tr>
+				<th style="border:1px solid black;">Category</th>
+				<th style="border:1px solid black;">Name</th>
+				<th style="border:1px solid black;">Name(Chinese)</th>
+				<th style="border:1px solid black;" ng-if="detail">Price</th>
+				<th style="border:1px solid black;" ng-if="detail">Postage</th>
+				<th style="border:1px solid black;" ng-if="detail">Cost$</th>
+				<th style="border:1px solid black;" ng-if="detail">Cost&yen;</th>
+				<th style="border:1px solid black;" ng-if="detail">Price+20%</th>
+				<th style="border:1px solid black;">My Price</th>
+				<th style="border:1px solid black;" ng-if="detail">Profit</th>
+			</tr>
+		</thead>
+		<tbody style="border:1px solid black;" ng-repeat="(category, productList) in categoryMap">
+			<tr ng-repeat="product in productList">
+				<td style="border:1px solid black;" ng-if="$index===0" rowspan="{{productList.length}}">{{product.category[2]}}</td>
+				<td style="border:1px solid black;">{{::product.name}}</td>
+				<td style="border:1px solid black;">{{::product.nameInChinese}}</td>
+				<td style="border:1px solid black;" ng-if="detail">{{::product.buyPrice | currency}}</td>
+				<td style="border:1px solid black;" ng-if="detail">{{::postage(product) | currency}}</td>
+				<td style="border:1px solid black;" ng-if="detail">{{::cost(product) | currency}}</td>
+				<td style="border:1px solid black;" ng-if="detail">{{::costInRmb(product) | currency:'&yen;'}}</td>
+				<td style="border:1px solid black;" ng-if="detail">{{::reneBuyPriceInRmb(product) | currency:'&yen;'}}</td>
+				<td style="border:1px solid black;">{{::reneBuyPriceInRmbWithAdjustment(product) | currency:'&yen;'}}</td>
+				<td style="border:1px solid black;" ng-if="detail">{{::profit(product) | currency: '&yen;'}} ({{::profit(product) / costInRmb(product) | percentage:0}})</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	</div>
+</div>

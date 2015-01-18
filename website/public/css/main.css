@@ -1,5 +1,9 @@
+#search-form {
+	padding: 0px 15px;
+}
+
 #product-list {
-	padding: 10px 0px;
+	padding: 0px;
 }
 
 .product-tile {
@@ -35,4 +39,12 @@
 .price {
 	font: bold 1em verdana;
 	color: green;
+}
+
+.table > tbody > tr > td[rowspan] {
+	vertical-align: middle;
+}
+
+#priceListResult {
+	padding: 0px 10px;
 }

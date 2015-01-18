@@ -1,0 +1,60 @@
+<div>
+	<form class="form-inline" role="search" id="search-form">
+	    <div class="form-group">
+	      <input type="text" class="form-control" ng-model="searchText" size="40">
+	    </div>
+		<button type="submit" ng-click="search()" class="btn btn-primary">Search</button>
+	</form>
+	
+	<div id="product-list">
+		
+		<div class="col-lg-6 col-sm-12" ng-repeat="product in products">
+		<div class="product-tile">
+			<h4 class="productName">
+				{{product.name}}
+			</h4>
+			<h5>
+				<a href="#" editable-text="product.nameInChinese" onaftersave="updateNameInChinese(product)">
+				    {{product.nameInChinese || '点此输入中文名称'}}
+				</a>
+			</h5>
+			<div class="row">
+				
+			
+			<div class="col-lg-3 col-sm-3">
+				<img src="{{product.photos[0]}}" alt="{{product.name}}">
+			</div>
+			<div class="col-lg-9 col-sm-9">
+				<div>
+					Category: 
+					<a href="#" editable-text="product.categoryStr" onaftersave="updateCategory(product)">
+					    {{ product.categoryStr }}
+					</a>
+				</div>
+				<ul id="prices">
+					<li>RRP: <span class="rrp">{{product.rrp | currency}}</span></li>
+					<li ng-repeat="store in product.stores">
+						<a href="{{store.detailUrl}}" target="_blank">{{store.storeName}}</a>
+						<span class="price">{{store.price | currency}}</span>
+						({{(product.rrp - store.price) / product.rrp | percentage:0}} off)
+						(L:<span class="price">{{store.lowestPrice | currency}}</span>)
+					</li>
+					<li>
+						<span><a href="http://s.taobao.com/search?q={{product.name}}&style=list" target="_blank">Taobao Price Indicator</a></span>
+					</li>
+				</ul>
+				<div>
+					Weight: <input type="text" ng-model="product.weight" size="1" ng-change="updateWeight(product)" ng-model-options="{ updateOn: 'blur' }">g, 
+					Postage: {{postage(product) | currency}}
+				</div>
+				<div>
+					ReneBuyPrice: <span class="price">{{reneBuyPriceInRmb(product) | currency:'RMB '}} </span>
+					+ <input type="text" ng-model="product.priceAdjustment" size="1" ng-change="updatePriceAdjustment(product)" ng-model-options="{ updateOn: 'blur' }">
+					= <span class="price">{{reneBuyPriceInRmbWithAdjustment(product) | currency:''}} </span>
+				</div>
+			</div>
+			</div>
+		</div>
+		</div>
+	</div>
+</div>
