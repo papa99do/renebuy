@@ -5,6 +5,7 @@ var _ = require('underscore');
 
 // configuration =================
 var mongoUrl = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/renebuy';
+var DEFAULT_PAGE_SIZE = 20;
 
 mongoose.connect(mongoUrl);
 mongoose.set('debug', true);
@@ -76,7 +77,7 @@ router.route('/product')
 			project : 'name nameInChinese category weight isHighTax',
 			limit: 3
 		} : { /* used by search */
-			limit: 20
+			limit: DEFAULT_PAGE_SIZE
 		};
 		
 		Product.textSearch(req.query.q, opt, function(err, result) {
@@ -96,7 +97,10 @@ router.route('/product')
 		
 	} else {
 		/* used by default search */
-		Product.find().sort({'_id': -1}).exec(returnProducts);
+		var page = req.query.p ? parseInt(req.query.p) : 0;
+		var pageSize = req.query.ps ? parseInt(req.query.ps) : DEFAULT_PAGE_SIZE;
+		console.log('Retrieving products, page: %d, pageSize: %d', page, pageSize);
+		Product.find().sort({'_id': -1}).skip(page * pageSize).limit(pageSize + 1).exec(returnProducts);
 	}
 }).post(function(req, res) {
 	console.log('Creating product: ', req.body);

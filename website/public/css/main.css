@@ -3,10 +3,11 @@
 }
 
 #product-list {
-	padding: 0px;
+	padding: 0px 15px;
 }
 
 .product-tile {
+	height: 256px;
 	padding: 5px;
 	margin-top: 20px;
 	
@@ -47,4 +48,10 @@
 
 #priceListResult {
 	padding-right: 20px;
+}
+
+#spin-progress {
+	margin-top: 10px;
+	height: 30px;
+	width: 30px;
 }

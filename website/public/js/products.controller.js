@@ -11,14 +11,49 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
 		updateNameInChinese: {method: 'POST', params:{nameInChinese: true}}
 	});
 	
-	$scope.search = function() {
-		Product.query({q: $scope.searchText}, function(products) {
-			products.forEach(function(product) {enhance(product); });
-			$scope.products = products;
-		});
+	var defaultScrollQuery = function () {
+		return {
+			page: 0,
+			pageSize: 20,
+			busy: false,
+			hasMore: true
+		};
 	};
 	
-	$scope.search();
+	$scope.scroll = defaultScrollQuery();
+	$scope.products = [];
+	
+	$scope.shouldLoad = function () {
+		return $scope.scroll.hasMore && !$scope.scroll.busy;
+	};
+	
+	$scope.load = function() {
+		console.log('Loading products: %d - %d', $scope.scroll.page * $scope.scroll.pageSize + 1,
+		 	($scope.scroll.page + 1) * $scope.scroll.pageSize);
+		
+		$scope.scroll.busy = true;
+		Product.query({q: $scope.searchText, p: $scope.scroll.page, ps: $scope.scroll.pageSize}, function(products) {
+			$scope.scroll.hasMore = products.length > $scope.scroll.pageSize;
+			if ($scope.scroll.hasMore) {
+				$scope.scroll.page++;
+				products.splice(-1, 1);
+			}
+			
+			$timeout(function() {
+				products.forEach(function(product) {
+					$scope.products.push(enhance(product)); 
+				});
+				
+				$scope.scroll.busy = false;	
+			}, 500);
+		});
+	}
+	
+	$scope.search = function() {
+		$scope.products = [];
+		$scope.scroll = defaultScrollQuery();
+		$scope.load();
+	};
 	
 	function enhance(product) {
 		product.unitPostage = product.isHighTax ? 12 : 10;
@@ -33,6 +68,8 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
 		}
 		
 		product.categoryStr = product.category.join(" > ");
+		
+		return product;
 	}
 	
 	$scope.postage = function(product) {
