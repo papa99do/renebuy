@@ -4,9 +4,13 @@ var smartRequest = require('./smart-request')(1);
 
 log.setLevel('info');
 
-var GET_PRODUCTS_URL='http://localhost:3001/api/product?all=true';
-var UPDATE_PRICE_URL='http://localhost:3001/api/product/';
+//var RENEBUY_URL = 'http://localhost:3001'
+var RENEBUY_URL = 'http://renebuy.yihanzhao.com'
+
+var GET_PRODUCTS_URL= RENEBUY_URL + '/api/product?all=true';
+var UPDATE_PRICE_URL= RENEBUY_URL + '/api/product/';
 var CW_PRICE_URL = 'http://www.chemistwarehouse.com.au/inc_product_updater_json_shortlive.asp?callback=getPrice&ID=';
+var MC_PRICE_URL = 'http://www.mychemist.com.au/inc_product_updater_json_shortlive.asp?callback=getPrice&ID=';
 
 smartRequest(GET_PRODUCTS_URL, {raw: true}, function(productsJson) {
 	var products = JSON.parse(productsJson);
@@ -15,8 +19,9 @@ smartRequest(GET_PRODUCTS_URL, {raw: true}, function(productsJson) {
 	
 	products.forEach(function(product) {
 		product.stores.forEach(function(store) {		
-			if (store.storeName === 'CW') {			
-				getChemistWarehousePrice(store.productId, function(price) {
+			if (store.storeName === 'CW' || store.storeName === 'MC') {	
+				var urlPrifix = store.storeName === 'CW' ? CW_PRICE_URL : MC_PRICE_URL;	
+				getChemistWarehousePrice(urlPrifix, store.productId, function(price) {
 					updatePrice(product, store, price);
 				});
 			} else if (store.storeName === 'PO') {
@@ -57,8 +62,8 @@ function getPharmacyOnlinePrice(detailUrl, callback) {
 	});
 }
 
-function getChemistWarehousePrice(id, callback) {
-	smartRequest(CW_PRICE_URL + id, {raw: true}, function(priceCallback) {
+function getChemistWarehousePrice(priceUrlPrefix, id, callback) {
+	smartRequest(priceUrlPrefix + id, {raw: true}, function(priceCallback) {
 		if (priceCallback.indexOf("getPrice(") === 0) {
 			var price = eval(priceCallback);
 			callback(price);
