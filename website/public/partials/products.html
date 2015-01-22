@@ -44,12 +44,12 @@
 					</li>
 				</ul>
 				<div>
-					Weight: <input type="text" ng-model="product.weight" size="1" ng-change="updateWeight(product)" ng-model-options="{ updateOn: 'blur' }">g, 
+					Weight: <input type="text" ng-model="product.weight" size="4" ng-change="updateWeight(product)" ng-model-options="{ updateOn: 'blur' }">g, 
 					Postage: {{postage(product) | currency}}
 				</div>
 				<div>
 					ReneBuyPrice: <span class="price">{{reneBuyPriceInRmb(product) | currency:'RMB '}} </span>
-					+ <input type="text" ng-model="product.priceAdjustment" size="1" ng-change="updatePriceAdjustment(product)" ng-model-options="{ updateOn: 'blur' }">
+					+ <input type="text" ng-model="product.priceAdjustment" size="3" ng-change="updatePriceAdjustment(product)" ng-model-options="{ updateOn: 'blur' }">
 					= <span class="price">{{reneBuyPriceInRmbWithAdjustment(product) | currency:''}} </span>
 				</div>
 			</div>
