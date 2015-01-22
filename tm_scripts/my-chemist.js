@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name       Pharmacy online enhancements
+// @name       My chemist enhancements
 // @namespace  http://yihanzhao.com/
 // @version    0.1
-// @description Pharmacy online enhancements
-// @match      http://*.pharmacyonline.com.au/*
+// @description  My chemist enhancements
+// @match      http://www.mychemist.com.au/*
 // @copyright  2015+, Yihan Zhao, yihanzhao@gmail.com
 // @require http://code.jquery.com/jquery-latest.js
 // @grant      GM_xmlhttpRequest
@@ -14,8 +14,9 @@ var reneBuyUrl = "http://renebuy.yihanzhao.com/api/product";
 
 $(document).ready(function() {
     
-    $('.item').each(function() {
-        $(this).append('<div class="enhance"><button class="addBtn">Add to ReneBuy</button></div>');
+    $('.column').each(function() {
+        $(this).removeAttr('onclick').removeAttr('onmouseover').removeAttr('onmouseout');
+        $(this).find('.content_section').append('<div class="enhance"><button class="addBtn">Add to ReneBuy</button></div>');
     });
     
     $('.addBtn').click(function() {
@@ -29,20 +30,25 @@ $(document).ready(function() {
 
         // extract product information
         var productElem = $(this).parent().parent();
-        var detailUrl = productElem.find('.prod_link').attr('href');
-        var photoUrl = productElem.find('.product-image').attr('src');
-        var id = extractNumber(/(\d+)(_\d+)?\.jpg/, photoUrl);
-        var price = extractNumber(/\$([0-9.]+)/, productElem.find('.price').text());
-        var rrp =  extractNumber(/\$([0-9.]+)/, productElem.find('.rrp-linethrough').text());
+        var detailUrl = productElem.find('.productName_row > a').attr('href');
+        var id = extractNumber(/id=(\d+)/, detailUrl);
+        var price = extractNumber(/\$([0-9.]+)/, productElem.find('.our_price').text());
+        var save =  extractNumber(/\$([0-9.]+)/, productElem.find('.rrp_span').text());
+        var photoUrl = productElem.find('img').attr('src');
+        if (photoUrl.indexOf('?') > -1) {
+        	photoUrl = photoUrl.substring(0, photoUrl.indexOf('?'));
+        }
+        
+        var CM_URL = "http://www.mychemist.com.au";
         
         var product = {
-            store: 'PO',
+            store: 'MC',
             productId: id,
-            name: productElem.find('.name').text().trim(),
+            name: productElem.find('.productName_row > a').attr('title').trim(),
             price: price,
-            rrp: rrp,
-            photos: [photoUrl],
-            detailUrl: detailUrl
+            rrp: Math.round((price + save) * 100) / 100,
+            photos: [CM_URL + photoUrl],
+            detailUrl: CM_URL + '/' + detailUrl
         };
         
         console.log(product);
@@ -68,8 +74,8 @@ $(document).ready(function() {
         function showPopup(product, similarProducts) {
             $('#reneBuyId').val('');
             $('#productWeight').val('');
-			$('#nameInChinese').val('');
             $('#productHighTax').removeAttr('checked');
+			$('#nameInChinese').val('');
             $('.message').html('');
             $('#productName').val(product.name);
             
@@ -110,7 +116,7 @@ $(document).ready(function() {
 			<input type="hidden" id="productCache" value="">                           	\
 			<div><label for="productName">Name:</label><input type="text" id="productName" value="" size="50"></div> \
 			<span style="font-size:small; color:grey;">The following fields are valid and required only when creating new product:</span> \
-			<div><label for="nameInChinese">中文名称:</label><input type="text" id="nameInChinese" value="" size="50"></div>\
+            <div><label for="nameInChinese">中文名称:</label><input type="text" id="nameInChinese" value="" size="50"></div>\
             <div><label for="productCategory">Category:</label><input type="text" id="productCategory" value="" size="50"></div>\
 			<div>\
             	<label for="productWeight">Weight:</label><input type="text" id="productWeight" value="" size="5">g \
@@ -170,6 +176,7 @@ $(document).ready(function() {
             }
         });
         
+        
     });
     
     $("#gmCloseDlgBtn").click ( function () {
@@ -212,3 +219,4 @@ $(document).ready(function() {
         #successMessage {color: green } \
     ' );
 });
+

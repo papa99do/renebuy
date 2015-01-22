@@ -127,7 +127,7 @@ $(document).ready(function() {
             	<button id="gmCloseDlgBtn" type="button">Close</button>         	  \
 			</div>\
         </form>                                                                   \
-		<img src="http://localhost:3001/images/spin-progress.gif" id="spinProgress" style="display:none; width: 30px; height: 30px;"> \
+		<img src="http://renebuy.yihanzhao.com/images/spin-progress.gif" id="spinProgress" style="display:none; width: 30px; height: 30px;"> \
 		<div id="errorMessage" class="message"></div> \
 		<div id="successMessage" class="message"></div> \
         </div>                                                                    \
