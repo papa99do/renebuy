@@ -41,13 +41,11 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
 				products.splice(-1, 1);
 			}
 			
-			$timeout(function() {
-				products.forEach(function(product) {
-					$scope.products.push(enhance(product)); 
-				});
+			products.forEach(function(product) {
+				$scope.products.push(enhance(product)); 
+			});
 				
-				$scope.scroll.busy = false;	
-			}, 500);
+			$scope.scroll.busy = false;	
 		});
 	}
 	

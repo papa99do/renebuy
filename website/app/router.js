@@ -72,17 +72,21 @@ router.route('/product')
 		handleResult(products, res);
 	}
 	
-	if (req.query.q) {
+	var page = req.query.p ? parseInt(req.query.p) : 0;
+	var pageSize = req.query.ps ? parseInt(req.query.ps) : DEFAULT_PAGE_SIZE;
+	
+	if (req.query.q) {	
 		var opt = req.query.sm ? { /* used by similar product */
 			project : 'name nameInChinese category weight isHighTax',
 			limit: 3
 		} : { /* used by search */
-			limit: DEFAULT_PAGE_SIZE
+			limit: (page + 1) * pageSize + 1
 		};
 		
 		Product.textSearch(req.query.q, opt, function(err, result) {
 			if (err) {handleError(err, res); return;}
-			var products = result.results.map(function(value) {return value.obj;});
+			var productsWithScore = req.query.sm ? result.results : result.results.slice(page * pageSize);
+			var products = productsWithScore.map(function(value) {return value.obj;});
 			handleResult(products, res);
 		});
 		
@@ -97,8 +101,6 @@ router.route('/product')
 		
 	} else {
 		/* used by default search */
-		var page = req.query.p ? parseInt(req.query.p) : 0;
-		var pageSize = req.query.ps ? parseInt(req.query.ps) : DEFAULT_PAGE_SIZE;
 		console.log('Retrieving products, page: %d, pageSize: %d', page, pageSize);
 		Product.find().sort({'_id': -1}).skip(page * pageSize).limit(pageSize + 1).exec(returnProducts);
 	}
