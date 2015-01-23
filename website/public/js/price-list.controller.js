@@ -16,10 +16,19 @@ renebuyApp.controller('PriceListCtrl', function($scope, $resource) {
 		$scope.detail = detail;
 		Product.query({category : $scope.category}, function(products) {
 			products.forEach(function(product) {enhance(product);});
+			sortCategoryMap();
 			$scope.priceListFetched = true;
 		});
 		$event.stopPropagation();
 	};
+	
+	function sortCategoryMap() {
+		angular.forEach($scope.categoryMap, function(products, categoryName) {
+			products.sort(function(p1, p2) {
+				return p1.nameInChinese.localeCompare(p2.nameInChinese, 'zh-Hans-CN');
+			});
+		});
+	}
 		
 	$scope.treeOptions = {
 	    nodeChildren: "children",
