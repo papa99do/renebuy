@@ -183,9 +183,9 @@ router.route('/product/:id')
 		} else if (req.query.price) {
 			/* {"store": "CW", "price": 2.99} */
 			updateStorePrice(product);
-		} else if (req.query.priceAdjustment) {
-			/* {"priceAdjustment": 2} */
-			updatePriceAdjustment(product);
+		} else if (req.query.adjustPrice) {
+			/* {"adjustedPrice": 2.99} */
+			updateAdjustedPrice(product);
 		} else if (req.query.nameInChinese) {
 			/* {"nameInChinese": "好东西"} */
 			updateNameInChinese(product);
@@ -213,8 +213,8 @@ router.route('/product/:id')
 		saveProduct(product);
 	}
 	
-	function updatePriceAdjustment(product) {
-		product.priceAdjustment = req.body.priceAdjustment;
+	function updateAdjustedPrice(product) {
+		product.adjustedPrice = req.body.adjustedPrice;
 		saveProduct(product);
 	}
 	

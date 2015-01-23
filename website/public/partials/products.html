@@ -49,9 +49,16 @@
 					Postage: {{postage(product) | currency}}
 				</div>
 				<div>
-					ReneBuyPrice: <span class="price">{{reneBuyPriceInRmb(product) | currency:'RMB '}} </span>
-					+ <input type="text" ng-model="product.priceAdjustment" size="3" ng-change="updatePriceAdjustment(product)" ng-model-options="{ updateOn: 'blur' }">
-					= <span class="price">{{reneBuyPriceInRmbWithAdjustment(product) | currency:''}} </span>
+					Calculated price: 
+					<span class="price">{{calculatedPrice(product) | currency:'&yen;'}} </span>
+					Profit: 
+					<span ng-style="{color: calculatedProfit(product) < 0 ? 'red' : 'black' }">{{calculatedProfit(product) | currency:'&yen;'}} ({{calculatedProfit(product) / costInRmb(product) | percentage:0}})</span>
+				</div>
+				<div ng-if="product.adjustedPrice">
+					Adjusted price: 
+					<span class="price">{{adjustedPrice(product) | currency:'&yen;'}} </span>
+					Profit:
+					<span ng-style="{color: adjustedProfit(product) < 0 ? 'red' : 'black' }">{{adjustedProfit(product) | currency:'&yen;'}} ({{adjustedProfit(product) / costInRmb(product) | percentage:0}})</span>
 				</div>
 			</div>
 			</div>

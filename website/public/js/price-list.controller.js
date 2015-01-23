@@ -4,7 +4,9 @@ renebuyApp.controller('PriceListCtrl', function($scope, $resource) {
 	$scope.realTimeExchangeRate = 5.2;
 	$scope.ratio = 1.2;
 	
-	var Product = $resource('/api/product');
+	var Product = $resource('/api/product/:id', {id: '@id'}, {
+		adjustPrice: {method: 'POST', params:{adjustPrice: true}}
+	});
 	var Category = $resource('/api/category');
 	
 	$scope.search = function(categoryFullName, detail, $event) {
@@ -33,7 +35,6 @@ renebuyApp.controller('PriceListCtrl', function($scope, $resource) {
 	});
 	
 	function enhance(product) {
-		product.unitPostage = product.isHighTax ? 12 : 10;
 		
 		product.buyPrice = product.stores[0].price;
 		
@@ -44,6 +45,13 @@ renebuyApp.controller('PriceListCtrl', function($scope, $resource) {
 			}
 		}
 		
+		product.postage = (product.isHighTax ? 12 : 10) / 1000 * (product.weight || 0);
+		product.cost = product.buyPrice + product.postage;
+		product.costInRmb = Math.ceil(product.cost * $scope.exchangeRate);
+		product.reneBuyPriceInRmb = Math.ceil((product.postage + product.buyPrice * $scope.ratio) * $scope.exchangeRate);
+		product.adjusted = !!product.adjustedPrice;
+		product.adjustedPrice = product.adjustedPrice || product.reneBuyPriceInRmb;
+		
 		if ($scope.categoryMap[product.category[2]] === undefined) {
 			$scope.categoryMap[product.category[2]] = [];
 		}
@@ -52,29 +60,15 @@ renebuyApp.controller('PriceListCtrl', function($scope, $resource) {
 		
 	}
 	
-	$scope.postage = function(product) {
-		return product.unitPostage / 1000 * (product.weight || 0);
-	};
-	
-	$scope.cost = function(product) {
-		return product.buyPrice + $scope.postage(product);
-	};
-	
-	$scope.costInRmb = function(product) {
-		return Math.ceil((product.buyPrice + $scope.postage(product)) * $scope.exchangeRate);
-	};
-	
-	$scope.reneBuyPriceInRmb = function(product) {
-		var reneBuyPrice = $scope.postage(product) + product.buyPrice * $scope.ratio;
-		return Math.ceil(reneBuyPrice * $scope.exchangeRate);
-	};
-	
-	$scope.reneBuyPriceInRmbWithAdjustment = function(product) {
-		return $scope.reneBuyPriceInRmb(product) + parseFloat(product.priceAdjustment);
-	};
-	
 	$scope.profit = function(product) {
-		return $scope.reneBuyPriceInRmbWithAdjustment(product) - $scope.costInRmb(product);
+		return product.adjustedPrice - product.costInRmb;
+	};
+	
+	$scope.adjustPrice = function(product) {
+		Product.adjustPrice({id: product._id}, JSON.stringify({adjustedPrice: product.adjustedPrice}), function(result) {
+			product.adjusted = true;
+			console.log('Price adjusted to %.2f for [%s]', product.adjustedPrice, product.name);
+		});
 	};
 	
 	$scope.tableToExcel = (function () {

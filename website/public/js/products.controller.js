@@ -7,7 +7,6 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
 	var Product = $resource('/api/product/:id', {id: '@id'}, {
 		updateWeight: {method: 'POST', params:{weight: true}},
 		updateCategory: {method: 'POST', params:{category: true}},
-		updatePriceAdjustment: {method: 'POST', params:{priceAdjustment: true}},
 		updateName: {method: 'POST', params:{name: true}},
 		updateNameInChinese: {method: 'POST', params:{nameInChinese: true}},
 		updateTaxType: {method: 'POST', params:{taxType: true}}
@@ -75,14 +74,26 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
 		return (product.isHighTax ? 12 : 10) / 1000 * (product.weight || 0);
 	};
 	
-	$scope.reneBuyPriceInRmb = function(product) {
+	$scope.costInRmb = function(product) {
+		return Math.ceil((product.buyPrice + $scope.postage(product)) * $scope.exchangeRate);
+	};
+	
+	$scope.calculatedPrice = function(product) {
 		var reneBuyPrice = $scope.postage(product) + product.buyPrice * $scope.ratio;
 		return Math.ceil(reneBuyPrice * $scope.exchangeRate);
 	};
 	
-	$scope.reneBuyPriceInRmbWithAdjustment = function(product) {
-		return $scope.reneBuyPriceInRmb(product) + parseFloat(product.priceAdjustment);
+	$scope.adjustedPrice = function(product) {
+		return product.adjustedPrice || $scope.calculatedPrice(product);
+	};
+	
+	$scope.calculatedProfit = function(product) {
+		return $scope.calculatedPrice(product) - $scope.costInRmb(product);
 	}
+	
+	$scope.adjustedProfit = function(product) {
+		return $scope.adjustedPrice(product) - $scope.costInRmb(product);
+	};
 	
 	$scope.updateWeight = function(product) {
 		Product.updateWeight({id: product._id}, JSON.stringify({weight: product.weight}), function(result) {
@@ -93,12 +104,6 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
 	$scope.updateCategory = function(product) {
 		Product.updateCategory({id: product._id}, JSON.stringify({category: product.categoryStr}), function(result) {
 			console.log('Category changed to: %s for [%s]', product.categoryStr, product.name);
-		});
-	};
-	
-	$scope.updatePriceAdjustment = function(product) {
-		Product.updatePriceAdjustment({id: product._id}, JSON.stringify({priceAdjustment: product.priceAdjustment}), function(result) {
-			console.log('Price adjustment changed to %d for [%s]' , parseFloat(product.priceAdjustment), product.name);
 		});
 	};
 	
