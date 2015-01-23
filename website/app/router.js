@@ -187,8 +187,24 @@ router.route('/product/:id')
 		} else if (req.query.nameInChinese) {
 			/* {"nameInChinese": "好东西"} */
 			updateNameInChinese(product);
+		} else if (req.query.name) {
+			/* {"name": "some new name"} */
+			updateName(product);
+		} else if (req.query.taxType) {
+			/* {"isHighTax": true} */
+			updateTaxType(product);
 		}
 	});
+	
+	function updateTaxType(product) {
+		product.isHighTax = req.body.isHighTax;
+		saveProduct(product);
+	}
+	
+	function updateName(product) {
+		product.name = req.body.name;
+		saveProduct(product);
+	}
 	
 	function updateNameInChinese(product) {
 		product.nameInChinese = req.body.nameInChinese;

@@ -11,7 +11,7 @@
 		<div class="col-lg-6 col-sm-12" ng-repeat="product in products">
 		<div class="product-tile">
 			<h4 class="productName">
-				{{product.name}}
+				<a href="#" editable-text="product.name" e-style="width: 400px;" onaftersave="updateName(product)">{{product.name}}</a>
 			</h4>
 			<h5>
 				<a href="#" editable-text="product.nameInChinese" onaftersave="updateNameInChinese(product)">
@@ -45,6 +45,7 @@
 				</ul>
 				<div>
 					Weight: <input type="text" ng-model="product.weight" size="4" ng-change="updateWeight(product)" ng-model-options="{ updateOn: 'blur' }">g, 
+					<input type="checkbox" ng-model="product.isHighTax" ng-change="updateTaxType(product)">High tax, 
 					Postage: {{postage(product) | currency}}
 				</div>
 				<div>

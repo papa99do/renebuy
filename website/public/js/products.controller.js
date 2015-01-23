@@ -8,7 +8,9 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
 		updateWeight: {method: 'POST', params:{weight: true}},
 		updateCategory: {method: 'POST', params:{category: true}},
 		updatePriceAdjustment: {method: 'POST', params:{priceAdjustment: true}},
-		updateNameInChinese: {method: 'POST', params:{nameInChinese: true}}
+		updateName: {method: 'POST', params:{name: true}},
+		updateNameInChinese: {method: 'POST', params:{nameInChinese: true}},
+		updateTaxType: {method: 'POST', params:{taxType: true}}
 	});
 	
 	var defaultScrollQuery = function () {
@@ -56,7 +58,6 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
 	};
 	
 	function enhance(product) {
-		product.unitPostage = product.isHighTax ? 12 : 10;
 		
 		product.buyPrice = product.stores[0].price;
 		
@@ -73,7 +74,7 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
 	}
 	
 	$scope.postage = function(product) {
-		return product.unitPostage / 1000 * (product.weight || 0);
+		return (product.isHighTax ? 12 : 10) / 1000 * (product.weight || 0);
 	};
 	
 	$scope.reneBuyPriceInRmb = function(product) {
@@ -108,4 +109,16 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
 			console.log('Chinese name changed to %s for [%s]' , product.nameInChinese, product.name);
 		});
 	};	
+	
+	$scope.updateName = function(product) {
+		Product.updateName({id: product._id}, JSON.stringify({name: product.name}), function(result) {
+			console.log('Name changed to %s', product.name);
+		});
+	};
+	
+	$scope.updateTaxType = function(product) {
+		Product.updateTaxType({id: product._id}, JSON.stringify({isHighTax: product.isHighTax}), function(result) {
+			console.log('Tax type changed to %s for [%s]', product.isHighTax ? 'high' : 'low', product.name);
+		});
+	};
 });
