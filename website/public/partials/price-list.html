@@ -47,7 +47,7 @@
 					<span class="hide">{{product.adjustedPrice | currency: '&yen;'}}</span>
 					<div class="input-group input-group-xs" ng-if="editMode">
 						<div class="input-group-addon">&yen;</div>
-						<input type="text" size="5" class="form-control" ng-model="product.adjustedPrice" ng-change="adjustPrice(product)" ng-model-options="{ updateOn: 'blur' }" ng-style="{color: product.adjusted ? 'red': 'black'}">	
+						<input type="text" style="width:50px;" class="form-control" ng-model="product.adjustedPrice" ng-change="adjustPrice(product)" ng-model-options="{ updateOn: 'blur' }" ng-style="{color: product.adjusted ? 'red': 'black'}">	
 					</div>
 				</td>
 				<td style="border:1px solid black;" ng-if="!detail || !editMode">
