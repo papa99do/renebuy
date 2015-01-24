@@ -11,12 +11,14 @@
 		<div class="col-lg-6 col-sm-12" ng-repeat="product in products">
 		<div class="product-tile">
 			<h4 class="productName">
-				<a href="#" editable-text="product.name" e-style="width: 400px;" onaftersave="updateName(product)">{{product.name}}</a>
+				<a ng-if="editMode" href="#" editable-text="product.name" e-style="width: 400px;" onaftersave="updateName(product)">{{product.name}}</a>
+				<span ng-if="!editMode">{{product.name}}</span>
 			</h4>
 			<h5>
-				<a href="#" editable-text="product.nameInChinese" onaftersave="updateNameInChinese(product)">
+				<a href="#" ng-if="editMode" editable-text="product.nameInChinese" onaftersave="updateNameInChinese(product)">
 				    {{product.nameInChinese || '点此输入中文名称'}}
 				</a>
+				<span ng-if="!editMode">{{product.nameInChinese || '暂无中文名'}}</span>
 			</h5>
 			<div class="row">
 				
@@ -27,9 +29,10 @@
 			<div class="col-lg-8 col-sm-8">
 				<div>
 					Category: 
-					<a href="#" editable-text="product.categoryStr" onaftersave="updateCategory(product)">
+					<a href="#" ng-if="editMode" editable-text="product.categoryStr" onaftersave="updateCategory(product)">
 					    {{ product.categoryStr }}
 					</a>
+					<span ng-if="!editMode">{{ product.categoryStr }}</span>
 				</div>
 				<ul id="prices">
 					<li>RRP: <span class="rrp">{{product.rrp | currency}}</span></li>
@@ -43,15 +46,24 @@
 						<span><a href="http://s.taobao.com/search?q={{product.name}}&style=list" target="_blank">Taobao Price Indicator</a></span>
 					</li>
 				</ul>
-				<div>
-					Weight: <input type="text" ng-model="product.weight" size="4" ng-change="updateWeight(product)" ng-model-options="{ updateOn: 'blur' }">g, 
-					<input type="checkbox" ng-model="product.isHighTax" ng-change="updateTaxType(product)">High tax, 
+				<div class="form-inline">
+					Weight:
+					<div class="input-group input-group-xs" ng-if="editMode">
+						<input type="text" class="form-control" ng-model="product.weight" size="4" ng-change="updateWeight(product)" ng-model-options="{ updateOn: 'blur' }">
+						<div class="input-group-addon">g</div>
+					</div>
+					<span ng-if="!editMode">{{product.weight}}g</span>, 
+					
+					
+					<span ng-if="editMode"><input type="checkbox" ng-model="product.isHighTax" ng-change="updateTaxType(product)"> High tax</span>
+					<span ng-if="!editMode">{{product.isHighTax ? 'High tax' : 'Low tax'}}</span>, 
+					
 					Postage: {{postage(product) | currency}}
 				</div>
 				<div>
 					Calculated price: 
 					<span class="price">{{calculatedPrice(product) | currency:'&yen;'}} </span>
-					Profit: 
+					Profit:
 					<span ng-style="{color: calculatedProfit(product) < 0 ? 'red' : 'black' }">{{calculatedProfit(product) | currency:'&yen;'}} ({{calculatedProfit(product) / costInRmb(product) | percentage:0}})</span>
 				</div>
 				<div ng-if="product.adjustedPrice">

@@ -43,11 +43,14 @@
 				<td style="border:1px solid black;" ng-if="detail">{{::product.cost | currency}}</td>
 				<td style="border:1px solid black;" ng-if="detail">{{::product.costInRmb | currency:'&yen;'}}</td>
 				<td style="border:1px solid black;" ng-if="detail">{{::product.reneBuyPriceInRmb | currency:'&yen;'}}</td>
-				<td style="border:1px solid black; white-space: nowrap" ng-if="detail">
-					&yen;<span class="hide">{{product.adjustedPrice | currency: ''}}</span>
-					<input type="text" size="5" ng-model="product.adjustedPrice" ng-change="adjustPrice(product)" ng-model-options="{ updateOn: 'blur' }" ng-style="{color: product.adjusted ? 'red': 'black'}">	
+				<td style="border:1px solid black; white-space: nowrap" class="form-inline" ng-if="detail && editMode">
+					<span class="hide">{{product.adjustedPrice | currency: '&yen;'}}</span>
+					<div class="input-group input-group-xs" ng-if="editMode">
+						<div class="input-group-addon">&yen;</div>
+						<input type="text" size="5" class="form-control" ng-model="product.adjustedPrice" ng-change="adjustPrice(product)" ng-model-options="{ updateOn: 'blur' }" ng-style="{color: product.adjusted ? 'red': 'black'}">	
+					</div>
 				</td>
-				<td style="border:1px solid black;" ng-if="!detail">
+				<td style="border:1px solid black;" ng-if="!detail || !editMode">
 					{{product.adjustedPrice | currency: '&yen;'}}	
 				</td>
 				<td style="border:1px solid black;" ng-if="detail">{{profit(product) | currency: '&yen;'}} ({{profit(product) / product.costInRmb | percentage:0}})</td>
