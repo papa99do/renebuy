@@ -1,5 +1,15 @@
-#search-form {
-	padding: 0px 15px;
+body { padding-top: 70px; }
+
+#product-search {
+	position: fixed;
+	z-index: 2060;
+	top: 0px;
+	right: 50px;
+	padding-top: 8px;
+}
+
+#search-text {
+	width: 250px;
 }
 
 #product-list {

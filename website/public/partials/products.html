@@ -1,10 +1,12 @@
 <div>
+	<div id="product-search">
 	<form class="form-inline" role="search" id="search-form">
 	    <div class="form-group">
-	      <input type="text" class="form-control" ng-model="searchText" size="40">
+	      <input type="text" class="form-control" ng-model="searchText" id="search-text">
 	    </div>
 		<button type="submit" ng-click="search()" class="btn btn-primary">Search</button>
 	</form>
+	</div>
 	
 	<div class="row" id="product-list" infinite-scroll="load()" infinite-scroll-distance="0" infinite-scroll-disabled="!shouldLoad()">
 		
