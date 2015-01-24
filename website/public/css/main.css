@@ -4,12 +4,12 @@ body { padding-top: 70px; }
 	position: fixed;
 	z-index: 2060;
 	top: 0px;
-	right: 50px;
+	right: 70px;
 	padding-top: 8px;
 }
 
 #search-text {
-	width: 250px;
+	width: 200px;
 }
 
 #product-list {
@@ -17,8 +17,8 @@ body { padding-top: 70px; }
 }
 
 .product-tile {
-	height: 256px;
-	padding: 5px;
+	height: 450px;
+	padding: 10px;
 	margin-top: 20px;
 	
 	/* outer shadows  (note the rgba is red, green, blue, alpha) */
@@ -39,6 +39,7 @@ body { padding-top: 70px; }
 .product-tile img {
 	height: 150px;
 	width: 150px;
+	margin-bottom: 10px;
 }
 
 .rrp {
@@ -64,6 +65,11 @@ body { padding-top: 70px; }
 	margin-top: 10px;
 	height: 30px;
 	width: 30px;
+}
+
+.form-inline .form-group {
+	display: inline-block;
+	vertical-align: middle;
 }
 
 .input-group-xs>.form-control,

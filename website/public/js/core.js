@@ -1,6 +1,9 @@
 renebuyApp
 .controller('MainCtrl', function($scope) {
 	$scope.editMode = false;
+	$('.navbar-collapse a').click(function(){
+	    $(".navbar-collapse").collapse('hide');
+	});
 })
 .filter('percentage', ['$filter', function ($filter) {
 	return function (input, decimals) {

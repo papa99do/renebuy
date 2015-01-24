@@ -15,7 +15,7 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
 	var defaultScrollQuery = function () {
 		return {
 			page: 0,
-			pageSize: 20,
+			pageSize: 24,
 			busy: false,
 			hasMore: true
 		};

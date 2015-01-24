@@ -1,5 +1,5 @@
 <div class="row">
-	<div treecontrol class="tree-light col-sm-2"
+	<div treecontrol class="tree-light col-lg-3"
 	   tree-model="categoryTree"
 	   options="treeOptions"
 	   on-selection="showSelected(node)">
@@ -8,11 +8,11 @@
 		<a ng-click="search(node.fullName, false, $event)" title="Price list"><span class="glyphicon glyphicon-eye-close"></span></a>
 	</div>
 	
-	<div class="col-sm-10" ng-show="priceListFetched" id="priceListResult">
+	<div class="col-lg-9" ng-show="priceListFetched" id="priceListResult">
 
 	<div class="row">
-		<h4 class="col-sm-6">Price list for: {{category}}</h4>
-		<div class="col-sm-6">
+		<h4 class="col-xs-8">Price list for: {{category}}</h4>
+		<div class="col-xs-4">
 			<a id="dlink"  style="display:none;"></a>
 			<button class="btn btn-primary btn-sm pull-right" ng-click="tableToExcel()" title="export the following table to excel file">Export to Excel</button>
 		</div>
