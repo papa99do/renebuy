@@ -23,6 +23,6 @@ var ProcuctSchema = new Schema({
 });
 
 ProcuctSchema.plugin(textSearch);
-ProcuctSchema.index({name: 'text', category: 'text' });
+ProcuctSchema.index({name: 'text'});
 
 module.exports = mongoose.model('product', ProcuctSchema);
