@@ -15,7 +15,7 @@
 		<div class="col-xs-12 col-sm-6 col-lg-4" ng-repeat="product in products">
 		<div class="product-tile">
 			<h4 class="productName">
-				<a ng-if="editMode" href="#" editable-text="product.name" e-style="width: 100%;" onaftersave="updateName(product)">{{product.name}}</a>
+				<a ng-if="editMode" href="#" editable-text="product.name" onaftersave="updateName(product)">{{product.name}}</a>
 				<span ng-if="!editMode">{{product.name}}</span>
 			</h4>
 			<h5>
