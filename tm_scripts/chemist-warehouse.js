@@ -96,12 +96,21 @@ $(document).ready(function() {
             for (var i = 0; i < similarProducts.length; i++) {
                 var id = similarProducts[i]._id;
                 var name = similarProducts[i].name;
-                $('#similarProducts').append('<li>' + name + ' <a href="#" title="' + name + '" id="' + id + '">Use this</a></li>');
-                $('#' + id).click(function() {  
+                var category = similarProducts[i].category.join(' > ');
+                $('#similarProducts').append('<li>' + name + ', Use this <a href="#" title="' + name + '" id="n_' + id + '">name</a> or <a href="#" title="' + category + '" id="c_' + id + '">category</a></li>');
+                
+                $('#n_' + id).click(function() {  
                 	$('#reneBuyId').val($(this).attr('id'));
                     $('#productName').val($(this).attr('title'));
                     return false;
                 });
+                
+                $('#c_' + id).click(function() { 
+                    console.log('assign category :', $(this).attr('title'));
+                    $('#productCategory').val($(this).attr('title'));
+                    return false;
+                });
+                
             }
             
         	$("#gmPopupContainer").show();	
