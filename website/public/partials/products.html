@@ -30,14 +30,14 @@
 			</div>
 			<div>
 				<div>
-					Category: 
+					{{'P.CATEGORY' | translate}}: 
 					<a href="#" ng-if="editMode" editable-text="product.categoryStr" onaftersave="updateCategory(product)">
 					    {{ product.categoryStr }}
 					</a>
 					<span ng-if="!editMode">{{ product.categoryStr }}</span>
 				</div>
 				<ul id="prices">
-					<li>RRP: <span class="rrp">{{product.rrp | currency}}</span></li>
+					<li>{{'P.RRP' | translate}}: <span class="rrp">{{product.rrp | currency}}</span></li>
 					<li ng-repeat="store in product.stores">
 						<a href="{{store.detailUrl}}" target="_blank">{{store.storeName}}</a>
 						<span class="price">{{store.price | currency}}</span>
@@ -45,31 +45,31 @@
 						(L:<span class="price">{{store.lowestPrice | currency}}</span>)
 					</li>
 					<li>
-						<span><a href="http://s.taobao.com/search?q={{product.name}}&style=list" target="_blank">Taobao Price Indicator</a></span>
+						<span><a href="http://s.taobao.com/search?q={{product.name}}&style=list" target="_blank">{{'P.TAOBAO_PRICE' | translate}}</a></span>
 					</li>
 				</ul>
 				<div>
-					Weight:
+					{{'P.WEIGHT' | translate}}:
 					<span ng-if="editMode">
 						<input type="text" ng-model="product.weight" size="4" ng-change="updateWeight(product)" ng-model-options="{ updateOn: 'blur' }">g
 					</span>
 					<span ng-if="!editMode">{{product.weight}}g</span>, 
 					
-					<span ng-if="editMode"><input type="checkbox" ng-model="product.isHighTax" ng-change="updateTaxType(product)"> High tax</span>
-					<span ng-if="!editMode">{{product.isHighTax ? 'High tax' : 'Low tax'}}</span>, 
+					<span ng-if="editMode"><input type="checkbox" ng-model="product.isHighTax" ng-change="updateTaxType(product)"> {{'P.HIGH_TAX' | translate}}</span>
+					<span ng-if="!editMode">{{product.isHighTax ? 'P.HIGH_TAX' : 'P.LOW_TAX' | translate}}</span>, 
 					
-					Postage: {{postage(product) | currency}}
+					{{'P.POSTAGE' | translate}}: {{postage(product) | currency}}
 				</div>
 				<div>
-					Calculated price: 
+					{{'P.CALC_PRICE' | translate}}: 
 					<span class="price">{{calculatedPrice(product) | currency:'&yen;'}} </span>
-					Profit:
+					{{'P.PROFIT' | translate}}:
 					<span ng-style="{color: calculatedProfit(product) < 0 ? 'red' : 'black' }">{{calculatedProfit(product) | currency:'&yen;'}} ({{calculatedProfit(product) / costInRmb(product) | percentage:0}})</span>
 				</div>
 				<div ng-if="product.adjustedPrice">
-					Adjusted price: 
+					{{'P.ADJ_PRICE' | translate}}: 
 					<span class="price">{{adjustedPrice(product) | currency:'&yen;'}} </span>
-					Profit:
+					{{'P.PROFIT' | translate}}:
 					<span ng-style="{color: adjustedProfit(product) < 0 ? 'red' : 'black' }">{{adjustedProfit(product) | currency:'&yen;'}} ({{adjustedProfit(product) / costInRmb(product) | percentage:0}})</span>
 				</div>
 			</div>

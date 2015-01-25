@@ -1,9 +1,15 @@
 renebuyApp
-.controller('MainCtrl', function($scope) {
+.controller('MainCtrl', function($scope, $translate) {
 	$scope.editMode = false;
 	$('.navbar-collapse a').click(function(){
 	    $(".navbar-collapse").collapse('hide');
 	});
+	
+	$scope.lang = 'en';
+	$scope.changeLang = function() {
+		$scope.lang = ($scope.lang === 'en' ? 'ch' : 'en');
+		$translate.use($scope.lang);
+	}
 })
 .filter('percentage', ['$filter', function ($filter) {
 	return function (input, decimals) {

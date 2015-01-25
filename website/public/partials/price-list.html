@@ -11,26 +11,26 @@
 	<div class="col-lg-9" ng-show="priceListFetched" id="priceListResult">
 
 	<div class="row">
-		<h4 class="col-xs-8">Price list for: {{category}}</h4>
+		<h4 class="col-xs-8">{{'PL.PRICE_LIST_FOR' | translate}}: {{category}}</h4>
 		<div class="col-xs-4">
 			<a id="dlink"  style="display:none;"></a>
-			<button class="btn btn-primary btn-sm pull-right" ng-click="tableToExcel()" title="export the following table to excel file">Export to Excel</button>
+			<button class="btn btn-primary btn-sm pull-right" ng-click="tableToExcel()" title="export the following table to excel file">{{'PL.EXPORT' | translate}}</button>
 		</div>
 	</div>
 	
 	<table class="table" id="priceTable">
 		<thead>
 			<tr>
-				<th style="border:1px solid black;">Category</th>
-				<th style="border:1px solid black;">Name</th>
-				<th style="border:1px solid black;">Name(Chinese)</th>
-				<th style="border:1px solid black;" ng-if="detail">Price</th>
-				<th style="border:1px solid black;" ng-if="detail">Postage</th>
-				<th style="border:1px solid black;" ng-if="detail">Cost$</th>
-				<th style="border:1px solid black;" ng-if="detail">Cost&yen;</th>
-				<th style="border:1px solid black;" ng-if="detail">Price+20%</th>
-				<th style="border:1px solid black;">My Price</th>
-				<th style="border:1px solid black;" ng-if="detail">Profit</th>
+				<th style="border:1px solid black;">{{'PL.CATEGORY' | translate}}</th>
+				<th style="border:1px solid black;">{{'PL.PRODUCT_NAME' | translate}}</th>
+				<th style="border:1px solid black;">{{'PL.CHINESE_NAME' | translate}}</th>
+				<th style="border:1px solid black;" ng-if="detail">{{'PL.PRICE' | translate}}</th>
+				<th style="border:1px solid black;" ng-if="detail">{{'PL.POSTAGE' | translate}}</th>
+				<th style="border:1px solid black;" ng-if="detail">{{'PL.COST_D' | translate}}</th>
+				<th style="border:1px solid black;" ng-if="detail">{{'PL.COST_R' | translate}}</th>
+				<th style="border:1px solid black;" ng-if="detail">{{'PL.CALC_PRICE' | translate}}</th>
+				<th style="border:1px solid black;">{{'PL.ADJ_PRICE' | translate}}</th>
+				<th style="border:1px solid black;" ng-if="detail">{{'PL.PROFIT' | translate}}</th>
 			</tr>
 		</thead>
 		<tbody style="border:1px solid black;" ng-repeat="(category, productList) in categoryMap">

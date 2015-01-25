@@ -22,6 +22,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.8/angular-resource.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bower-angular-translate/2.5.2/angular-translate.min.js"></script>
 	
 	<script src="js/xeditable.js"></script>
 	<script src="js/angular-tree-control.js"></script>
@@ -51,11 +52,12 @@
 	    </div>
 		<div class="collapse navbar-collapse" id="navbar-collapse">
 		  <ul class="nav navbar-nav">
-		    <li ui-sref-active="active"><a ui-sref="products">Products</a></li>
-		    <li ui-sref-active="active"><a ui-sref="priceList">Price list</a></li>
+		    <li ui-sref-active="active"><a ui-sref="products">{{'MENU.PRODUCTS' | translate}}</a></li>
+		    <li ui-sref-active="active"><a ui-sref="priceList">{{'MENU.PRICE_LIST' | translate }}</a></li>
 		  </ul>
 		  <ul class="nav navbar-nav navbar-right">
-			<li><a href="#" ng-click="editMode = !editMode" id="edit-mode-toggle"><i class="fa fa-2x"  ng-class="editMode ? 'fa-unlock' : 'fa-lock'"></i></a></li>
+			<li><a href="#" ng-click="changeLang()"><i class="fa fa-2x fa-language"></i><span class="menu-desc">{{'MENU.TRANSLATE' | translate}}</span></a></li>
+			<li><a href="#" ng-click="editMode = !editMode" id="edit-mode-toggle"><i class="fa fa-2x"  ng-class="editMode ? 'fa-unlock' : 'fa-lock'"></i><span class="menu-desc">{{'MENU.EDIT_MODE' | translate}}</span></a></li>
 		  </ul>
 		</div>
 	  </div>

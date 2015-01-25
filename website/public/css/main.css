@@ -6,6 +6,10 @@ textarea {
   font-size: 16px;
 }
 
+.menu-desc {
+	display: none;
+}
+
 @media (min-width:768px){
 	#search-text {
 		width: 300px;
@@ -18,7 +22,7 @@ textarea {
 		position: fixed;
 		z-index: 1050;
 		top: 0px;
-		right: 70px;
+		right: 100px;
 		padding-top: 8px;
 	}
 }
@@ -33,6 +37,11 @@ textarea {
 	
 	#product-list {
 		margin-top: 30px;
+	}
+	
+	.menu-desc {
+		display: inline;
+		padding-left: 10px;
 	}
 }
 
@@ -115,6 +124,6 @@ textarea {
     border-radius: 3px;
 }
 
-#edit-mode-toggle {
-	padding: 12px 25px 10px 15px;
+.navbar-right > li > a {
+	padding: 12px 10px 10px 15px;
 }

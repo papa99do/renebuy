@@ -1,5 +1,5 @@
 var renebuyApp = angular.module('renebuy',
-	['ui.router', 'ngResource', 'xeditable', 'treeControl', 'infinite-scroll', 'ui.bootstrap']);
+	['ui.router', 'ngResource', 'xeditable', 'treeControl', 'infinite-scroll', 'ui.bootstrap', 'pascalprecht.translate']);
 
 renebuyApp.config(function($stateProvider, $urlRouterProvider) {
   //
@@ -18,4 +18,77 @@ renebuyApp.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: "partials/price-list.html",
       controller: "PriceListCtrl"
     });
-});
+}).config(['$translateProvider', function ($translateProvider) {
+  $translateProvider.translations('en', {
+	MENU: {
+		PRODUCTS: 'Products',
+		PRICE_LIST: 'Price list',
+		TRANSLATE: '切换中文',
+		EDIT_MODE: 'Toggle edit mode'
+	},
+	P: {
+		CATEGORY: 'Category',
+		RRP: 'RRP',
+		WEIGHT: 'Weight',
+		HIGH_TAX: 'High tax',
+		LOW_TAX: 'Low tax',
+		POSTAGE: 'Postage',
+		CALC_PRICE: 'Calculated price',
+		ADJ_PRICE: 'Adjusted price',
+		PROFIT: 'Profit',
+		TAOBAO_PRICE: 'Taobao price indicator'
+	},
+	PL: {
+		PRICE_LIST_FOR: 'Price list for',
+		CATEGORY: 'Category',
+		PRODUCT_NAME: 'Name',
+		CHINESE_NAME: 'Name(Chinese)',
+		PRICE: 'Price',
+		POSTAGE: 'Postage',
+		COST_D: 'Cost$',
+		COST_R: 'Cost¥',
+		CALC_PRICE: 'Price+20%',
+		ADJ_PRICE: 'My price',
+		PROFIT: 'Profit',
+		EXPORT: 'Export to Excel'
+	}
+    
+  });
+ 
+  $translateProvider.translations('ch', {
+	MENU: {
+		PRODUCTS: '产品列表',
+		PRICE_LIST: '分类报价单',
+		TRANSLATE: '切换英文',
+		EDIT_MODE: '切换编辑模式'
+	},
+	P: {
+		CATEGORY: '类目',
+		RRP: '零售价',
+		WEIGHT: '重量',
+		HIGH_TAX: '高税',
+		LOW_TAX: '低税',
+		POSTAGE: '运费',
+		CALC_PRICE: '自动报价',
+		ADJ_PRICE: '小象报价',
+		PROFIT: '利润',
+		TAOBAO_PRICE: '淘宝价格参考'
+	},
+	PL: {
+		PRICE_LIST_FOR: '报价单',
+		CATEGORY: '类目',
+		PRODUCT_NAME: '产品名称',
+		CHINESE_NAME: '中文名称',
+		PRICE: '价格',
+		POSTAGE: '运费',
+		COST_D: '成本$',
+		COST_R: '成本¥',
+		CALC_PRICE: '自动报价',
+		ADJ_PRICE: '小象报价',
+		PROFIT: '利润',
+		EXPORT: '导出'
+	}
+  });
+ 
+  $translateProvider.preferredLanguage('en');
+}]);
