@@ -1,5 +1,5 @@
 var renebuyApp = angular.module('renebuy',
-	['ui.router', 'ngResource', 'xeditable', 'treeControl', 'infinite-scroll']);
+	['ui.router', 'ngResource', 'xeditable', 'treeControl', 'infinite-scroll', 'ui.bootstrap']);
 
 renebuyApp.config(function($stateProvider, $urlRouterProvider) {
   //

@@ -24,6 +24,12 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
 	$scope.scroll = defaultScrollQuery();
 	$scope.products = [];
 	
+	// for typeahead
+	$scope.productNames = [];
+	Product.query({suggest: true}, function(products) {
+		$scope.productNames = products.map(function(p) {return p.name});
+	});
+
 	$scope.shouldLoad = function () {
 		return $scope.scroll.hasMore && !$scope.scroll.busy;
 	};

@@ -2,7 +2,7 @@
 	<div id="product-search">
 	<form class="form-inline" role="search" id="search-form">
 		<div class="input-group">
-			<input type="text" class="form-control" ng-model="searchText" id="search-text" placeholder="Search">
+			<input type="text" class="form-control" ng-model="searchText" id="search-text" placeholder="Search" typeahead="term for term in productNames | filter:$viewValue | limitTo:10" typeahead-wait-ms="100" typeahead-min-length="2" typeahead-focus-first="false">
 		    <div class="input-group-btn">
 		        <button type="submit" ng-click="search()" class="btn btn-primary"><i class="fa fa-search"></i></button>
 		    </div>

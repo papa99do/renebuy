@@ -94,6 +94,10 @@ router.route('/product')
 		/* used by update price */
 		Product.find().select('name stores').exec(returnProducts);
 		
+	} else if (req.query.suggest) {
+		/* used by search suggestion */
+		Product.find().select('-_id name').exec(returnProducts);
+		
 	} else if (req.query.category) { /* used by price list */
 		var categories = splitCategory(req.query.category);
 		//console.log('Search by category: ', categories);
