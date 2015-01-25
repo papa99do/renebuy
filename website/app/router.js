@@ -96,7 +96,7 @@ router.route('/product')
 		
 	} else if (req.query.suggest) {
 		/* used by search suggestion */
-		Product.find().select('-_id name').exec(returnProducts);
+		Product.find().select('-_id name nameInChinese').exec(returnProducts);
 		
 	} else if (req.query.category) { /* used by price list */
 		var categories = splitCategory(req.query.category);

@@ -27,7 +27,7 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
 	// for typeahead
 	$scope.productNames = [];
 	Product.query({suggest: true}, function(products) {
-		$scope.productNames = products.map(function(p) {return p.name});
+		$scope.productNames = products.map(function(p) {return p.name + '(' + p.nameInChinese + ')'});
 	});
 
 	$scope.shouldLoad = function () {

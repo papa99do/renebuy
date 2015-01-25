@@ -27,6 +27,12 @@ textarea {
 	}
 }
 
+@media (min-width:992px){
+	#search-text {
+		width: 500px;
+	}
+}
+
 @media (max-width: 768px) {
 	#product-search {
 		width:100%;

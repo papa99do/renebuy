@@ -7,3 +7,6 @@ db.products.update({'category': {$all: ['Baby Bath, Hair & Skin']}}, {$set: {isH
 // Change category name
 db.products.find({'category.0': 'Health'}).count();
 db.products.update({'category.0': 'Health'}, {$set: {'category.0': 'Vitamins'}}, {multi:true});
+
+// remove by id
+db.products.remove({_id: ObjectId("54c4e0cc49d2ea030000001d")});
