@@ -1,4 +1,4 @@
-function renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProductInfo, reneBuyUrl) {
+function renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProductInfo, reneBuyUrl, test) {
 	var enhanceBtnHtml = '<div class="enhance"><button class="addBtn">Add to ReneBuy</button></div>';
 	
 	var init = function() {
@@ -12,8 +12,10 @@ function renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProduc
 	function addEnhanceBtnEvent(extractProductInfo) {
 		$('.addBtn').click(function() {
 			var product = extractProductInfo($(this), extractNumber);
-			//console.log(product);
-			getSimilarProducts(product);
+			console.log(product);
+			if (!test) {
+				getSimilarProducts(product);
+			}
 		});	
 	}
 	

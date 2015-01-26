@@ -12,6 +12,7 @@
 // ==/UserScript==
 
 var reneBuyUrl = "http://renebuy.yihanzhao.com/api/product";
+//var reneBuyUrl = "http://localhost:3001/api/product";
 
 $(document).ready(function() {
     
