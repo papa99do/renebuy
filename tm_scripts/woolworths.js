@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name       Pharmacy online enhancements
+// @name       Woolworths enhancements
 // @namespace  http://yihanzhao.com/
 // @version    0.1
-// @description Pharmacy online enhancements
-// @match      http://*.pharmacyonline.com.au/*
+// @description Woolworths enhancements
+// @match      http://*.woolworthsonline.com.au/*
 // @copyright  2015+, Yihan Zhao, yihanzhao@gmail.com
 // @require http://code.jquery.com/jquery-latest.js
 // @require http://renebuy.yihanzhao.com/js/monkey/renebuy-enhance.js?1
@@ -14,10 +14,12 @@
 var reneBuyUrl = "http://renebuy.yihanzhao.com/api/product";
 //var reneBuyUrl = "http://localhost:3001/api/product";
 
+var WW_URL = 'http://www2.woolworthsonline.com.au';
+
 $(document).ready(function() {
 	
 	function addEnhanceBtn(enhanceBtnHtml) {
-		$('.item').each(function() {
+		$('.product-stamp').each(function() {
 	        $(this).append(enhanceBtnHtml);
 	    });
     }
@@ -25,22 +27,24 @@ $(document).ready(function() {
     function extractProductInfo($enhanceBtn, extractNumber) {
     	// extract product information
         var productElem = $enhanceBtn.parent().parent();
-        var detailUrl = productElem.find('.prod_link').attr('href');
-        var photoUrl = productElem.find('.product-image').attr('src');
-        var id = extractNumber(/(\d+)(_\d+)?\.jpg/, photoUrl);
-        var price = extractNumber(/\$([0-9.]+)/, productElem.find('.price').text());
-        var rrp =  extractNumber(/\$([0-9.]+)/, productElem.find('.rrp-linethrough').text());
+        var name = productElem.find('.name-container .description').text();
+        var detailUrl = productElem.find('.name-container > a').attr('href');
+        var photoUrl = productElem.find('.image-container .middle-container img').attr('src');
+        var id = extractNumber(/Stockcode=(\d+)/, detailUrl);
+        var price = extractNumber(/\$([0-9.]+)/, productElem.find('.price-container .price').text());
+        var rrpText = productElem.find('.price-container .was-price').text();
+        var rrp = rrpText ? extractNumber(/\$([0-9.]+)/, rrpText) : price;
         
         var product = {
-            store: 'PO',
             productId: id,
-            name: productElem.find('.name').text().trim(),
+            name: name.trim(),
             price: price,
             rrp: rrp,
-            photos: [photoUrl],
-            detailUrl: detailUrl
+            photos: [WW_URL + photoUrl],
+            detailUrl: WW_URL + detailUrl,
+			store: 'WW'
         };
-        
+       
         return product;
     }
     

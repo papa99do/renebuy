@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name       Pharmacy online enhancements
+// @name       Coles enhancements
 // @namespace  http://yihanzhao.com/
 // @version    0.1
-// @description Pharmacy online enhancements
-// @match      http://*.pharmacyonline.com.au/*
+// @description Coles enhancements
+// @match      http://shop.coles.com.au/*
 // @copyright  2015+, Yihan Zhao, yihanzhao@gmail.com
 // @require http://code.jquery.com/jquery-latest.js
 // @require http://renebuy.yihanzhao.com/js/monkey/renebuy-enhance.js?1
@@ -14,33 +14,37 @@
 var reneBuyUrl = "http://renebuy.yihanzhao.com/api/product";
 //var reneBuyUrl = "http://localhost:3001/api/product";
 
+var CO_URL = 'http://shop.coles.com.au'
+
 $(document).ready(function() {
 	
 	function addEnhanceBtn(enhanceBtnHtml) {
-		$('.item').each(function() {
+		$('.prodtile').each(function() {
 	        $(this).append(enhanceBtnHtml);
 	    });
     }
     
     function extractProductInfo($enhanceBtn, extractNumber) {
     	// extract product information
-        var productElem = $enhanceBtn.parent().parent();
-        var detailUrl = productElem.find('.prod_link').attr('href');
-        var photoUrl = productElem.find('.product-image').attr('src');
-        var id = extractNumber(/(\d+)(_\d+)?\.jpg/, photoUrl);
+        var productElem = $enhanceBtn.parent().parent();        
+        var name = productElem.find('.detail .brand').text() + ' ' + productElem.find('.detail .item a').text();
+        var detailUrl = productElem.find('.product-url').attr('href');
+        var photoUrl = productElem.find('.product-url img').attr('src');
+        var id = extractNumber(/(\d+)/, productElem.find('form').attr('id'));
         var price = extractNumber(/\$([0-9.]+)/, productElem.find('.price').text());
-        var rrp =  extractNumber(/\$([0-9.]+)/, productElem.find('.rrp-linethrough').text());
+        var rrpText = productElem.find('.saving').text().trim();
+        var rrp = rrpText ? extractNumber(/was \$([0-9.]+)/, rrpText) : price;
         
         var product = {
-            store: 'PO',
             productId: id,
-            name: productElem.find('.name').text().trim(),
+            name: name.replace(/\s+/g, ' ').trim(),
             price: price,
             rrp: rrp,
-            photos: [photoUrl],
-            detailUrl: detailUrl
+            photos: [CO_URL + photoUrl],
+            detailUrl: detailUrl,
+			store: 'CO'
         };
-        
+       
         return product;
     }
     

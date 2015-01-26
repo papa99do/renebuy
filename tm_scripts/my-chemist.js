@@ -6,13 +6,15 @@
 // @match      http://www.mychemist.com.au/*
 // @copyright  2015+, Yihan Zhao, yihanzhao@gmail.com
 // @require http://code.jquery.com/jquery-latest.js
-// @require http://localhost:3001/js/monkey/renebuy-enhance.js?1
+// @require http://renebuy.yihanzhao.com/js/monkey/renebuy-enhance.js?1
 // @grant      GM_xmlhttpRequest
 // @grant       GM_addStyle
 // ==/UserScript==
 
 var reneBuyUrl = "http://renebuy.yihanzhao.com/api/product";
 //var reneBuyUrl = "http://localhost:3001/api/product";
+
+var MC_URL = "http://www.mychemist.com.au";
 
 $(document).ready(function() {
 	
@@ -34,8 +36,6 @@ $(document).ready(function() {
         if (photoUrl.indexOf('?') > -1) {
         	photoUrl = photoUrl.substring(0, photoUrl.indexOf('?'));
         }
-        
-        var MC_URL = "http://www.mychemist.com.au";
         
         var product = {
             store: 'CW',
