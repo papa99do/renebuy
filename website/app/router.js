@@ -1,6 +1,7 @@
 var express  = require('express');
 var mongoose = require('mongoose'); 					// mongoose for mongodb
 var Product  = require('./models/product');
+var PriceAlert = require('./models/price-alert')
 var _ = require('underscore');
 
 // configuration =================
@@ -92,7 +93,7 @@ router.route('/product')
 		
 	} else if (req.query.all) {
 		/* used by update price */
-		Product.find().select('name stores').exec(returnProducts);
+		Product.find().select('name stores rrp').exec(returnProducts);
 		
 	} else if (req.query.suggest) {
 		/* used by search suggestion */
@@ -254,6 +255,21 @@ router.route('/product/:id')
 			handleResult(savedProduct, res);
 		});
 	}
+});
+
+router.route('/price-alert')
+.post(function(req, res) {
+	PriceAlert.create({
+		product: mongoose.Types.ObjectId(req.body.productId),
+		store: req.body.store,
+		oldPrice: req.body.oldPrice,
+		newPrice: req.body.newPrice,
+		rrp: req.body.rrp,
+		alertType: req.body.alertType
+	}, function(err, createdPriceAlert) {
+		if(err) {handleError(err, res); return;}
+		handleResult(createdPriceAlert, res);
+	})
 });
 
 module.exports = router;
