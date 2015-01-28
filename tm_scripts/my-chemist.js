@@ -38,7 +38,7 @@ $(document).ready(function() {
         }
         
         var product = {
-            store: 'CW',
+            store: 'MC',
             productId: id,
             name: productElem.find('.productName_row > a').attr('title').trim(),
             price: price,
