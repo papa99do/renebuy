@@ -1,0 +1,14 @@
+<div>
+	<h4>Price change / low price for this week: </h4>
+	<table ng-table="tableParams" show-filter="true" class="table table-condensed table-bordered">
+	    <tr ng-repeat="alert in $data" ng-class="rowClass(alert.alertType)">
+			<td data-title="'Image'"><img ng-src="{{alert.product.photos[0]}}" style="height:50px; width:50px;" alt="{{alert.product.name}}"></td>
+	        <td data-title="'Name'" filter="{ 'productName': 'text' }">{{alert.productName}}</td>
+	        <!-- <td data-title="'Chinese name'">{{alert.product.nameInChinese}}</td> -->
+	        <td data-title="'Store'" sortable="'store'">{{alert.store}}</td>
+	        <td data-title="'Type'" sortable="'alertType'">{{alert.alertType}}</td>
+	        <td data-title="'Now'"><span class="price">{{::alert.newPrice | currency}}</span> (was {{::alert.oldPrice | currency}})</td>
+			<td data-title="'RRP'"><span class="rrp">{{::alert.rrp | currency}}</span> ({{::(alert.rrp - alert.newPrice) / alert.rrp | percentage:0}}off)</td>
+	    </tr>
+	</table>
+</div>

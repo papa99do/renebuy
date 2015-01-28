@@ -13,6 +13,7 @@
 	<link rel="stylesheet" href="css/font-awesome.min.css" />
 	<link rel="stylesheet" href="css/xeditable.css" />
 	<link rel="stylesheet" href="css/tree-control-attribute.css" />
+	<link rel="stylesheet" href="css/ng-table.css" />
 	<link rel="stylesheet" href="css/main.css" />
 	
 	<!-- JS libs -->
@@ -26,11 +27,13 @@
 	<script src="js/libs/xeditable.min.js"></script>
 	<script src="js/libs/angular-tree-control.js"></script>
 	<script src="js/libs/ng-infinite-scroll.js"></script>
+	<script src="js/libs/ng-table.js"></script>
 	
 	<script src="js/renebuy-module.js"></script>
 	<script src="js/core.js"></script>
 	<script src="js/products.controller.js"></script>
 	<script src="js/price-list.controller.js"></script>
+	<script src="js/price-alert.controller.js"></script>
 	
 
 </head>
@@ -53,6 +56,7 @@
 		  <ul class="nav navbar-nav">
 		    <li ui-sref-active="active"><a ui-sref="products">{{'MENU.PRODUCTS' | translate}}</a></li>
 		    <li ui-sref-active="active"><a ui-sref="priceList">{{'MENU.PRICE_LIST' | translate }}</a></li>
+		    <li ui-sref-active="active"><a ui-sref="priceAlert">{{'MENU.PRICE_ALERT' | translate }}</a></li>
 		  </ul>
 		  <ul class="nav navbar-nav navbar-right">
 			<li><a href="#" ng-click="changeLang()"><i class="fa fa-2x fa-language"></i><span class="menu-desc">{{'MENU.TRANSLATE' | translate}}</span></a></li>

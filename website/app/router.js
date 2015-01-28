@@ -270,6 +270,16 @@ router.route('/price-alert')
 		if(err) {handleError(err, res); return;}
 		handleResult(createdPriceAlert, res);
 	})
-});
+})
+.get(function(req, res) {
+	var cutoff = new Date();
+	cutoff.setDate(cutoff.getDate()-7);
+	
+	PriceAlert.find({alertDate: {$gt: cutoff}}).populate('product', '-_id name nameInChinese photos').exec(function(err, result) {
+		if(err) {handleError(err, res); return;}
+		handleResult(result, res);
+	})
+})
+;
 
 module.exports = router;

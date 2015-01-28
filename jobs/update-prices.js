@@ -4,8 +4,8 @@ var smartRequest = require('./smart-request')(5);
 
 log.setLevel('info');
 
-var RENEBUY_URL = 'http://localhost:3001'
-//var RENEBUY_URL = 'http://renebuy.yihanzhao.com'
+//var RENEBUY_URL = 'http://localhost:3001'
+var RENEBUY_URL = 'http://renebuy.yihanzhao.com'
 
 var GET_PRODUCTS_URL= RENEBUY_URL + '/api/product?all=true';
 var UPDATE_PRICE_URL= RENEBUY_URL + '/api/product/';
