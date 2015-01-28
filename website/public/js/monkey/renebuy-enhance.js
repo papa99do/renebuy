@@ -68,9 +68,9 @@ function renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProduc
 	        var id = similarProducts[i]._id;
 	        var name = similarProducts[i].name;
 	        var category = similarProducts[i].category.join(' > ');
-	        $('#similarProducts').append('<li>' + name + ', Use this <a href="#" title="' + name + '" id="n_' + id + '">name</a> or <a href="#" title="' + category + '" id="c_' + id + '">category</a></li>');
+	        $('#similarProducts').append('<li>' + name + ', Use this <a href="#" title="' + name + '" id="' + id + '">product</a> or <a href="#" title="' + category + '" id="c_' + id + '">category</a></li>');
     
-	        $('#n_' + id).click(function() {  
+	        $('#' + id).click(function() {  
 	        	$('#reneBuyId').val($(this).attr('id'));
 	            $('#productName').val($(this).attr('title'));
 	            return false;
