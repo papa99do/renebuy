@@ -58,6 +58,19 @@ textarea {
 	
 }
 
+.searchclear {
+    position: absolute;
+    right: 45px;
+    top: 0;
+    bottom: 0;
+    height: 16px;
+    margin: auto;
+    font-size: 16px;
+    cursor: pointer;
+    color: #ccc;
+	z-index: 200;
+}
+
 .product-tile {
 	padding: 10px;
 	margin-top: 20px;
