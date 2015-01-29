@@ -105,9 +105,10 @@ textarea {
 	z-index: 100;
 	position: absolute;
 	width: 100px;
+	margin-left:20px;
 	top: 0px;
-	right: 0px;
-	opacity: 0.6;
+	left: 50%;
+	opacity: 0.8;
 }
 
 .rrp {
@@ -161,10 +162,19 @@ textarea {
 	padding: 12px 10px 10px 15px;
 }
 
-.breadcrumb {
+.category-breadcrumb {
 	display: inline;
+	padding: 8px 15px;
+	margin-bottom: 20px;
+	list-style: none;
 }
 
-.breadcrumb > li+li:before {
+.category-breadcrumb > li {
+	display: inline-block;
+}
+
+.category-breadcrumb > li+li:before {
     content: ">"; 
+	padding: 0 5px;
+	color: #ccc;
 }
