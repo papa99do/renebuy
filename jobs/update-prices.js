@@ -87,10 +87,6 @@ function updatePrice(product, store, newPrice) {
 	log.info("Got price $%d (was $%d) for [%s] in [%s]", 
 		newPrice, store.price, product.name, store.storeName);
 		
-	if (newPrice / product.rrp < 0.6) {
-		addPriceAlert(product, store, newPrice, 'low');
-	}
-		
 	if (newPrice !== store.price) {
 		var alertType = newPrice < store.price ? 'down' : 'up';
 		addPriceAlert(product, store, newPrice, alertType);
