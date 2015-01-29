@@ -160,3 +160,11 @@ textarea {
 .navbar-right > li > a {
 	padding: 12px 10px 10px 15px;
 }
+
+.breadcrumb {
+	display: inline;
+}
+
+.breadcrumb > li+li:before {
+    content: ">"; 
+}

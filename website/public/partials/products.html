@@ -21,7 +21,10 @@
 				<a href="#" ng-if="editMode" editable-text="product.categoryStr" onaftersave="updateCategory(product)">
 				    {{ product.categoryStr }}
 				</a>
-				<span ng-if="!editMode">{{ product.categoryStr }}</span>
+				
+				<ol class="breadcrumb" ng-if="!editMode">
+				  <li ng-repeat="c in product.category"><a href="#" ng-click="searchCategory(c)">{{c}}</a></li>
+				</ol>
 			</div>
 			<h4 class="productName">
 				<a ng-if="editMode" href="#" editable-text="product.name" onaftersave="updateName(product)">{{product.name}}</a>

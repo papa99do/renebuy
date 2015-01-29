@@ -76,7 +76,13 @@ router.route('/product')
 	var page = req.query.p ? parseInt(req.query.p) : 0;
 	var pageSize = req.query.ps ? parseInt(req.query.ps) : DEFAULT_PAGE_SIZE;
 	
-	if (req.query.q) {	
+	if (req.query.q && req.query.q.indexOf('c:') === 0) {
+		// search by category
+		var category = req.query.q.substring(2).trim();
+		Product.find({category: category}).skip(page * pageSize).limit(pageSize + 1).exec(returnProducts);
+		
+	} else if (req.query.q) {
+		// search by term	
 		var opt = req.query.sm ? { /* used by similar product */
 			project : 'name nameInChinese category weight isHighTax',
 			limit: 3

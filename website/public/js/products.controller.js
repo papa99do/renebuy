@@ -54,11 +54,16 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
 		});
 	}
 	
-	$scope.search = function($event) {
+	$scope.search = function() {
 		$scope.products = [];
 		$scope.scroll = defaultScrollQuery();
 		$scope.load();
 	};
+	
+	$scope.searchCategory = function(category) {
+		$scope.searchText = 'c:' + category;
+		$scope.search();
+	}
 	
 	function enhance(product) {
 		
