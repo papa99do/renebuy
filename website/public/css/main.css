@@ -90,10 +90,24 @@ textarea {
 	background: -moz-linear-gradient(top, white 0%, white 55%, #D5E4F3 130%);
 }
 
-.product-tile img {
+.product-tile .prod-img {
 	height: 150px;
 	width: 150px;
 	margin-bottom: 10px;
+}
+
+.product-tile .store-logo {
+	height: 16px;
+	width: 50px;
+}
+
+.product-tile .low-price-tag {
+	z-index: 100;
+	position: absolute;
+	width: 100px;
+	top: 0px;
+	right: 0px;
+	opacity: 0.6;
 }
 
 .rrp {

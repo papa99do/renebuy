@@ -63,11 +63,14 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
 	function enhance(product) {
 		
 		product.buyPrice = product.stores[0].price;
+		product.isLowPrice = false;
 		
 		for(var i = 0; i < product.stores.length; i++) {
 			if (product.stores[i].storeName === 'CW') {
 				product.buyPrice = product.stores[i].price;
-				break;
+			}
+			if (product.stores[i].price / product.rrp < 0.6) {
+				product.isLowPrice = true;
 			}
 		}
 		
@@ -130,4 +133,17 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
 			console.log('Tax type changed to %s for [%s]', product.isHighTax ? 'high' : 'low', product.name);
 		});
 	};
+	
+	$scope.storeMap = {
+		'CW': {logo: 'CW.png', fullName: 'Chemist warehouse'},
+		'CO': {logo: 'CO.png', fullName: 'Coles'},
+		'PL': {logo: 'PL.jpg', fullName: 'Priceline'},
+		'PO': {logo: 'PO.jpg', fullName: 'Pharmacy online'},
+		'WW': {logo: 'WW.jpg', fullName: 'Woolworths'},
+		'MC': {logo: 'MC.jpg', fullName: 'My chemist'} 
+	};
+	
+	$scope.storeLogo = function(store) {
+		return '/images/store-logo/' + storeLogos[store];
+	}
 });

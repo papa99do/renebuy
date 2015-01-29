@@ -15,6 +15,14 @@
 		
 		<div class="col-xs-12 col-sm-6 col-lg-4" ng-repeat="product in products">
 		<div class="product-tile">
+			<img src="/images/price-tag-low-price.png" alt="" class="low-price-tag" ng-show="product.isLowPrice">
+			<div>
+				{{'P.CATEGORY' | translate}}: 
+				<a href="#" ng-if="editMode" editable-text="product.categoryStr" onaftersave="updateCategory(product)">
+				    {{ product.categoryStr }}
+				</a>
+				<span ng-if="!editMode">{{ product.categoryStr }}</span>
+			</div>
 			<h4 class="productName">
 				<a ng-if="editMode" href="#" editable-text="product.name" onaftersave="updateName(product)">{{product.name}}</a>
 				<span ng-if="!editMode">{{product.name}}</span>
@@ -25,22 +33,15 @@
 				</a>
 				<span ng-if="!editMode">{{product.nameInChinese || '暂无中文名'}}</span>
 			</h5>
-			
+			{{'P.RRP' | translate}}: <span class="rrp">{{product.rrp | currency}}</span>
 			<div class="col-xs-12 text-center">
-				<img src="{{product.photos[0]}}" alt="{{product.name}}">
+				<img src="{{product.photos[0]}}" alt="{{product.name}}" class="prod-img">
 			</div>
 			<div>
-				<div>
-					{{'P.CATEGORY' | translate}}: 
-					<a href="#" ng-if="editMode" editable-text="product.categoryStr" onaftersave="updateCategory(product)">
-					    {{ product.categoryStr }}
-					</a>
-					<span ng-if="!editMode">{{ product.categoryStr }}</span>
-				</div>
+				Price in stores:
 				<ul id="prices">
-					<li>{{'P.RRP' | translate}}: <span class="rrp">{{product.rrp | currency}}</span></li>
 					<li ng-repeat="store in product.stores">
-						<a href="{{store.detailUrl}}" target="_blank">{{store.storeName}}</a>
+						<a href="{{store.detailUrl}}" target="_blank" title="{{storeMap[store.storeName].fullName}}"> <img ng-src="/images/store-logo/{{storeMap[store.storeName].logo}}" alt="{{store.storeName}}" class="store-logo"></a>
 						<span class="price">{{store.price | currency}}</span>
 						({{(product.rrp - store.price) / product.rrp | percentage:0}} off)
 						(L:<span class="price">{{store.lowestPrice | currency}}</span>)
