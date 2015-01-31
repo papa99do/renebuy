@@ -1,4 +1,4 @@
-renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
+renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $modal) {
 	
 	$scope.exchangeRate = 5.5;
 	$scope.realTimeExchangeRate = 5.1;
@@ -151,4 +151,41 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource) {
 	$scope.storeLogo = function(store) {
 		return '/images/store-logo/' + storeLogos[store];
 	}
+	
+	$scope.openOrderModal = function(product) {
+		$modal.open({
+			templateUrl: 'orderModal.html',
+			controller: 'OrderModalCtrl',
+			resolve: {
+			    product: function () {
+					product.adjustedPrice = $scope.adjustedPrice(product);
+			        return product;
+			    }
+			}
+		});
+	}
+}).controller('OrderModalCtrl', function($scope, $modalInstance, product, orderService) {
+	
+	orderService.getActiveOrderNames().then(function(result) {
+		$scope.activeOrderNames = result;
+	});
+
+	$scope.product = product;
+	$scope.item = {
+		productId: product._id,
+		price: product.adjustedPrice,
+		number: 1,
+		description: ''
+	};
+	  
+	$scope.addToOrder = function () {
+		console.log($scope.item);
+		orderService.addOrderItem($scope.item).then(function() {
+			$modalInstance.close();
+		});  
+	};
+
+	$scope.cancel = function () {
+	    $modalInstance.dismiss('cancel');
+	};
 });

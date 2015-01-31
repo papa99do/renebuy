@@ -2,6 +2,7 @@ var express  = require('express');
 var mongoose = require('mongoose'); 					// mongoose for mongodb
 var Product  = require('./models/product');
 var PriceAlert = require('./models/price-alert')
+var Order = require('./models/order')
 var _ = require('underscore');
 
 // configuration =================
@@ -285,7 +286,52 @@ router.route('/price-alert')
 		if(err) {handleError(err, res); return;}
 		handleResult(result, res);
 	})
+});
+
+
+router.route('/order')
+.get(function(req, res) {
+	if (req.query.active) {
+		Order.find({status: 'active'}).select('name').exec(function(err, result) {
+			if (err) {handleError(err, res); return;}
+			handleResult(result, res);
+		});
+	}
 })
-;
+.post(function(req, res) {
+	/* Sample order item request body
+	{
+		"productId": "xxxdfffff0011",
+		"price": 120.99,
+		"number": 2,
+		"description": "To jia jia",
+		"orderId": "ddfd1222xxxx",
+		"newOrderName": "Lijiayi 20150119"   // Either orderId or newOrderName is needed
+	}
+	*/
+	function saveOrderItem(order) {
+		order.items.push({
+			product: mongoose.Types.ObjectId(req.body.productId),
+			price: req.body.price,
+			number: req.body.number,
+			description: req.body.description
+		});
+		
+		order.save(function(err) {
+			if (err) {handleError(err, res); return;}
+			handleResult({'status': 'ok'}, res); 
+		});
+	}
+	
+	if (req.body.orderId) {
+		// find the order:
+		Order.findById(req.body.orderId, function(err, order) {
+			if (err) {handleError(err, res); return;}
+			if(order) saveOrderItem(order);
+		});
+	} else if (req.body.newOrderName) {
+		saveOrderItem(new Order({name : req.body.newOrderName}));
+	}
+});
 
 module.exports = router;

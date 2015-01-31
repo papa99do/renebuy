@@ -111,6 +111,19 @@ textarea {
 	opacity: 0.8;
 }
 
+.product-tile .orderBtn {
+	z-index: 100;
+	position: absolute;
+	right: 30px;
+	bottom: 10px;
+	opacity: 0.8;
+}
+
+.modal-body .prod-img {
+	height: 100px;
+	weight: 100px;
+}
+
 .rrp {
 	text-decoration: line-through;
 	font: bold 1em verdana;

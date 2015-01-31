@@ -1,4 +1,16 @@
 renebuyApp
+.factory('orderService', function($resource) {
+	var Order = $resource('/api/order');
+	
+	return {
+		addOrderItem: function(item) {
+			return Order.save(item).$promise;
+		},
+		getActiveOrderNames: function() {
+			return Order.query({active: true}).$promise;
+		}
+	}
+})
 .controller('MainCtrl', function($scope, $translate) {
 	$scope.editMode = false;
 	$('.navbar-collapse a').click(function(){

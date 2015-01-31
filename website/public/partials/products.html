@@ -78,6 +78,10 @@
 					{{'P.PROFIT' | translate}}:
 					<span ng-style="{color: adjustedProfit(product) < 0 ? 'red' : 'black' }">{{adjustedProfit(product) | currency:'&yen;'}} ({{adjustedProfit(product) / costInRmb(product) | percentage:0}})</span>
 				</div>
+				
+				<div class="orderBtn">
+					<button class="btn btn-info" ng-click="openOrderModal(product)"><i class="glyphicon glyphicon-shopping-cart"></i></button>
+				</div>
 			</div>
 			
 		</div>
@@ -89,3 +93,62 @@
 		</div>
 	</div>
 	
+	<script type="text/ng-template" id="orderModal.html">
+		<div class="modal-header">
+            <h3 class="modal-title">Add item to order</h3>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+            	<div class="col-sm-4 text-center">
+            		<img src="{{product.photos[0]}}" alt="{{product.name}}" class="prod-img">
+            	</div>
+				<div class="col-sm-8">
+					<h5>{{product.categoryStr}}</h5>
+					<h4>{{product.name}}</h4>
+					<h5>{{product.nameInChinese}}</h5>
+				</div>
+            </div>
+			<div class="row">
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="order-name" class="col-sm-2 control-label">Order:</label>
+						<div class="col-sm-10">
+							
+								<select style="width:300px;" class="form-control" ng-model="item.orderId" ng-disabled="item.newOrderName">
+								  <option></option>
+								  <option ng-repeat="o in activeOrderNames" value="{{o._id}}">{{o.name}}</option>
+								</select>
+								Or create new order:
+								<input type="text" style="width:300px;" class="form-control" ng-model="item.newOrderName" placeholder="New order" ng-disabled="item.orderId">
+							
+						</div>
+					</div>
+					<div class="form-group">
+					    <label for="ordered-price" class="col-sm-2 control-label">Price:</label>
+					    <div class="col-sm-10">
+							<div class="input-group">
+						  		<div class="input-group-addon">&yen;</div>
+					      		<input type="number" class="form-control" ng-model="item.price" style="width:100px;" id="ordered-price">
+							</div>
+					    </div>
+					</div>
+					<div class="form-group">
+					    <label for="ordered-number" class="col-sm-2 control-label">Number:</label>
+					    <div class="col-sm-10">
+					      <input type="number" class="form-control" ng-model="item.number" style="width:132px;" id="ordered-number">
+					    </div>
+					</div>
+					<div class="form-group">
+					    <label for="order-desc" class="col-sm-2 control-label">Desc:</label>
+					    <div class="col-sm-10">
+					      <input type="text" class="form-control" ng-model="item.description" id="order-desc" style="width:300px;">
+					    </div>
+					</div>
+				</form>
+			</div>
+        </div>
+        <div class="modal-footer">
+			<button class="btn btn-default" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="addToOrder()">Order</button>   
+        </div>
+	</script>
