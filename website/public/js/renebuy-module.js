@@ -43,7 +43,9 @@ renebuyApp.config(function($stateProvider, $urlRouterProvider) {
 		CALC_PRICE: 'Calculated price',
 		ADJ_PRICE: 'Adjusted price',
 		PROFIT: 'Profit',
-		TAOBAO_PRICE: 'Taobao price indicator'
+		TAOBAO_PRICE: 'Taobao price indicator',
+		PRICE_IN_STORES: 'Price in stores',
+		LOWEST_PRICE: 'Lowest'
 	},
 	PL: {
 		PRICE_LIST_FOR: 'Price list for',
@@ -66,7 +68,7 @@ renebuyApp.config(function($stateProvider, $urlRouterProvider) {
 	MENU: {
 		PRODUCTS: '产品列表',
 		PRICE_LIST: '分类报价单',
-		PRICE_LIST: '价格提醒',
+		PRICE_ALERT: '价格提醒',
 		TRANSLATE: '切换英文',
 		EDIT_MODE: '切换编辑模式'
 	},
@@ -80,7 +82,9 @@ renebuyApp.config(function($stateProvider, $urlRouterProvider) {
 		CALC_PRICE: '自动报价',
 		ADJ_PRICE: '小象报价',
 		PROFIT: '利润',
-		TAOBAO_PRICE: '淘宝价格参考'
+		TAOBAO_PRICE: '淘宝价格参考',
+		PRICE_IN_STORES: '各家店价格比较',
+		LOWEST_PRICE: '最低价'
 	},
 	PL: {
 		PRICE_LIST_FOR: '报价单',
