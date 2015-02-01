@@ -7,11 +7,14 @@ renebuyApp
 			return Order.save(item).$promise;
 		},
 		getActiveOrderNames: function() {
+			return Order.query({activeName: true}).$promise;
+		},
+		getActiveOrders: function() {
 			return Order.query({active: true}).$promise;
 		}
 	}
 })
-.controller('MainCtrl', function($scope, $translate) {
+.controller('MainCtrl', function($scope, $translate, $timeout) {
 	$scope.editMode = false;
 	$('.navbar-collapse a').click(function(){
 	    $(".navbar-collapse").collapse('hide');
@@ -21,6 +24,14 @@ renebuyApp
 	$scope.changeLang = function() {
 		$scope.lang = ($scope.lang === 'en' ? 'ch' : 'en');
 		$translate.use($scope.lang);
+	}
+	
+	$scope.alert = null;
+	$scope.showAlert = function(type, msg) {
+		$scope.alert = {type: type, msg: msg};
+		$timeout(function() {
+			$scope.alert = null;
+		}, 2000);
 	}
 })
 .filter('percentage', ['$filter', function ($filter) {

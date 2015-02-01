@@ -23,6 +23,11 @@ renebuyApp.config(function($stateProvider, $urlRouterProvider) {
       url: "/price-alert",
       templateUrl: "partials/price-alert.html",
       controller: "PriceAlertCtrl"
+    })
+	.state('orders', {
+      url: "/orders",
+      templateUrl: "partials/orders.html",
+      controller: "OrderCtrl"
     });
 }).config(['$translateProvider', function ($translateProvider) {
   $translateProvider.translations('en', {
@@ -30,6 +35,7 @@ renebuyApp.config(function($stateProvider, $urlRouterProvider) {
 		PRODUCTS: 'Products',
 		PRICE_LIST: 'Price list',
 		PRICE_ALERT: 'Price alert',
+		ORDERS: 'Orders',
 		TRANSLATE: '切换中文',
 		EDIT_MODE: 'Toggle edit mode'
 	},
@@ -69,6 +75,7 @@ renebuyApp.config(function($stateProvider, $urlRouterProvider) {
 		PRODUCTS: '产品列表',
 		PRICE_LIST: '分类报价单',
 		PRICE_ALERT: '价格提醒',
+		ORDERS: '订单管理',
 		TRANSLATE: '切换英文',
 		EDIT_MODE: '切换编辑模式'
 	},

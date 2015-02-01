@@ -1,0 +1,17 @@
+<accordion close-others="false">
+	<accordion-group heading="{{::order.name}}" ng-repeat="order in orders">
+	    <table ng-table="order.tableParams" class="table table-condensed table-bordered">
+	    	<tr ng-repeat="item in order.items">
+	    		<td data-title="'Product'">
+					<img ng-src="{{::item.product.photos[0]}}" class="order-prod-img">
+					<h5>{{::item.product.name}}</h5>
+					<h6>{{::item.product.nameInChinese}}</h6>
+				</td>
+	    		<td data-title="'Price'">{{::item.price | currency:'&yen;'}}</td>
+	    		<td data-title="'Number'">{{::item.number}}</td>
+	    		<td data-title="'Subtotal'">{{::item.price * item.number | currency:'&yen;'}}</td>
+				<td data-title="'Description'">{{::item.description}}</td>
+	    	</tr>
+	    </table>
+	</accordion-group>
+</accordion>

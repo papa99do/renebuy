@@ -160,11 +160,14 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 			    product: function () {
 					product.adjustedPrice = $scope.adjustedPrice(product);
 			        return product;
-			    }
+			    },
+				showAlert: function() {
+					return $scope.showAlert;
+				}
 			}
 		});
 	}
-}).controller('OrderModalCtrl', function($scope, $modalInstance, product, orderService) {
+}).controller('OrderModalCtrl', function($scope, $modalInstance, product, showAlert, orderService) {
 	
 	orderService.getActiveOrderNames().then(function(result) {
 		$scope.activeOrderNames = result;
@@ -181,6 +184,7 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 	$scope.addToOrder = function () {
 		console.log($scope.item);
 		orderService.addOrderItem($scope.item).then(function() {
+			showAlert('success', 'Item has been added');
 			$modalInstance.close();
 		});  
 	};

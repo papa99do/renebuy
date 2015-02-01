@@ -34,6 +34,7 @@
 	<script src="js/products.controller.js"></script>
 	<script src="js/price-list.controller.js"></script>
 	<script src="js/price-alert.controller.js"></script>
+	<script src="js/orders.controller.js"></script>
 	
 
 </head>
@@ -57,6 +58,7 @@
 		    <li ui-sref-active="active"><a ui-sref="products">{{'MENU.PRODUCTS' | translate}}</a></li>
 		    <li ui-sref-active="active"><a ui-sref="priceList">{{'MENU.PRICE_LIST' | translate }}</a></li>
 		    <li ui-sref-active="active"><a ui-sref="priceAlert">{{'MENU.PRICE_ALERT' | translate }}</a></li>
+			<li ui-sref-active="active"><a ui-sref="orders">{{'MENU.ORDERS' | translate }}</a></li>
 		  </ul>
 		  <ul class="nav navbar-nav navbar-right">
 			<li><a href="#" ng-click="changeLang()"><i class="fa fa-2x fa-language"></i><span class="menu-desc">{{'MENU.TRANSLATE' | translate}}</span></a></li>
@@ -67,6 +69,10 @@
 	</nav>
 		
 	<div ui-view class="container"></div>
+	
+	<div class="alert" ng-show="alert">
+		<alert ng-model="alert" type="{{alert.type}}" close="alert = null">{{alert.msg}}</alert>
+	</div>
 
 </body>
 </html>
