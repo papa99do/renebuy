@@ -10,3 +10,6 @@ db.products.update({'category.0': 'Health'}, {$set: {'category.0': 'Vitamins'}},
 
 // remove by id
 db.products.remove({_id: ObjectId("54c4e0cc49d2ea030000001d")});
+
+// shopping list aggregation
+db.orders.aggregate([{$match: {status:'active'}}, {$unwind: '$items'}, {$group: {_id: '$items.product', orderItems: {$push:  {orderName: '$name', price: '$items.price', number: '$items.number', itemId: '$items._id', orderId: '$_id'}}}}]);

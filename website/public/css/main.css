@@ -96,7 +96,7 @@ textarea {
 	margin-bottom: 10px;
 }
 
-.product-tile .store-logo {
+.store-logo {
 	height: 16px;
 	width: 50px;
 }
@@ -206,4 +206,12 @@ textarea {
 	margin-left: -150px;
 	top: 200px;
 	z-index:2000;
+}
+
+.shoppingList .orderItems {
+	padding: 0 !important;
+}
+
+.shoppingList .orderItems > div {
+	padding:5px;
 }

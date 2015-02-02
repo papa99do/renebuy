@@ -1,0 +1,61 @@
+<div class="table-responsive">
+<table class="table table-bordered table-hover shoppingList">
+	<thead>
+		<tr class="info">
+			<th>Product</th>
+			<th>Stores</th>
+			<th>Total</th>
+			<th>Bought</th>
+			<th>To buy</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat-start="p in shoppingList" data-toggle="collapse" data-target="#orderItems-{{$index}}" class="accordion-toggle">
+			<td>
+				<img ng-src="{{::p.product.photos[0]}}" class="order-prod-img">
+				<h5>{{::p.product.name}}</h5>
+				<h6>{{::p.product.nameInChinese}}</h6>
+			</td>
+			<td>
+				<ul>
+					<li class="store" ng-repeat="store in p.product.stores">
+						<a href="{{store.detailUrl}}" target="_blank" title="{{storeMap[store.storeName].fullName}}"> <img ng-src="/images/store-logo/{{storeMap[store.storeName].logo}}" alt="{{store.storeName}}" class="store-logo"></a>
+						<span class="price">{{store.price | currency}}</span>
+						({{(p.product.rrp - store.price) / p.product.rrp | percentage:0}} off)
+						({{'P.LOWEST_PRICE' | translate}}:<span class="price">{{store.lowestPrice | currency}}</span>)
+					</li>
+				</ul>
+			</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+		</tr>
+		<tr ng-repeat-end>
+			<td colspan="5" class="orderItems">
+				<div class="accordion-body collapse table-responsive" id="orderItems-{{$index}}">
+					<table class="table table-bordered table-condensed">
+						<thead>
+							<tr class="success">
+								<th>Order name</th>
+								<th>Item description</th>
+								<th>Price</th>
+								<th>Total</th>
+								<th>Bought</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="item in p.orderItems"> 
+								<td>{{item.orderName}}</td>
+								<td>{{item.description}}</td>
+								<td>{{item.price | currency:'&yen;'}}</td>
+								<td>{{item.number}}</td>
+								<td>0</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>
+</div>

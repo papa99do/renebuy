@@ -301,6 +301,30 @@ router.route('/order')
 			if (err) {handleError(err, res); return;}
 			handleResult(result, res);
 		});
+	} else if (req.query.shoppingList) {
+		Order.aggregate(
+			{$match: {status: 'active'}},
+			{$unwind: '$items'},
+			{$group: {
+				_id: '$items.product', 
+				product: {$first: '$items.product'},
+				orderItems: {$push:{
+					orderName: '$name', 
+					price: '$items.price', 
+					number: '$items.number',
+					description: '$items.description', 
+					itemId: '$items._id', 
+					orderId: '$_id'
+				}}}},
+			function(err, result) {
+				if (err) {handleError(err, res); return;}
+				//console.log('bbbb', result);
+				Product.populate(result, {path:'product', select: '-_id name nameInChinese photos stores rrp'}, function(err, shoppingList) {
+					if (err) {handleError(err, res); return;}
+					//console.log('aaaa', shoppingList);
+					handleResult(shoppingList, res); 
+				} );	
+			});
 	}
 })
 .post(function(req, res) {
