@@ -6,12 +6,11 @@
 			<th>Stores</th>
 			<th>Total</th>
 			<th>Bought</th>
-			<th>To buy</th>
 		</tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat-start="p in shoppingList" data-toggle="collapse" data-target="#orderItems-{{$index}}" class="accordion-toggle">
-			<td>
+		<tr ng-repeat-start="p in shoppingList">
+			<td data-toggle="collapse" data-target="#orderItems-{{$index}}" class="accordion-toggle">
 				<img ng-src="{{::p.product.photos[0]}}" class="order-prod-img">
 				<h5>{{::p.product.name}}</h5>
 				<h6>{{::p.product.nameInChinese}}</h6>
@@ -26,12 +25,21 @@
 					</li>
 				</ul>
 			</td>
-			<td>0</td>
-			<td>0</td>
-			<td>0</td>
+			<td style="font-size:2em;"><a href="" data-toggle="collapse" data-target="#orderItems-{{$index}}" class="accordion-toggle">{{::p.total}}</a></td>
+			<td>
+				<div class="input-group" style="width:100px;">
+					<div class="input-group-btn">
+				        <button type="button" ng-click="returnProduct(p)" class="btn btn-default"><i class="fa fa-minus"></i></button>
+				    </div>
+					<input type="text" class="form-control" style="width:50px;" ng-model="p.bought" disabled>
+					<div class="input-group-btn">
+				        <button type="button" ng-click="buyProduct(p)" class="btn btn-default"><i class="fa fa-plus"></i></button>
+				    </div>
+				</div>
+			</td>
 		</tr>
 		<tr ng-repeat-end>
-			<td colspan="5" class="orderItems">
+			<td colspan="4" class="orderItems">
 				<div class="accordion-body collapse table-responsive" id="orderItems-{{$index}}">
 					<table class="table table-bordered table-condensed">
 						<thead>
@@ -49,7 +57,7 @@
 								<td>{{item.description}}</td>
 								<td>{{item.price | currency:'&yen;'}}</td>
 								<td>{{item.number}}</td>
-								<td>0</td>
+								<td>{{item.bought}}</td>
 							</tr>
 						</tbody>
 					</table>

@@ -14,6 +14,9 @@ renebuyApp
 		},
 		getShoppingList: function() {
 			return Order.query({shoppingList: true}).$promise;
+		},
+		fullfil: function(orderId, itemId, buyReturnFlag) {
+			//TODO
 		}
 	}
 })
