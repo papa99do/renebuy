@@ -50,8 +50,11 @@ return function smartRequestInternal(url, opt, callback, errorCallback) {
 		return;
 	}
 	
+	if (!url) return;
+	
 	activeRequestCount++
-	log.debug('Retrieving content for %s, total conns: %d', url, activeRequestCount)
+	log.debug('Retrieving content for %s, total conns: %d', url, activeRequestCount);
+	
 	request(url, function(error, response, html) {
 		//log.info(html);
 		

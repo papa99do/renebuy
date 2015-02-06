@@ -13,6 +13,8 @@ var PRICE_ALERT_URL = RENEBUY_URL + '/api/price-alert/'
 var CW_PRICE_URL = 'http://www.chemistwarehouse.com.au/inc_product_updater_json_shortlive.asp?callback=getPrice&ID=';
 var MC_PRICE_URL = 'http://www.mychemist.com.au/inc_product_updater_json_shortlive.asp?callback=getPrice&ID=';
 
+var dryRun = false;
+
 smartRequest(GET_PRODUCTS_URL, {raw: true}, function(productsJson) {
 	var products = JSON.parse(productsJson);
 	
@@ -42,10 +44,19 @@ smartRequest(GET_PRODUCTS_URL, {raw: true}, function(productsJson) {
 				});
 			} else if (store.storeName === 'PL') {
 				// Priceline
+				getPricelinePrice(store.detailUrl, function(price) {
+					updatePrice(product, store, price);
+				});
 			} else if (store.storeName === 'WW') {
 				// Woolworths
+				getWoolworthsPrice(store.detailUrl, function(price) {
+					updatePrice(product, store, price);
+				});
 			} else if (store.storeName === 'CO') {
 				// Coles
+				getColesPrice(store.detailUrl, function(price) {
+					updatePrice(product, store, price);
+				});
 			}
 		});
 		
@@ -69,6 +80,8 @@ function addToMCStore(storeCW, product) {
 		
 		storeMC.price = price;
 		
+		if (dryRun) return;
+		
 		request.post({
 			headers: {'content-type' : 'application/json'},
 			url:     UPDATE_PRICE_URL,
@@ -86,6 +99,8 @@ function addToMCStore(storeCW, product) {
 function updatePrice(product, store, newPrice) {
 	log.info("Got price $%d (was $%d) for [%s] in [%s]", 
 		newPrice, store.price, product.name, store.storeName);
+		
+	if (dryRun) return;
 		
 	if (newPrice !== store.price) {
 		var alertType = newPrice < store.price ? 'down' : 'up';
@@ -135,6 +150,37 @@ function updateStorePrice(product, store, newPrice) {
 	});
 }
 
+function extractPrice(text) {
+    var result = text.match(/\$([0-9.]+)/);
+    if (result && result.length > 1) {
+    	return Number(result[1]);
+    } 
+}
+
+function getWoolworthsPrice(detailUrl, callback) {
+	smartRequest(detailUrl, null, function($) {
+		callback(extractPrice($('.price').text()));
+	});
+}
+
+function getColesPrice(detailUrl, callback) {
+	smartRequest(detailUrl, null, function($) {
+		callback(extractPrice($('.price').text()));
+	});
+}
+
+function getPricelinePrice(detailUrl, callback) {
+	smartRequest(detailUrl, null, function($) {
+		var price = $('.basket-right-price').text();
+		
+		if (price.indexOf('NOW') >= 0) {
+			price = price.substring(price.indexOf("NOW"));
+		}
+		callback(extractPrice(price));
+		
+		//callback(parseFloat(price.substring(1)));
+	});
+}
 
 function getPharmacyOnlinePrice(detailUrl, callback) {
 	smartRequest(detailUrl, null, function($) {
