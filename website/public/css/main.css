@@ -215,3 +215,8 @@ textarea {
 .shoppingList .orderItems > div {
 	padding:5px;
 }
+
+.order-total span {
+	font-size: 1.2em;
+	padding: 0px 5px;
+}

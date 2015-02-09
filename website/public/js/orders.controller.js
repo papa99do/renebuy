@@ -3,11 +3,14 @@ renebuyApp.controller('OrderCtrl', function($scope, orderService, ngTableParams)
 	orderService.getActiveOrders().then(function(result) {
 		$scope.orders = result;
 		$scope.orders.forEach(function(order) {
-			order.tableParams = new ngTableParams({
-			    count: order.items.length // hides pager
-			},{
-			    counts: [] // hides page sizes
+			order.totalPrice = 0;
+			order.totalQuantity = 0;
+			
+			order.items.forEach(function(item) {
+				order.totalQuantity += item.number;
+				order.totalPrice += item.price * item.number;
 			});
 		});
 	});
+
 });

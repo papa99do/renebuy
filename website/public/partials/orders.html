@@ -1,6 +1,17 @@
 <accordion close-others="false">
-	<accordion-group heading="{{::order.name}}" ng-repeat="order in orders">
-	    <table ng-table="order.tableParams" class="table table-condensed table-bordered">
+	<accordion-group ng-repeat="order in orders">
+		<accordion-heading>
+			<div class="row">
+				<div class="col-sm-6">
+					{{::order.name}}
+				</div>
+				<div class="col-sm-6 text-right order-total">
+					<label>Quantity: </label><span>{{::order.totalQuantity}}</span>
+					<label>Amount: </label><span>{{::order.totalPrice | currency:'&yen;'}}</span>
+				</div>
+			</div>
+		</accordion-heading>
+	    <table ng-table template-pagination="nopager" class="table table-condensed table-bordered">
 	    	<tr ng-repeat="item in order.items">
 	    		<td data-title="'Product'">
 					<img ng-src="{{::item.product.photos[0]}}" class="order-prod-img">
@@ -8,10 +19,14 @@
 					<h6>{{::item.product.nameInChinese}}</h6>
 				</td>
 	    		<td data-title="'Price'">{{::item.price | currency:'&yen;'}}</td>
-	    		<td data-title="'Number'">{{::item.number}}</td>
+	    		<td data-title="'Qty'">{{::item.number}}</td>
 	    		<td data-title="'Subtotal'">{{::item.price * item.number | currency:'&yen;'}}</td>
 				<td data-title="'Description'">{{::item.description}}</td>
 	    	</tr>
 	    </table>
+		<div class="col-xs-12 text-right order-total">
+			<label>Quantity: </label><span>{{::order.totalQuantity}}</span>
+			<label>Amount: </label><span>{{::order.totalPrice | currency:'&yen;'}}</span>
+		</div>
 	</accordion-group>
 </accordion>
