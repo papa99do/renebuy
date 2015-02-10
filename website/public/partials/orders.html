@@ -10,31 +10,43 @@
 				</div>
 			</div>
 		</accordion-heading>
-	    <table ng-table template-pagination="nopager" class="table table-condensed table-bordered">
+	    <table class="table table-condensed table-bordered">
+			<thead>
+			<tr>
+				<th>Product</th>
+				<th style="width:100px;">Price</th>
+				<th style="width:70px;">Qty</th>
+				<th>Subtotal</th>
+				<th style="width:230px;">Description</th>
+				<th>Action</th>
+			</tr>
+			</thead>
+			<tbody>
 	    	<tr ng-repeat="item in order.items">
-	    		<td data-title="'Product'">
+	    		<td>
 					<img ng-src="{{::item.product.photos[0]}}" class="order-prod-img">
 					<h5>{{::item.product.name}}</h5>
 					<h6>{{::item.product.nameInChinese}}</h6>
 				</td>
-	    		<td data-title="'Price'" class="form-inline" style="width:100px;">
+	    		<td class="form-inline">
 					<div class="input-group">
 				  		<div class="input-group-addon">&yen;</div>
 			      		<input type="number" class="form-control" ng-model="item.price" style="width:70px;" id="ordered-price">
 					</div>
 				</td>
-	    		<td data-title="'Qty'" class="form-inline" style="width:70px;">
+	    		<td class="form-inline">
 	    			<input type="number" class="form-control" ng-model="item.number" style="width:50px;" id="ordered-number">
 	    		</td>
-	    		<td data-title="'Subtotal'" style="font-size:1.2em">{{item.price * item.number | currency:'&yen;'}}</td>
-				<td data-title="'Description'" class="form-inline" style="width:230px;">
+	    		<td style="font-size:1.2em;">{{item.price * item.number | currency:'&yen;'}}</td>
+				<td class="form-inline">
 					<input type="text" class="form-control" ng-model="item.description" id="order-desc" style="width:200px;">
 				</td>
-				<td data-title="'Action'">
+				<td>
 					<button class="btn btn-primary" ng-click="updateItem(order._id, item)"><i class="glyphicon glyphicon-ok"></i></button>
 					<button class="btn btn-danger" ng-click="deleteItem(order, item)"><i class="glyphicon glyphicon-minus"></i></button>
 				</td>
 	    	</tr>
+			</tbody>
 	    </table>
 		<div class="col-xs-12 text-right order-total">
 			<label>Quantity: </label><span>{{totalQuantity(order)}}</span>
