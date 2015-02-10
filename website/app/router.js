@@ -383,11 +383,16 @@ router.route('/order/:orderId/:itemId')
 	
 })
 .delete(function (req, res){
-	Order.remove({_id: req.params.orderId, 'items.id': req.params.itemId}, function(err, result) {
+	Order.findById(req.params.orderId, function(err, order) {
 		if (err) {handleError(err, res); return;}
-		handleResult({'status': 'ok'}, res);
+		if (order) {
+			order.items.pull(req.params.itemId);
+			order.save(function(err, result) {
+				if (err) {handleError(err, res); return;}
+				handleResult({'status': 'ok'}, res);
+			});
+		}
 	});
-}) 
-;
+});
 
 module.exports = router;
