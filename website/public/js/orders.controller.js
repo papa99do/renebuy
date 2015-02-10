@@ -4,6 +4,11 @@ renebuyApp.controller('OrderCtrl', function($scope, orderService, ngTableParams)
 		$scope.orders = result;
 	});
 	
+	$scope.toggleOrderEditMode = function(order, $event) {
+		order.editable = !order.editable;
+		$event.stopPropagation();
+	};
+	
 	$scope.updateItem = function(orderId, item) {
 		orderService.updateItem(orderId, item).then(function (result) {
 			$scope.showAlert('success', 'Order item updated successfully!');

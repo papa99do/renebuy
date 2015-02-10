@@ -6,7 +6,7 @@
 					{{::order.name}}
 				</div>
 				<div class="col-sm-6 text-right order-total">
-					
+					<a href="" ng-click="toggleOrderEditMode(order, $event)"><i class="glyphicon glyphicon-edit"></i></a>
 				</div>
 			</div>
 		</accordion-heading>
@@ -18,30 +18,33 @@
 				<th style="width:70px;">Qty</th>
 				<th>Subtotal</th>
 				<th style="width:230px;">Description</th>
-				<th>Action</th>
+				<th ng-if="order.editable">Action</th>
 			</tr>
 			</thead>
 			<tbody>
 	    	<tr ng-repeat="item in order.items">
 	    		<td>
 					<img ng-src="{{::item.product.photos[0]}}" class="order-prod-img">
-					<h5>{{::item.product.name}}</h5>
-					<h6>{{::item.product.nameInChinese}}</h6>
+					<div>{{::item.product.name}}</div>
+					<div>{{::item.product.nameInChinese}}</div>
 				</td>
 	    		<td class="form-inline">
-					<div class="input-group">
+					<div class="input-group" ng-if="order.editable">
 				  		<div class="input-group-addon">&yen;</div>
 			      		<input type="number" class="form-control" ng-model="item.price" style="width:70px;" id="ordered-price">
 					</div>
+					<span style="font-size:1.2em;" ng-if="!order.editable">{{item.price | currency:'&yen;'}}</span>
 				</td>
 	    		<td class="form-inline">
-	    			<input type="number" class="form-control" ng-model="item.number" style="width:50px;" id="ordered-number">
+	    			<input ng-if="order.editable" type="number" class="form-control" ng-model="item.number" style="width:50px;" id="ordered-number">
+					<span style="font-size:1.2em;" ng-if="!order.editable">{{item.number}}</span>
 	    		</td>
-	    		<td style="font-size:1.2em;">{{item.price * item.number | currency:'&yen;'}}</td>
+	    		<td><span style="font-size:1.2em;">{{item.price * item.number | currency:'&yen;'}}</span></td>
 				<td class="form-inline">
-					<input type="text" class="form-control" ng-model="item.description" id="order-desc" style="width:200px;">
+					<input ng-if="order.editable"  type="text" class="form-control" ng-model="item.description" id="order-desc" style="width:200px;">
+					<span ng-if="!order.editable">{{item.description}}</span>
 				</td>
-				<td>
+				<td ng-if="order.editable">
 					<button class="btn btn-primary" ng-click="updateItem(order._id, item)"><i class="glyphicon glyphicon-ok"></i></button>
 					<button class="btn btn-danger" ng-click="deleteItem(order, item, $index)"><i class="glyphicon glyphicon-minus"></i></button>
 				</td>
