@@ -6,8 +6,7 @@
 					{{::order.name}}
 				</div>
 				<div class="col-sm-6 text-right order-total">
-					<label>Quantity: </label><span>{{::order.totalQuantity}}</span>
-					<label>Amount: </label><span>{{::order.totalPrice | currency:'&yen;'}}</span>
+					
 				</div>
 			</div>
 		</accordion-heading>
@@ -18,15 +17,28 @@
 					<h5>{{::item.product.name}}</h5>
 					<h6>{{::item.product.nameInChinese}}</h6>
 				</td>
-	    		<td data-title="'Price'">{{::item.price | currency:'&yen;'}}</td>
-	    		<td data-title="'Qty'">{{::item.number}}</td>
-	    		<td data-title="'Subtotal'">{{::item.price * item.number | currency:'&yen;'}}</td>
-				<td data-title="'Description'">{{::item.description}}</td>
+	    		<td data-title="'Price'" class="form-inline" style="width:100px;">
+					<div class="input-group">
+				  		<div class="input-group-addon">&yen;</div>
+			      		<input type="number" class="form-control" ng-model="item.price" style="width:70px;" id="ordered-price">
+					</div>
+				</td>
+	    		<td data-title="'Qty'" class="form-inline" style="width:70px;">
+	    			<input type="number" class="form-control" ng-model="item.number" style="width:50px;" id="ordered-number">
+	    		</td>
+	    		<td data-title="'Subtotal'" style="font-size:1.2em">{{item.price * item.number | currency:'&yen;'}}</td>
+				<td data-title="'Description'" class="form-inline" style="width:230px;">
+					<input type="text" class="form-control" ng-model="item.description" id="order-desc" style="width:200px;">
+				</td>
+				<td data-title="'Action'">
+					<button class="btn btn-primary" ng-click="updateItem(order._id, item)"><i class="glyphicon glyphicon-ok"></i></button>
+					<button class="btn btn-danger" ng-click="deleteItem(order, item)"><i class="glyphicon glyphicon-minus"></i></button>
+				</td>
 	    	</tr>
 	    </table>
 		<div class="col-xs-12 text-right order-total">
-			<label>Quantity: </label><span>{{::order.totalQuantity}}</span>
-			<label>Amount: </label><span>{{::order.totalPrice | currency:'&yen;'}}</span>
+			<label>Quantity: </label><span>{{totalQuantity(order)}}</span>
+			<label>Amount: </label><span>{{totalAmount(order) | currency:'&yen;'}}</span>
 		</div>
 	</accordion-group>
 </accordion>

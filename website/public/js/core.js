@@ -1,6 +1,6 @@
 renebuyApp
 .factory('orderService', function($resource) {
-	var Order = $resource('/api/order');
+	var Order = $resource('/api/order/:orderId/:itemId', {orderId: '@orderId', itemId: '@itemId'});
 	
 	return {
 		addOrderItem: function(item) {
@@ -15,9 +15,18 @@ renebuyApp
 		getShoppingList: function() {
 			return Order.query({shoppingList: true}).$promise;
 		},
-		fullfil: function(orderId, itemId, buyReturnFlag) {
-			//TODO
+		updateItem: function(orderId, item) {
+			return Order.save({orderId: orderId, itemId: item._id}, {
+				price: item.price,
+				number: item.number,
+				description: item.description
+			}).$promise;
+		},
+		deleteItem: function(orderId, itemId) {
+			console.log("deleting order item", orderId, itemId);
+			return Order.remove({orderId: orderId, itemId: itemId}).$promise;
 		}
+		
 	}
 })
 .controller('MainCtrl', function($scope, $translate, $timeout) {

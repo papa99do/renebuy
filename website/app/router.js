@@ -356,11 +356,38 @@ router.route('/order')
 		// find the order:
 		Order.findById(req.body.orderId, function(err, order) {
 			if (err) {handleError(err, res); return;}
-			if(order) saveOrderItem(order);
+			if (order) saveOrderItem(order);
 		});
 	} else if (req.body.newOrderName) {
 		saveOrderItem(new Order({name : req.body.newOrderName}));
 	}
 });
+
+router.route('/order/:orderId/:itemId')
+.post(function (req, res) {
+	/* Update order Item info
+	{
+		"price": 1.99,
+		"number": 2,
+		"description": "Some text"
+	}
+	*/
+	Order.update({_id: req.params.orderId, 'items._id': req.params.itemId}, {'$set': {
+		'items.$.price': req.body.price,
+		'items.$.number': req.body.number,
+		'items.$.description': req.body.description
+	}}, function(err, result) {
+		if (err) {handleError(err, res); return;}
+		handleResult({'status': 'ok'}, res);
+	});
+	
+})
+.delete(function (req, res){
+	Order.remove({_id: req.params.orderId, 'items.id': req.params.itemId}, function(err, result) {
+		if (err) {handleError(err, res); return;}
+		handleResult({'status': 'ok'}, res);
+	});
+}) 
+;
 
 module.exports = router;
