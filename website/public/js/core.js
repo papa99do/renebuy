@@ -1,20 +1,24 @@
 renebuyApp
 .factory('orderService', function($resource) {
-	var Order = $resource('/api/order');
+	var Orders = $resource('/api/order');
+	var Order = $resource('/api/order/:orderId', {orderId: '@orderId'});
 	var OrderItem = $resource('/api/order/:orderId/:itemId', {orderId: '@orderId', itemId: '@itemId'});
 	
 	return {
 		addOrderItem: function(item) {
-			return Order.save(item).$promise;
+			return Orders.save(item).$promise;
 		},
 		getActiveOrderNames: function() {
-			return Order.query({activeName: true}).$promise;
+			return Orders.query({activeName: true}).$promise;
 		},
 		getActiveOrders: function() {
-			return Order.query({active: true}).$promise;
+			return Orders.query({active: true}).$promise;
 		},
 		getShoppingList: function() {
-			return Order.query({shoppingList: true}).$promise;
+			return Orders.query({shoppingList: true}).$promise;
+		},
+		updateOrder: function(orderId, deleted, updated) {
+			return Order.save({orderId: orderId}, {deleted: deleted, updated: updated}).$promise;
 		},
 		updateItem: function(orderId, item) {
 			return OrderItem.save({orderId: orderId, itemId: item._id}, {

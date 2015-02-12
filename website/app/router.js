@@ -363,6 +363,44 @@ router.route('/order')
 	}
 });
 
+router.route('/order/:orderId')
+.post(function (req, res) {
+	/* Update order items
+	{ 	"deleted" : ["xxxxdf1432432"], 
+	  	"udpated" : { 
+		  "xxxddd111000" :
+			{
+				"price": 1.99,
+				"number": 2,
+				"description": "Some text"
+			}
+		}
+	}
+	*/
+	
+	Order.findById(req.params.orderId, function(err, order) {
+		if (err) {handleError(err, res); return;}
+		if (order) {
+			req.body.deleted.forEach(function(itemId) {
+				order.items.pull(itemId);	
+			});
+			order.items.forEach(function(item) {
+				var newItem = req.body.updated[item._id];
+				if (newItem) {
+					item.price = newItem.price;
+					item.number = newItem.number;
+					item.description = newItem.description;
+				}
+			});
+				
+			order.save(function(err, result) {
+				if (err) {handleError(err, res); return;}
+				handleResult({'status': 'ok'}, res);
+			});
+		}
+	});
+});
+
 router.route('/order/:orderId/:itemId')
 .post(function (req, res) {
 	/* Update order Item info

@@ -6,23 +6,28 @@
 					{{::order.name}}
 				</div>
 				<div class="col-sm-6 text-right order-total">
-					<a href="" ng-click="toggleOrderEditMode(order, $event)"><i class="glyphicon glyphicon-edit"></i></a>
+					<a class="btn btn-default" href="" ng-click="edit(order, $event)" ng-if="!order.editable">
+						<i class="glyphicon glyphicon-edit"></i> Edit
+					</a>
+					<a class="btn btn-primary" href="" ng-click="save(order, $event)" ng-if="order.editable">
+						<i class="glyphicon glyphicon-save"></i> Save
+					</a>
 				</div>
 			</div>
 		</accordion-heading>
 	    <table class="table table-condensed table-bordered">
 			<thead>
-			<tr>
+			<tr class="active">
 				<th>Product</th>
 				<th style="width:100px;">Price</th>
 				<th style="width:70px;">Qty</th>
-				<th>Subtotal</th>
+				<th style="width:70px;">Subtotal</th>
 				<th style="width:230px;">Description</th>
-				<th ng-if="order.editable">Action</th>
+				<th ng-if="order.editable" style="width:105px;"></th>
 			</tr>
 			</thead>
 			<tbody>
-	    	<tr ng-repeat="item in order.items">
+	    	<tr ng-repeat="item in order.items" ng-class="orderItemClass(item)">
 	    		<td>
 					<img ng-src="{{::item.product.photos[0]}}" class="order-prod-img">
 					<div>{{::item.product.name}}</div>
@@ -31,29 +36,28 @@
 	    		<td class="form-inline">
 					<div class="input-group" ng-if="order.editable">
 				  		<div class="input-group-addon">&yen;</div>
-			      		<input type="number" class="form-control" ng-model="item.price" style="width:70px;" id="ordered-price">
+			      		<input type="number" class="form-control" ng-change="item.updated = true" ng-model="item.price" style="width:70px;" id="ordered-price">
 					</div>
 					<span style="font-size:1.2em;" ng-if="!order.editable">{{item.price | currency:'&yen;'}}</span>
 				</td>
 	    		<td class="form-inline">
-	    			<input ng-if="order.editable" type="number" class="form-control" ng-model="item.number" style="width:50px;" id="ordered-number">
+	    			<input ng-if="order.editable" type="number" class="form-control" ng-change="item.updated = true" ng-model="item.number" style="width:50px;" id="ordered-number">
 					<span style="font-size:1.2em;" ng-if="!order.editable">{{item.number}}</span>
 	    		</td>
 	    		<td><span style="font-size:1.2em;">{{item.price * item.number | currency:'&yen;'}}</span></td>
 				<td class="form-inline">
-					<input ng-if="order.editable"  type="text" class="form-control" ng-model="item.description" id="order-desc" style="width:200px;">
+					<input ng-if="order.editable"  type="text" class="form-control" ng-change="item.updated = true" ng-model="item.description" id="order-desc" style="width:200px;">
 					<span ng-if="!order.editable">{{item.description}}</span>
 				</td>
 				<td ng-if="order.editable">
-					<button class="btn btn-primary" ng-click="updateItem(order._id, item)"><i class="glyphicon glyphicon-ok"></i></button>
-					<button class="btn btn-danger" ng-click="deleteItem(order, item, $index)"><i class="glyphicon glyphicon-minus"></i></button>
+					<a href="" class="btn" ng-class="item.deleted ? 'btn-success' : 'btn-danger'" ng-click="item.deleted = !item.deleted"><i class="fa fa-trash-o"></i> {{item.deleted ? 'Restore' : 'Delete'}}</a>
 				</td>
 	    	</tr>
 			</tbody>
 	    </table>
 		<div class="col-xs-12 text-right order-total">
-			<label>Quantity: </label><span>{{totalQuantity(order)}}</span>
-			<label>Amount: </label><span>{{totalAmount(order) | currency:'&yen;'}}</span>
+			<label>Quantity: </label><span>{{order.totalQuantity}}</span>
+			<label>Amount: </label><span>{{order.totalAmount | currency:'&yen;'}}</span>
 		</div>
 	</accordion-group>
 </accordion>
