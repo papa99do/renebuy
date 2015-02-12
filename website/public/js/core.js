@@ -2,7 +2,6 @@ renebuyApp
 .factory('orderService', function($resource) {
 	var Orders = $resource('/api/order');
 	var Order = $resource('/api/order/:orderId', {orderId: '@orderId'});
-	var OrderItem = $resource('/api/order/:orderId/:itemId', {orderId: '@orderId', itemId: '@itemId'});
 	
 	return {
 		addOrderItem: function(item) {
@@ -19,18 +18,7 @@ renebuyApp
 		},
 		updateOrder: function(orderId, deleted, updated) {
 			return Order.save({orderId: orderId}, {deleted: deleted, updated: updated}).$promise;
-		},
-		updateItem: function(orderId, item) {
-			return OrderItem.save({orderId: orderId, itemId: item._id}, {
-				price: item.price,
-				number: item.number,
-				description: item.description
-			}).$promise;
-		},
-		deleteItem: function(orderId, itemId) {
-			return OrderItem.remove({orderId: orderId, itemId: itemId}).$promise;
 		}
-		
 	}
 })
 .controller('MainCtrl', function($scope, $translate, $timeout) {
