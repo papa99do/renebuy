@@ -102,6 +102,20 @@ router.route('/product')
 		/* used by update price */
 		Product.find().select('name stores rrp').exec(returnProducts);
 		
+	} else if (req.query.shopping) {
+		/* usded by update price, get products in shopping list */
+		Order.aggregate(
+			{$match: {status: 'active'}},
+			{$unwind: '$items'},
+			{$group: {_id: '$items.product'}}, 
+			function(err, productIds) {
+				if (err) {handleError(err, res); return;}
+				var ids = productIds.map(function(idObject) {return idObject._id;});
+				console.log(ids);
+				
+				Product.find({_id: {$in: ids}}).select('name stores rrp').exec(returnProducts);
+			});
+		
 	} else if (req.query.suggest) {
 		/* used by search suggestion */
 		Product.find().select('-_id name nameInChinese').exec(returnProducts);

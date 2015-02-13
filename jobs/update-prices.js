@@ -1,21 +1,49 @@
 var log = require('loglevel');
 var request = require('request');
-var smartRequest = require('./smart-request')(5);
 
 log.setLevel('info');
 
 //var RENEBUY_URL = 'http://localhost:3001'
 var RENEBUY_URL = 'http://renebuy.yihanzhao.com'
 
-var GET_PRODUCTS_URL= RENEBUY_URL + '/api/product?all=true';
+var ALL_PRODUCTS_URL= RENEBUY_URL + '/api/product?all=true';
+var SHOPPING_LIST_PRODUCT_URL= RENEBUY_URL + '/api/product?shopping=true';
 var UPDATE_PRICE_URL= RENEBUY_URL + '/api/product/';
 var PRICE_ALERT_URL = RENEBUY_URL + '/api/price-alert/'
 var CW_PRICE_URL = 'http://www.chemistwarehouse.com.au/inc_product_updater_json_shortlive.asp?callback=getPrice&ID=';
 var MC_PRICE_URL = 'http://www.mychemist.com.au/inc_product_updater_json_shortlive.asp?callback=getPrice&ID=';
 
 var dryRun = false;
+var InShoppingList = true;
 
-smartRequest(GET_PRODUCTS_URL, {raw: true}, function(productsJson) {
+function getProductsUrl() {
+	return InShoppingList ? SHOPPING_LIST_PRODUCT_URL : ALL_PRODUCTS_URL;
+}
+
+// TODO write a profiler
+var profiler = (function() {
+	var startTime;
+	var endTime;
+	
+	return {
+		start: function() { 
+			startTime = new Date();
+			log.info("Start updating price: ", startTime);
+		},
+		end: function() {
+			endTime = new Date();
+			var timeElapsed = Math.floor((endTime.getTime() - startTime.getTime()) / 1000);
+			log.info("End updating price: %s. Took %d seconds", endTime, timeElapsed);
+		}
+	};
+})();
+
+
+var smartRequest = require('./smart-request')(2, null, null, profiler.end);
+
+profiler.start();
+
+smartRequest(getProductsUrl(), {raw: true}, function(productsJson) {
 	var products = JSON.parse(productsJson);
 	
 	log.info("Updating price for %d products...", products.length);

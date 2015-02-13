@@ -90,7 +90,7 @@ return function smartRequestInternal(url, opt, callback, errorCallback) {
 		callbackCount--;
 		log.debug('Callback count: ', callbackCount);
 		if (callbackCount === 0 && activeRequestCount === 0) {
-			log.info("All callback done and no active request, time to rest!");
+			log.debug("All callback done and no active request, time to rest!");
 			allDoneCallback && allDoneCallback();
 		}
 		
