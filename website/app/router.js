@@ -102,20 +102,6 @@ router.route('/product')
 		/* used by update price */
 		Product.find().select('name stores rrp').exec(returnProducts);
 		
-	} else if (req.query.shopping) {
-		/* usded by update price, get products in shopping list */
-		Order.aggregate(
-			{$match: {status: 'active'}},
-			{$unwind: '$items'},
-			{$group: {_id: '$items.product'}}, 
-			function(err, productIds) {
-				if (err) {handleError(err, res); return;}
-				var ids = productIds.map(function(idObject) {return idObject._id;});
-				console.log(ids);
-				
-				Product.find({_id: {$in: ids}}).select('name stores rrp').exec(returnProducts);
-			});
-		
 	} else if (req.query.suggest) {
 		/* used by search suggestion */
 		Product.find().select('-_id name nameInChinese').exec(returnProducts);
@@ -294,7 +280,7 @@ router.route('/price-alert')
 })
 .get(function(req, res) {
 	var cutoff = new Date();
-	cutoff.setDate(cutoff.getDate()-7);
+	cutoff.setDate(cutoff.getDate() - 7);
 	
 	PriceAlert.find({alertDate: {$gt: cutoff}}).populate('product', '-_id name nameInChinese photos').exec(function(err, result) {
 		if(err) {handleError(err, res); return;}
@@ -316,28 +302,21 @@ router.route('/order')
 			handleResult(result, res);
 		});
 	} else if (req.query.shoppingList) {
+		var projection = req.query.details ? 'name nameInChinese photos stores rrp' : 'name stores rrp'
+		
 		Order.aggregate(
 			{$match: {status: 'active'}},
 			{$unwind: '$items'},
-			{$group: {
-				_id: '$items.product', 
-				product: {$first: '$items.product'},
-				orderItems: {$push:{
-					orderName: '$name', 
-					price: '$items.price', 
-					number: '$items.number',
-					description: '$items.description', 
-					itemId: '$items._id', 
-					orderId: '$_id'
-				}}}},
-			function(err, result) {
+			{$group: {_id: '$items.product'}}, 
+			function(err, productIds) {
 				if (err) {handleError(err, res); return;}
-				//console.log('bbbb', result);
-				Product.populate(result, {path:'product', select: '-_id name nameInChinese photos stores rrp'}, function(err, shoppingList) {
+				var ids = productIds.map(function(idObject) {return idObject._id;});
+				console.log(ids);
+				
+				Product.find({_id: {$in: ids}}).select(projection).exec(function(err, shoppingList) {
 					if (err) {handleError(err, res); return;}
-					//console.log('aaaa', shoppingList);
 					handleResult(shoppingList, res); 
-				} );	
+				});
 			});
 	}
 })
@@ -407,38 +386,6 @@ router.route('/order/:orderId')
 				}
 			});
 				
-			order.save(function(err, result) {
-				if (err) {handleError(err, res); return;}
-				handleResult({'status': 'ok'}, res);
-			});
-		}
-	});
-});
-
-router.route('/order/:orderId/:itemId')
-.post(function (req, res) {
-	/* Update order Item info
-	{
-		"price": 1.99,
-		"number": 2,
-		"description": "Some text"
-	}
-	*/
-	Order.update({_id: req.params.orderId, 'items._id': req.params.itemId}, {'$set': {
-		'items.$.price': req.body.price,
-		'items.$.number': req.body.number,
-		'items.$.description': req.body.description
-	}}, function(err, result) {
-		if (err) {handleError(err, res); return;}
-		handleResult({'status': 'ok'}, res);
-	});
-	
-})
-.delete(function (req, res){
-	Order.findById(req.params.orderId, function(err, order) {
-		if (err) {handleError(err, res); return;}
-		if (order) {
-			order.items.pull(req.params.itemId);
 			order.save(function(err, result) {
 				if (err) {handleError(err, res); return;}
 				handleResult({'status': 'ok'}, res);

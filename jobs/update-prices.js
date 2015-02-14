@@ -3,11 +3,11 @@ var request = require('request');
 
 log.setLevel('info');
 
-//var RENEBUY_URL = 'http://localhost:3001'
-var RENEBUY_URL = 'http://renebuy.yihanzhao.com'
+var RENEBUY_URL = 'http://localhost:3001'
+//var RENEBUY_URL = 'http://renebuy.yihanzhao.com'
 
 var ALL_PRODUCTS_URL= RENEBUY_URL + '/api/product?all=true';
-var SHOPPING_LIST_PRODUCT_URL= RENEBUY_URL + '/api/product?shopping=true';
+var SHOPPING_LIST_PRODUCT_URL= RENEBUY_URL + '/api/order?shoppingList=true';
 var UPDATE_PRICE_URL= RENEBUY_URL + '/api/product/';
 var PRICE_ALERT_URL = RENEBUY_URL + '/api/price-alert/'
 var CW_PRICE_URL = 'http://www.chemistwarehouse.com.au/inc_product_updater_json_shortlive.asp?callback=getPrice&ID=';

@@ -14,7 +14,7 @@ renebuyApp
 			return Orders.query({active: true}).$promise;
 		},
 		getShoppingList: function() {
-			return Orders.query({shoppingList: true}).$promise;
+			return Orders.query({shoppingList: true, details: true}).$promise;
 		},
 		updateOrder: function(orderId, deleted, updated) {
 			return Order.save({orderId: orderId}, {deleted: deleted, updated: updated}).$promise;

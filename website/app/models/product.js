@@ -19,7 +19,12 @@ var ProcuctSchema = new Schema({
 	rrp: Number,
 	adjustedPrice: Number,
 	category: [String],
-	stores: {type: [ProductInStoreSchema], default: [], _id: false}
+	stores: {type: [ProductInStoreSchema], default: [], _id: false},
+	salesInfo: {
+		orderedTotal: { type: Number, default: 0 },
+		orderedActive: { type: Number, default: 0 },
+		inStock: { type: Number, default: 0 }
+	}
 });
 
 ProcuctSchema.plugin(textSearch);

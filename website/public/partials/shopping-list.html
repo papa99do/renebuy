@@ -4,64 +4,39 @@
 		<tr class="info">
 			<th>Product</th>
 			<th>Stores</th>
-			<th>Total</th>
-			<th>Bought</th>
+			<th>In order</th>
+			<th>In stock</th>
+			<th>Buy</th>
 		</tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat-start="p in shoppingList">
-			<td data-toggle="collapse" data-target="#orderItems-{{$index}}" class="accordion-toggle">
-				<img ng-src="{{::p.product.photos[0]}}" class="order-prod-img">
-				<h5>{{::p.product.name}}</h5>
-				<h6>{{::p.product.nameInChinese}}</h6>
+		<tr ng-repeat="product in shoppingList">
+			<td>
+				<img ng-src="{{::product.photos[0]}}" class="order-prod-img">
+				<h5>{{::product.name}}</h5>
 			</td>
 			<td>
 				<ul>
-					<li class="store" ng-repeat="store in p.product.stores">
+					<li class="store" ng-repeat="store in product.stores">
 						<a href="{{store.detailUrl}}" target="_blank" title="{{storeMap[store.storeName].fullName}}"> <img ng-src="/images/store-logo/{{storeMap[store.storeName].logo}}" alt="{{store.storeName}}" class="store-logo"></a>
 						<span class="price">{{store.price | currency}}</span>
-						({{(p.product.rrp - store.price) / p.product.rrp | percentage:0}} off)
+						({{(product.rrp - store.price) / product.rrp | percentage:0}} off)
 						({{'P.LOWEST_PRICE' | translate}}:<span class="price">{{store.lowestPrice | currency}}</span>)
 					</li>
 				</ul>
 			</td>
-			<td style="font-size:2em;"><a href="" data-toggle="collapse" data-target="#orderItems-{{$index}}" class="accordion-toggle">{{::p.total}}</a></td>
+			<td>{{product.salesInfo.orderedActive}}</td>
+			<td>{{product.salesInfo.inStock}}</td>
 			<td>
-				<div class="input-group" style="width:100px;">
-					<div class="input-group-btn">
-				        <button type="button" ng-click="returnProduct(p)" class="btn btn-default"><i class="fa fa-minus"></i></button>
-				    </div>
-					<input type="text" class="form-control" style="width:50px;" ng-model="p.bought" disabled>
-					<div class="input-group-btn">
-				        <button type="button" ng-click="buyProduct(p)" class="btn btn-default"><i class="fa fa-plus"></i></button>
-				    </div>
-				</div>
-			</td>
-		</tr>
-		<tr ng-repeat-end>
-			<td colspan="4" class="orderItems">
-				<div class="accordion-body collapse table-responsive" id="orderItems-{{$index}}">
-					<table class="table table-bordered table-condensed">
-						<thead>
-							<tr class="success">
-								<th>Order name</th>
-								<th>Item description</th>
-								<th>Price</th>
-								<th>Total</th>
-								<th>Bought</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr ng-repeat="item in p.orderItems"> 
-								<td>{{item.orderName}}</td>
-								<td>{{item.description}}</td>
-								<td>{{item.price | currency:'&yen;'}}</td>
-								<td>{{item.number}}</td>
-								<td>{{item.bought}}</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+				<form class="form-inline" name="buy-{{product._id}}">
+					<input type="number" ng-model="quantity" class="form-control" style="width:50px;"> 
+					<span>&times;</span>
+					<div class="input-group">
+						<span class="input-group-addon">$</span>
+						<input type="number" step="any" ng-model="price" class="form-control" style="width:75px;">
+					</div>
+					<button class="btn btn-default" ng-click="buy(product, quantity, price)">Buy</button>
+				</form>
 			</td>
 		</tr>
 	</tbody>
