@@ -21,6 +21,15 @@ renebuyApp
 		}
 	}
 })
+.factory('purchaseService', function($resource) {
+	var Purchases = $resource('/api/purchase');
+	
+	return {
+		purchase: function(productId, quantity, price) {
+			return Purchases.save({productId: productId, price: price, quantity: quantity}).$promise;
+		}
+	};
+})
 .controller('MainCtrl', function($scope, $translate, $timeout) {
 	$scope.editMode = false;
 	$('.navbar-collapse a').click(function(){

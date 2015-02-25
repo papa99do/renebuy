@@ -3,6 +3,7 @@ var mongoose = require('mongoose'); 					// mongoose for mongodb
 var Product  = require('./models/product');
 var PriceAlert = require('./models/price-alert')
 var Order = require('./models/order')
+var Purchase = require('./models/purchase')
 var _ = require('underscore');
 
 // configuration =================
@@ -302,7 +303,7 @@ router.route('/order')
 			handleResult(result, res);
 		});
 	} else if (req.query.shoppingList) {
-		var projection = req.query.details ? 'name nameInChinese photos stores rrp' : 'name stores rrp'
+		var projection = req.query.details ? 'name nameInChinese photos stores rrp salesInfo' : 'name stores rrp'
 		
 		Order.aggregate(
 			{$match: {status: 'active'}},
@@ -331,6 +332,19 @@ router.route('/order')
 		"newOrderName": "Lijiayi 20150119"   // Either orderId or newOrderName is needed
 	}
 	*/
+	function updateProductOrderedQuantity() {
+		Product.findById(req.body.productId, function(err, product) {
+			if (err) return handleError(err, res);
+			if (!product) return handleError("cannot find product", res);
+			product.salesInfo.orderedTotal += req.body.number;
+			product.salesInfo.orderedActive += req.body.number;
+			product.save(function(err) {
+				if (err) return handleError(err, res);
+				handleResult({'status': 'ok'}, res);
+			});
+		});
+	}
+	
 	function saveOrderItem(order) {
 		order.items.push({
 			product: mongoose.Types.ObjectId(req.body.productId),
@@ -341,7 +355,7 @@ router.route('/order')
 		
 		order.save(function(err) {
 			if (err) {handleError(err, res); return;}
-			handleResult({'status': 'ok'}, res); 
+			updateProductOrderedQuantity();
 		});
 	}
 	
@@ -392,6 +406,94 @@ router.route('/order/:orderId')
 			});
 		}
 	});
+});
+
+router.route('/purchase')
+.post(function(req, res) {
+	/*
+	{
+		"productId": "xxxyyy000111"
+		"price": 2.99,
+		"quantity": 3
+	}
+	*/	
+	
+	function updateProductInStockQuantity() {
+		Product.findById(req.body.productId, function(err, product) {
+			if (err) return handleError(err, res);
+			if (!product) return handleError("cannot find product", res);
+			product.salesInfo.inStock += req.body.quantity;
+			product.save(function(err) {
+				if (err) return handleError(err, res);
+				handleResult({'status': 'ok'}, res);
+			});
+		});
+	}
+	
+	new Purchase({
+		product: mongoose.Types.ObjectId(req.body.productId),
+		price: req.body.price,
+		quantity: req.body.quantity,
+		quantityInStock: req.body.quantity
+	}).save(function(err, savedPurchase) {
+		if (err) return handleError(err, res);
+		updateProductInStockQuantity();	
+	});
+});
+
+router.route('/calc-sales-info')
+.get(function (req, res) {
+	function updateSalesInfo(product, infoKey) {
+		console.log("updating sales info [%s] to [%d] for product: [%s]", infoKey, product.total, product._id)
+		
+		Product.findById(product._id, function(err, p) {
+			if (err) {
+				console.log(err);
+				return;
+			}
+			p.salesInfo[infoKey] = product.total;
+			p.save(function(err) {
+				if (err) {
+					console.log("Error updating sales info [%s] for product: [%s]", infoKey, product._id, err);
+					return;
+				}
+			});
+		});
+	}
+	
+	// calculate orderedTotal
+	Order.aggregate(
+		{$unwind: '$items'},
+		{$group: {_id: '$items.product', total: {$sum: '$item.number'}}}, 
+		function(err, products) {
+			if (err) {console.log(err); return;}
+			console.log('aaaaaa', proudcts);
+			products.forEach(function(product) {updateSalesInfo(product, 'orderedTotal');});
+		}
+	);
+	
+	// calculate orderedActive
+	// Order.aggregate(
+	// 	{$match: {status: 'active'}},
+	// 	{$unwind: '$items'},
+	// 	{$group: {_id: '$items.product', total: {$sum: '$item.number'}}}, 
+	// 	function(err, products) {
+	// 		if (err) {console.log(err); return;}
+	// 		products.forEach(function(product) {updateSalesInfo(product, 'orderedActive');});
+	// 	}
+	// );	
+	
+	// calculate inStock
+	// Purchase.aggregate(
+	// 	{$group: {_id: '$product', total: {$sum: '$quantityInStock'}}},
+	// 	function(err, products) {
+	// 		if (err) {console.log(err); return;}
+	// 		products.forEach(function(product) {updateSalesInfo(product, 'inStock');});
+	// 	}
+	// );
+	
+	res.json({'status': 'triggered'});
+	
 });
 
 module.exports = router;

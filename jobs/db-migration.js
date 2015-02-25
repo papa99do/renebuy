@@ -16,3 +16,8 @@ db.orders.aggregate([{$match: {status:'active'}}, {$unwind: '$items'}, {$group: 
 
 // list all shopping list products
 db.orders.aggregate([{$match: {status:'active'}}, {$unwind: '$items'}, {$group: {_id: '$items.product'}}]);
+
+// caculate sales info
+db.orders.aggregate([{$match: {status:'active'}}, {$unwind: '$items'}, {$group: {_id: '$items.product', orderedActive: {$sum: '$item.number'}}}]);
+db.orders.aggregate([{$unwind: '$items'}, {$group: {_id: '$items.product', orderedTotal: {$sum: '$item.number'}}}]);
+db.purchases.aggregate([{$group: {_id: '$product', inStock: {$sum: '$quantityInStock'}}}]);

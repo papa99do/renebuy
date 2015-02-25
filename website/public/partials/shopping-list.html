@@ -3,10 +3,10 @@
 	<thead>
 		<tr class="info">
 			<th>Product</th>
-			<th>Stores</th>
-			<th>In order</th>
-			<th>In stock</th>
-			<th>Buy</th>
+			<th style="width:350px;">Stores</th>
+			<th style="width:80px;">Ordered</th>
+			<th style="width:80px;">In stock</th>
+			<th style="width:250px;">Buy</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -16,8 +16,8 @@
 				<h5>{{::product.name}}</h5>
 			</td>
 			<td>
-				<ul>
-					<li class="store" ng-repeat="store in product.stores">
+				<ul class="store">
+					<li ng-repeat="store in product.stores">
 						<a href="{{store.detailUrl}}" target="_blank" title="{{storeMap[store.storeName].fullName}}"> <img ng-src="/images/store-logo/{{storeMap[store.storeName].logo}}" alt="{{store.storeName}}" class="store-logo"></a>
 						<span class="price">{{store.price | currency}}</span>
 						({{(product.rrp - store.price) / product.rrp | percentage:0}} off)
@@ -25,8 +25,8 @@
 					</li>
 				</ul>
 			</td>
-			<td>{{product.salesInfo.orderedActive}}</td>
-			<td>{{product.salesInfo.inStock}}</td>
+			<td><span class="salesInfo">{{product.salesInfo.orderedActive || 0}}</span></td>
+			<td><span class="salesInfo">{{product.salesInfo.inStock || 0}}</span></td>
 			<td>
 				<form class="form-inline" name="buy-{{product._id}}">
 					<input type="number" ng-model="quantity" class="form-control" style="width:50px;"> 
@@ -35,7 +35,7 @@
 						<span class="input-group-addon">$</span>
 						<input type="number" step="any" ng-model="price" class="form-control" style="width:75px;">
 					</div>
-					<button class="btn btn-default" ng-click="buy(product, quantity, price)">Buy</button>
+					<button class="btn btn-primary" ng-click="buy(product, quantity, price)">Buy</button>
 				</form>
 			</td>
 		</tr>
