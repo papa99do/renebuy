@@ -5,6 +5,7 @@ var PriceAlert = require('./models/price-alert')
 var Order = require('./models/order')
 var Purchase = require('./models/purchase')
 var _ = require('underscore');
+var async = require('async');
 
 // configuration =================
 var mongoUrl = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/renebuy';
@@ -441,59 +442,64 @@ router.route('/purchase')
 	});
 });
 
-router.route('/calc-sales-info')
+router.route('/calc-sales-info/:infoKey')
 .get(function (req, res) {
-	function updateSalesInfo(product, infoKey) {
-		console.log("updating sales info [%s] to [%d] for product: [%s]", infoKey, product.total, product._id)
-		
-		Product.findById(product._id, function(err, p) {
-			if (err) {
-				console.log(err);
-				return;
-			}
-			p.salesInfo[infoKey] = product.total;
-			p.save(function(err) {
-				if (err) {
-					console.log("Error updating sales info [%s] for product: [%s]", infoKey, product._id, err);
-					return;
-				}
+	
+	function updateSalesInfo(products, infoKey) {
+		var results = [];
+		async.each(products, function(product, callback) {
+			
+			console.log("updating sales info [%s] to [%d] for product: [%s]", infoKey, product.total, product._id)
+
+			Product.findById(product._id, function(err, p) {
+				if (err) return callback(err);
+				p.salesInfo[infoKey] = product.total;
+				p.save(function(err, updated) {
+					if (err) return callback(err);
+					results.push({id: updated._id, name: updated.name, salesInfo: updated.salesInfo});
+					callback();
+				});
 			});
+			
+		}, function(err) {
+			if (err) return handleError(err, res);
+			handleResult({'status': 'ok', updating: infoKey, results: results}, res)
 		});
 	}
 	
-	// calculate orderedTotal
-	Order.aggregate(
-		{$unwind: '$items'},
-		{$group: {_id: '$items.product', total: {$sum: '$item.number'}}}, 
-		function(err, products) {
-			if (err) {console.log(err); return;}
-			console.log('aaaaaa', proudcts);
-			products.forEach(function(product) {updateSalesInfo(product, 'orderedTotal');});
-		}
-	);
-	
-	// calculate orderedActive
-	// Order.aggregate(
-	// 	{$match: {status: 'active'}},
-	// 	{$unwind: '$items'},
-	// 	{$group: {_id: '$items.product', total: {$sum: '$item.number'}}}, 
-	// 	function(err, products) {
-	// 		if (err) {console.log(err); return;}
-	// 		products.forEach(function(product) {updateSalesInfo(product, 'orderedActive');});
-	// 	}
-	// );	
-	
-	// calculate inStock
-	// Purchase.aggregate(
-	// 	{$group: {_id: '$product', total: {$sum: '$quantityInStock'}}},
-	// 	function(err, products) {
-	// 		if (err) {console.log(err); return;}
-	// 		products.forEach(function(product) {updateSalesInfo(product, 'inStock');});
-	// 	}
-	// );
-	
-	res.json({'status': 'triggered'});
-	
+	if (req.params.infoKey === 'orderedTotal') {
+		// calculate orderedTotal
+		Order.aggregate(
+			{$unwind: '$items'},
+			{$group: {_id: '$items.product', total: {$sum: '$items.number'}}}, 
+			function(err, products) {
+				if (err) return handleError(err, res);
+				updateSalesInfo(products, 'orderedTotal');	
+			}
+		);
+	} else if (req.params.infoKey === 'orderedActive') {
+		// calculate orderedActive
+		Order.aggregate(
+			{$match: {status: 'active'}},
+			{$unwind: '$items'},
+			{$group: {_id: '$items.product', total: {$sum: '$items.number'}}}, 
+			function(err, products) {
+				if (err) return handleError(err, res);
+				updateSalesInfo(products, 'orderedActive');
+			}
+		);
+	} else if (req.params.infoKey === 'inStock') {
+		// calculate inStock
+		Purchase.aggregate(
+			{$group: {_id: '$product', total: {$sum: '$quantityInStock'}}},
+			function(err, products) {
+				if (err) return handleError(err, res);
+				updateSalesInfo(products, 'inStock');
+			}
+		);
+	} else {
+		handleError('InfoKey should be one of [orderedTotal, orderedActive, inStock]', res);
+	}
 });
 
 module.exports = router;
