@@ -293,12 +293,12 @@ router.route('/price-alert')
 router.route('/order')
 .get(function(req, res) {
 	if (req.query.activeName) {
-		Order.find({status: 'active'}).select('name').exec(function(err, result) {
+		Order.find({status: 'active'}).sort('-createdDate').select('name').exec(function(err, result) {
 			if (err) {handleError(err, res); return;}
 			handleResult(result, res);
 		});
 	} else if (req.query.active) {
-		Order.find({status: 'active'}).populate('items.product', '-_id name nameInChinese photos').exec(function(err, result) {
+		Order.find({status: 'active'}).sort('-createdDate').populate('items.product', '-_id name nameInChinese photos').exec(function(err, result) {
 			if (err) {handleError(err, res); return;}
 			handleResult(result, res);
 		});
