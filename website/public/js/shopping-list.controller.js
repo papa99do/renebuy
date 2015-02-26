@@ -4,6 +4,8 @@ renebuyApp.controller('ShoppingListCtrl', function($scope, orderService, purchas
 	});
 	
 	$scope.buy = function(product, quantity, price) {
+		if (!quantity || quantity < 1 || !price) return;
+		
 		purchaseService.purchase(product._id, quantity, price).then(function(result) {
 			if (!product.salesInfo) product.salesInfo = {};
 			product.salesInfo.inStock = (product.salesInfo.inStock || 0) + quantity;

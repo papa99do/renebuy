@@ -35,7 +35,7 @@
 						<span class="input-group-addon">$</span>
 						<input type="number" step="any" ng-model="price" class="form-control" style="width:75px;">
 					</div>
-					<button class="btn btn-primary" ng-click="buy(product, quantity, price)">Buy</button>
+					<button class="btn btn-primary" ng-click="buy(product, quantity, price); quantity = null; price = null;">Buy</button>
 				</form>
 			</td>
 		</tr>
