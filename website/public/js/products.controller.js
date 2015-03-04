@@ -150,7 +150,7 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 	
 	$scope.storeLogo = function(store) {
 		return '/images/store-logo/' + storeLogos[store];
-	}
+	};
 	
 	$scope.openOrderModal = function(product) {
 		$modal.open({
@@ -166,7 +166,7 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 				}
 			}
 		});
-	}
+	};
 }).controller('OrderModalCtrl', function($scope, $modalInstance, product, showAlert, orderService) {
 	
 	orderService.getActiveOrderNames().then(function(result) {

@@ -3,8 +3,8 @@ var request = require('request');
 
 log.setLevel('info');
 
-var RENEBUY_URL = 'http://localhost:3001'
-//var RENEBUY_URL = 'http://renebuy.yihanzhao.com'
+//var RENEBUY_URL = 'http://localhost:3001'
+var RENEBUY_URL = 'http://renebuy.yihanzhao.com'
 
 var ALL_PRODUCTS_URL= RENEBUY_URL + '/api/product?all=true';
 var SHOPPING_LIST_PRODUCT_URL= RENEBUY_URL + '/api/order?shoppingList=true';
@@ -14,7 +14,8 @@ var CW_PRICE_URL = 'http://www.chemistwarehouse.com.au/inc_product_updater_json_
 var MC_PRICE_URL = 'http://www.mychemist.com.au/inc_product_updater_json_shortlive.asp?callback=getPrice&ID=';
 
 var dryRun = false;
-var InShoppingList = true;
+var InShoppingList = false;
+var parallelConnections = 5;
 
 function getProductsUrl() {
 	return InShoppingList ? SHOPPING_LIST_PRODUCT_URL : ALL_PRODUCTS_URL;
@@ -39,7 +40,7 @@ var profiler = (function() {
 })();
 
 
-var smartRequest = require('./smart-request')(2, null, null, profiler.end);
+var smartRequest = require('./smart-request')(parallelConnections, null, null, profiler.end);
 
 profiler.start();
 

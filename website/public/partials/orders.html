@@ -1,15 +1,19 @@
 <accordion close-others="false">
-	<accordion-group ng-repeat="order in orders">
+	<accordion-group ng-repeat="order in orders" ng-class="order.status === 'shipping' ? 'panel-success' : 'panel-default'">
 		<accordion-heading>
 			<div class="row">
 				<div class="col-sm-6">
 					{{::order.name}}
 				</div>
-				<div class="col-sm-6 text-right order-total">
-					<a class="btn btn-default" href="" ng-click="edit(order, $event)" ng-if="!order.editable">
+				<div class="col-sm-6 text-right">
+					<a class="btn btn-default" href="" ng-click="confirmShip(order, $event)" ng-if="order.status === 'active'">
+						<i class="glyphicon glyphicon-send"></i> Ship
+					</a>
+					<span ng-if="order.status === 'shipping'" style="padding-right: 5px;">Shipping</span>
+					<a class="btn btn-default" href="" ng-click="edit(order, $event)" ng-if="order.status === 'active' && !order.editable">
 						<i class="glyphicon glyphicon-edit"></i> Edit
 					</a>
-					<a class="btn btn-primary" href="" ng-click="save(order, $event)" ng-if="order.editable">
+					<a class="btn btn-primary" href="" ng-click="save(order, $event)" ng-if="order.status === 'active' && order.editable">
 						<i class="glyphicon glyphicon-save"></i> Save
 					</a>
 				</div>
@@ -61,3 +65,16 @@
 		</div>
 	</accordion-group>
 </accordion>
+
+<script type="text/ng-template" id="shipOrderModal.html">
+	<div class="modal-header">
+        <h3 class="modal-title">Ship order</h3>
+    </div>
+    <div class="modal-body">
+        Are you sure to ship this order: {{order.name}}?
+    </div>
+    <div class="modal-footer">
+		<button class="btn btn-default" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" ng-click="shipOrder()">Ship</button>   
+    </div>
+</script>

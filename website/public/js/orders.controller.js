@@ -1,4 +1,4 @@
-renebuyApp.controller('OrderCtrl', function($scope, orderService, ngTableParams) {
+renebuyApp.controller('OrderCtrl', function($scope, orderService, $modal) {
 	
 	function calcTotal(order) {
 		order.totalQuantity = 0;
@@ -56,6 +56,39 @@ renebuyApp.controller('OrderCtrl', function($scope, orderService, ngTableParams)
 	
 	$scope.orderItemClass = function(item) {
 		return item.deleted ? 'danger' : (item.updated ? 'info' : '');
-	}
+	};
+	
+	$scope.confirmShip = function(order, $event) {
+		$modal.open({
+			templateUrl: 'shipOrderModal.html',
+			controller: 'ShipOrderModalCtrl',
+			resolve: {
+				order: function() {
+					return order;
+				},
+				showAlert: function() {
+					return $scope.showAlert;
+				}
+			}
+		});
+		$event.stopPropagation();
+	};
 
+})
+.controller('ShipOrderModalCtrl', function($scope, $modalInstance, orderService, showAlert, order) {
+	$scope.order = order;  
+	
+	$scope.shipOrder = function () {
+		console.log($scope.order);
+		orderService.shipOrder($scope.order).then(function() {
+			$scope.order.status = 'shipping';
+			$scope.order.editable = false;
+			showAlert('success', 'This order is moved to shipping');
+			$modalInstance.close();
+		});  
+	};
+
+	$scope.cancel = function () {
+	    $modalInstance.dismiss('cancel');
+	};
 });
