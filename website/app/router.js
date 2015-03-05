@@ -400,6 +400,10 @@ router.route('/order/:orderId')
 					item.description = newItem.description;
 				}
 			});
+			
+			if(req.body.name !== order.name) {
+				order.name = req.body.name;
+			}
 				
 			order.save(function(err, result) {
 				if (err) {handleError(err, res); return;}

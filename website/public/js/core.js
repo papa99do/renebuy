@@ -16,8 +16,8 @@ renebuyApp
 		getShoppingList: function() {
 			return Orders.query({shoppingList: true, details: true}).$promise;
 		},
-		updateOrder: function(orderId, deleted, updated) {
-			return Order.save({orderId: orderId}, {deleted: deleted, updated: updated}).$promise;
+		updateOrder: function(orderId, deleted, updated, name) {
+			return Order.save({orderId: orderId}, {deleted: deleted, updated: updated, name: name}).$promise;
 		},
 		shipOrder: function(order) {
 			//return Order.save({orderId: orderId, ship: true}).$promise;
@@ -59,6 +59,17 @@ renebuyApp
 	    return $filter('number')(input * 100, decimals) + '%';
 	};
 }])
+.directive('safeInput', function () {
+    return {
+        restrict: 'A',
+        link: function (scope, element) {
+            element.bind('click', function (event) {
+                event.stopPropagation();
+				event.preventDefault();
+            });
+        }
+    };
+})
 .run(function(editableOptions, editableThemes) {
   	editableThemes.bs3.inputClass = 'input-sm';
   	editableThemes.bs3.buttonsClass = 'btn-sm';

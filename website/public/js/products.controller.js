@@ -162,12 +162,10 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 		});
 	};
 	
-	console.log('aaaaaa');
 	// for typeahead
 	$scope.productNames = [];
 	Product.query({suggest: true}, function(products) {
 		$scope.productNames = products.map(function(p) {return p.name + '(' + p.nameInChinese + ')'});
-		console.log('bbbbbb');
 	});
 }).controller('OrderModalCtrl', function($scope, $modalInstance, product, showAlert, orderService) {
 	

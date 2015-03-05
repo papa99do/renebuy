@@ -38,7 +38,7 @@ renebuyApp.controller('OrderCtrl', function($scope, orderService, $modal) {
 		console.log('Updating order', order._id, deleted, updated);
 		
 		$event.stopPropagation();
-		orderService.updateOrder(order._id, deleted, updated).then(function(result) {
+		orderService.updateOrder(order._id, deleted, updated, order.name).then(function(result) {
 			order.items.forEach(function(item) {
 				if (item.deleted) {
 					order.items.splice(order.items.indexOf(item), 1);

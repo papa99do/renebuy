@@ -3,7 +3,8 @@
 		<accordion-heading>
 			<div class="row">
 				<div class="col-sm-6">
-					{{::order.name}}
+					<span ng-if="!order.editable" style="font-size:1.2em;">{{::order.name}}</span>
+					<input type="text" ng-if="order.editable" class="form-control" ng-model="order.name" safe-input/>
 				</div>
 				<div class="col-sm-6 text-right">
 					<a class="btn btn-default" href="" ng-click="confirmShip(order, $event)" ng-if="order.status === 'active'">
