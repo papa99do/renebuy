@@ -139,7 +139,8 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 		'PL': {logo: 'PL.jpg', fullName: 'Priceline'},
 		'PO': {logo: 'PO.jpg', fullName: 'Pharmacy online'},
 		'WW': {logo: 'WW.jpg', fullName: 'Woolworths'},
-		'MC': {logo: 'MC.jpg', fullName: 'My chemist'} 
+		'MC': {logo: 'MC.jpg', fullName: 'My chemist'}, 
+		'JJ': {logo: 'JJ.gif', fullName: 'Jack and Jill'} 
 	};
 	
 	$scope.storeLogo = function(store) {
