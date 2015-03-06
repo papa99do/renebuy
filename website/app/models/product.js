@@ -30,4 +30,11 @@ var ProcuctSchema = new Schema({
 ProcuctSchema.plugin(textSearch);
 ProcuctSchema.index({name: 'text'});
 
+ProcuctSchema.methods.adjustOrdered = function(quantity, cb) {
+	if (!this.salesInfo) this.salesInfo = {};
+	this.salesInfo.orderedActive += quantity;
+	this.salesInfo.orderedTotal += quantity;
+	this.save(cb);
+};
+
 module.exports = mongoose.model('product', ProcuctSchema);

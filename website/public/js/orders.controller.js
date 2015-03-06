@@ -1,24 +1,46 @@
 renebuyApp.controller('OrderCtrl', function($scope, orderService, $modal) {
+	$scope.productStock = {};
 	
-	function calcTotal(order) {
+	function enhance(order) {
 		order.totalQuantity = 0;
 		order.totalAmount = 0;
+		order.productQuantities = {};
 		order.items.forEach(function(item) {
 			order.totalQuantity += item.number;
 			order.totalAmount += item.number * item.price;
+			order.productQuantities[item.product._id] = order.productQuantities[item.product._id] || 0;
+			order.productQuantities[item.product._id] += item.number;
+			$scope.productStock[item.product._id] = 
+				(item.product.salesInfo && item.product.salesInfo.inStock) 
+				? item.product.salesInfo.inStock : 0;
 		});
 	}
 	
 	orderService.getActiveOrders().then(function(result) {
 		$scope.orders = result;
 		$scope.orders.forEach(function(order) {
-			calcTotal(order);
+			enhance(order);
 		});
 	});
 	
 	$scope.edit = function(order, $event) {
 		order.editable = true;
 		$event.stopPropagation();
+	};
+	
+	$scope.sufficient = function(item, order) {
+		//console.log('Stock: %d, Qty: %d for product: %s', $scope.productStock[item.product._id], 
+		//	order.productQuantities[item.product._id], item.product.name);
+		return $scope.productStock[item.product._id] >= order.productQuantities[item.product._id];
+	};
+	
+	$scope.canShip = function(order) {
+		for (var i = 0; i < order.items.length; i++) {
+			if (!$scope.sufficient(order.items[i], order)) {
+				return false;
+			}
+		}
+		return true;
 	};
 	
 	$scope.save = function(order, $event) {
@@ -41,7 +63,8 @@ renebuyApp.controller('OrderCtrl', function($scope, orderService, $modal) {
 		orderService.updateOrder(order._id, deleted, updated, order.name).then(function(result) {
 			order.items.forEach(function(item) {
 				if (item.deleted) {
-					order.items.splice(order.items.indexOf(item), 1);
+					order.items.splice(order.items.indexOf(item), 1); 
+					// FIXME bug when deleting more than one items!!
 				} else if (item.updated) {
 					item.updated = false;
 				}
@@ -68,6 +91,14 @@ renebuyApp.controller('OrderCtrl', function($scope, orderService, $modal) {
 				},
 				showAlert: function() {
 					return $scope.showAlert;
+				},
+				shipOrder: function() {
+					return function(order) {
+						angular.forEach(order.productQuantities, function(value, key) {
+							console.log('deduct product stock: ', value, key);
+							$scope.productStock[key] -= value;
+						});
+					}
 				}
 			}
 		});
@@ -75,7 +106,7 @@ renebuyApp.controller('OrderCtrl', function($scope, orderService, $modal) {
 	};
 
 })
-.controller('ShipOrderModalCtrl', function($scope, $modalInstance, orderService, showAlert, order) {
+.controller('ShipOrderModalCtrl', function($scope, $modalInstance, orderService, showAlert, order, shipOrder) {
 	$scope.order = order;  
 	
 	$scope.shipOrder = function () {
@@ -83,6 +114,7 @@ renebuyApp.controller('OrderCtrl', function($scope, orderService, $modal) {
 		orderService.shipOrder($scope.order).then(function() {
 			$scope.order.status = 'shipping';
 			$scope.order.editable = false;
+			shipOrder($scope.order);
 			showAlert('success', 'This order is moved to shipping');
 			$modalInstance.close();
 		});  

@@ -299,7 +299,7 @@ router.route('/order')
 			handleResult(result, res);
 		});
 	} else if (req.query.active) {
-		Order.find({status: 'active'}).sort('-createdDate').populate('items.product', '-_id name nameInChinese photos').exec(function(err, result) {
+		Order.find({status: 'active'}).sort('-createdDate').populate('items.product', 'name nameInChinese photos salesInfo').exec(function(err, result) {
 			if (err) {handleError(err, res); return;}
 			handleResult(result, res);
 		});
@@ -409,6 +409,8 @@ router.route('/order/:orderId')
 				if (err) {handleError(err, res); return;}
 				handleResult({'status': 'ok'}, res);
 			});
+			
+			// FIXME BUG change of orderTotal and orderActive
 		}
 	});
 });
