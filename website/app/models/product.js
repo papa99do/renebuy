@@ -21,19 +21,17 @@ var ProcuctSchema = new Schema({
 	category: [String],
 	stores: {type: [ProductInStoreSchema], default: [], _id: false},
 	salesInfo: {
-		orderedTotal: { type: Number, default: 0 },
-		orderedActive: { type: Number, default: 0 },
-		inStock: { type: Number, default: 0 }
+		ordered: { type: Number, default: 0 },
+		sold: { type: Number, default: 0 },
+		bought: { type: Number, default: 0 }
 	}
 });
 
 ProcuctSchema.plugin(textSearch);
 ProcuctSchema.index({name: 'text'});
 
-ProcuctSchema.methods.adjustOrdered = function(quantity, cb) {
-	if (!this.salesInfo) this.salesInfo = {};
-	this.salesInfo.orderedActive += quantity;
-	this.salesInfo.orderedTotal += quantity;
+ProcuctSchema.methods.order = function(quantity, cb) {
+	this.salesInfo.ordered += quantity;
 	this.save(cb);
 };
 

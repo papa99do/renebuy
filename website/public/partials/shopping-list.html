@@ -25,8 +25,8 @@
 					</li>
 				</ul>
 			</td>
-			<td><span class="salesInfo">{{product.salesInfo.orderedActive || 0}}</span></td>
-			<td><span class="salesInfo">{{product.salesInfo.inStock || 0}}</span></td>
+			<td><span class="salesInfo">{{product.salesInfo.ordered - product.salesInfo.sold || 0}}</span></td>
+			<td><span class="salesInfo" ng-style="product.salesInfo.bought < product.salesInfo.ordered ? {'color':'red'} : {'color': 'green'}">{{product.salesInfo.bought - product.salesInfo.sold || 0}}</span></td>
 			<td>
 				<form class="form-inline" name="buy-{{product._id}}">
 					<input type="number" ng-model="quantity" class="form-control" style="width:50px;"> 

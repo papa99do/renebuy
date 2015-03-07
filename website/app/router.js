@@ -337,8 +337,7 @@ router.route('/order')
 		Product.findById(req.body.productId, function(err, product) {
 			if (err) return handleError(err, res);
 			if (!product) return handleError("cannot find product", res);
-			product.salesInfo.orderedTotal += req.body.number;
-			product.salesInfo.orderedActive += req.body.number;
+			product.salesInfo.ordered += req.body.number;
 			product.save(function(err) {
 				if (err) return handleError(err, res);
 				handleResult({'status': 'ok'}, res);
@@ -425,11 +424,11 @@ router.route('/purchase')
 	}
 	*/	
 	
-	function updateProductInStockQuantity() {
+	function updateProductBoughtQuantity() {
 		Product.findById(req.body.productId, function(err, product) {
 			if (err) return handleError(err, res);
 			if (!product) return handleError("cannot find product", res);
-			product.salesInfo.inStock += req.body.quantity;
+			product.salesInfo.bought += req.body.quantity;
 			product.save(function(err) {
 				if (err) return handleError(err, res);
 				handleResult({'status': 'ok'}, res);
@@ -440,11 +439,10 @@ router.route('/purchase')
 	new Purchase({
 		product: mongoose.Types.ObjectId(req.body.productId),
 		price: req.body.price,
-		quantity: req.body.quantity,
-		quantityInStock: req.body.quantity
+		quantity: req.body.quantity
 	}).save(function(err, savedPurchase) {
 		if (err) return handleError(err, res);
-		updateProductInStockQuantity();	
+		updateProductBoughtQuantity();	
 	});
 });
 
@@ -473,38 +471,47 @@ router.route('/calc-sales-info/:infoKey')
 		});
 	}
 	
-	if (req.params.infoKey === 'orderedTotal') {
-		// calculate orderedTotal
+	if (req.params.infoKey === 'ordered') {
+		// calculate ordered
 		Order.aggregate(
 			{$unwind: '$items'},
 			{$group: {_id: '$items.product', total: {$sum: '$items.number'}}}, 
 			function(err, products) {
 				if (err) return handleError(err, res);
-				updateSalesInfo(products, 'orderedTotal');	
+				updateSalesInfo(products, 'ordered');	
 			}
 		);
-	} else if (req.params.infoKey === 'orderedActive') {
-		// calculate orderedActive
+	} else if (req.params.infoKey === 'sold') {
+		// calculate sold
 		Order.aggregate(
-			{$match: {status: 'active'}},
+			{$match: {status: {$ne : 'active'}}},
 			{$unwind: '$items'},
 			{$group: {_id: '$items.product', total: {$sum: '$items.number'}}}, 
 			function(err, products) {
 				if (err) return handleError(err, res);
-				updateSalesInfo(products, 'orderedActive');
+				updateSalesInfo(products, 'sold');
 			}
 		);
-	} else if (req.params.infoKey === 'inStock') {
-		// calculate inStock
+	} else if (req.params.infoKey === 'bought') {
+		// calculate bought
 		Purchase.aggregate(
-			{$group: {_id: '$product', total: {$sum: '$quantityInStock'}}},
+			{$group: {_id: '$product', total: {$sum: '$quantity'}}},
 			function(err, products) {
 				if (err) return handleError(err, res);
-				updateSalesInfo(products, 'inStock');
+				updateSalesInfo(products, 'bought');
 			}
 		);
+	} else if (req.params.infoKey === 'clean') {
+		Product.update(
+			{}, // query 
+			{$set: {salesInfo: {ordered: 0, bought: 0, sold: 0}}}, // clean salesInfo
+			{multi: true},  // update all
+			function(err, updated) {
+				if (err) return handleError(err, res);
+				handleResult({'status': 'ok', updated: updated}, res);
+			});
 	} else {
-		handleError('InfoKey should be one of [orderedTotal, orderedActive, inStock]', res);
+		handleError('InfoKey should be one of [clean, ordered, sold, bought]', res);
 	}
 });
 

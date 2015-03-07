@@ -24,13 +24,13 @@ OrderSchema.methods.revise = function(updated, deleted, name, cb) {
 		var newItem = updated[item._id];
 		if (newItem) {
 			item.price = newItem.price;
-			item.product.adjustOrdered(newItem.number - item.number);
+			item.product.order(newItem.number - item.number);
 			item.number = newItem.number;
 			item.description = newItem.description;
 		}
 		
 		if (deleted.indexOf(item._id) > -1) {
-			item.product.adjustOrdered(-item.number);
+			item.product.order(-item.number);
 		}
 	});
 	

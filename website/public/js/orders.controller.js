@@ -10,9 +10,8 @@ renebuyApp.controller('OrderCtrl', function($scope, orderService, $modal) {
 			order.totalAmount += item.number * item.price;
 			order.productQuantities[item.product._id] = order.productQuantities[item.product._id] || 0;
 			order.productQuantities[item.product._id] += item.number;
-			$scope.productStock[item.product._id] = 
-				(item.product.salesInfo && item.product.salesInfo.inStock) 
-				? item.product.salesInfo.inStock : 0;
+			console.log(item.product.salesInfo);
+			$scope.productStock[item.product._id] = item.product.salesInfo.bought - item.product.salesInfo.sold;
 		});
 	}
 	
@@ -29,8 +28,7 @@ renebuyApp.controller('OrderCtrl', function($scope, orderService, $modal) {
 	};
 	
 	$scope.sufficient = function(item, order) {
-		//console.log('Stock: %d, Qty: %d for product: %s', $scope.productStock[item.product._id], 
-		//	order.productQuantities[item.product._id], item.product.name);
+		// console.log('Stock: %d, Qty: %d for product: %s', $scope.productStock[item.product._id], order.productQuantities[item.product._id], item.product.name);
 		return $scope.productStock[item.product._id] >= order.productQuantities[item.product._id];
 	};
 	
@@ -70,7 +68,7 @@ renebuyApp.controller('OrderCtrl', function($scope, orderService, $modal) {
 				}
 			});
 			
-			calcTotal(order);
+			enhance(order);
 			order.editable = false;
 			
 			$scope.showAlert('success', 'Order updated successfully!');
@@ -115,7 +113,7 @@ renebuyApp.controller('OrderCtrl', function($scope, orderService, $modal) {
 			$scope.order.status = 'shipping';
 			$scope.order.editable = false;
 			shipOrder($scope.order);
-			showAlert('success', 'This order is moved to shipping');
+			showAlert('success', 'This order is moved to shipping: ' + $scope.order.name);
 			$modalInstance.close();
 		});  
 	};

@@ -7,12 +7,12 @@ renebuyApp.controller('ShoppingListCtrl', function($scope, orderService, purchas
 		if (!quantity || quantity < 1 || !price) return;
 		
 		purchaseService.purchase(product._id, quantity, price).then(function(result) {
-			if (!product.salesInfo) product.salesInfo = {};
-			product.salesInfo.inStock = (product.salesInfo.inStock || 0) + quantity;
+			product.salesInfo.bought += quantity;
 			$scope.showAlert('success', 'Bought ' + quantity + ' [' + product.name + '] with price: $' + price);
 		});
 	};
 	
+	// TODO extract to a directive
 	$scope.storeMap = {
 		'CW': {logo: 'CW.png', fullName: 'Chemist warehouse'},
 		'CO': {logo: 'CO.png', fullName: 'Coles'},
