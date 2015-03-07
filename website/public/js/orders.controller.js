@@ -10,7 +10,7 @@ renebuyApp.controller('OrderCtrl', function($scope, orderService, $modal) {
 			order.totalAmount += item.number * item.price;
 			order.productQuantities[item.product._id] = order.productQuantities[item.product._id] || 0;
 			order.productQuantities[item.product._id] += item.number;
-			console.log(item.product.salesInfo);
+			//console.log(item.product.salesInfo);
 			$scope.productStock[item.product._id] = item.product.salesInfo.bought - item.product.salesInfo.sold;
 		});
 	}
@@ -59,14 +59,15 @@ renebuyApp.controller('OrderCtrl', function($scope, orderService, $modal) {
 		
 		$event.stopPropagation();
 		orderService.updateOrder(order._id, deleted, updated, order.name).then(function(result) {
-			order.items.forEach(function(item) {
-				if (item.deleted) {
-					order.items.splice(order.items.indexOf(item), 1); 
-					// FIXME bug when deleting more than one items!!
-				} else if (item.updated) {
-					item.updated = false;
+			
+			for (var i = order.items.length - 1; i >= 0; i--) {
+				if (order.items[i].deleted) {
+					console.log('delete item: %s, form index %d', order.items[i]._id, i);
+					order.items.splice(i, 1);
+				} else if (order.items[i].updated) {
+					order.items[i].updated = false;
 				}
-			});
+			}
 			
 			enhance(order);
 			order.editable = false;
