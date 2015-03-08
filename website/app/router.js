@@ -291,6 +291,35 @@ router.route('/price-alert')
 });
 
 
+/*******     ORDER      ********/
+
+function updateProductSalesInfo(products, infoKey, res) {
+	var results = [];
+	async.each(products, function(product, callback) {
+		
+		console.log("updating sales info [%s] to [%d] for product: [%s]", infoKey, product.total, product._id)
+
+		Product.findById(product._id, function(err, p) {
+			if (err) return callback(err);
+			if (product.total !== undefined) {
+				p.salesInfo[infoKey] = product.total;
+			} else {
+				p.salesInfo[infoKey] += product.diff;
+			}
+			
+			p.save(function(err, updated) {
+				if (err) return callback(err);
+				results.push({id: updated._id, name: updated.name, salesInfo: updated.salesInfo});
+				callback();
+			});
+		});
+		
+	}, function(err) {
+		if (err) return handleError(err, res);
+		handleResult({'status': 'ok', updating: infoKey, results: results}, res)
+	});
+}
+
 router.route('/order')
 .get(function(req, res) {
 	if (req.query.activeName) {
@@ -384,20 +413,43 @@ router.route('/order/:orderId')
 		}
 	}
 	*/
+	var orderedAdjustments = {};
+	
+	function changeQuantity(productId, diff) {
+		//console.log('change proudct: ', productId, diff);
+		orderedAdjustments[productId] = orderedAdjustments[productId] || 0;
+		orderedAdjustments[productId] += diff;
+	}
+	
+	function getChangedProducts() {
+		var products = [];
+		//console.log(orderedAdjustments);
+		_.each(orderedAdjustments, function(diff, productId) {
+			//console.log('product ordered changed, %s, %d', productId, diff);
+			products.push({_id: productId, diff: diff});
+		});
+		return products;
+	}
 	
 	Order.findById(req.params.orderId, function(err, order) {
 		if (err) {handleError(err, res); return;}
-		if (order) {
-			req.body.deleted.forEach(function(itemId) {
-				order.items.pull(itemId);	
-			});
+		if (order) {		
 			order.items.forEach(function(item) {
 				var newItem = req.body.updated[item._id];
 				if (newItem) {
+					changeQuantity(item.product, newItem.number - item.number);
 					item.price = newItem.price;
 					item.number = newItem.number;
 					item.description = newItem.description;
 				}
+				//console.log('deleted items: ', item._id, req.body.deleted, req.body.deleted.indexOf(item._id.toString()));
+				if (req.body.deleted.indexOf(item._id.toString()) > -1) {
+					changeQuantity(item.product, -item.number);
+				}
+			});
+			
+			req.body.deleted.forEach(function(itemId) {
+				order.items.pull(itemId);	
 			});
 			
 			if(req.body.name !== order.name) {
@@ -406,10 +458,9 @@ router.route('/order/:orderId')
 				
 			order.save(function(err, result) {
 				if (err) {handleError(err, res); return;}
-				handleResult({'status': 'ok'}, res);
+				updateProductSalesInfo(getChangedProducts(), 'ordered', res);
 			});
 			
-			// FIXME BUG change of orderTotal and orderActive
 		}
 	});
 });
@@ -447,30 +498,7 @@ router.route('/purchase')
 });
 
 router.route('/calc-sales-info/:infoKey')
-.get(function (req, res) {
-	
-	function updateSalesInfo(products, infoKey) {
-		var results = [];
-		async.each(products, function(product, callback) {
-			
-			console.log("updating sales info [%s] to [%d] for product: [%s]", infoKey, product.total, product._id)
-
-			Product.findById(product._id, function(err, p) {
-				if (err) return callback(err);
-				p.salesInfo[infoKey] = product.total;
-				p.save(function(err, updated) {
-					if (err) return callback(err);
-					results.push({id: updated._id, name: updated.name, salesInfo: updated.salesInfo});
-					callback();
-				});
-			});
-			
-		}, function(err) {
-			if (err) return handleError(err, res);
-			handleResult({'status': 'ok', updating: infoKey, results: results}, res)
-		});
-	}
-	
+.get(function (req, res) {	
 	if (req.params.infoKey === 'ordered') {
 		// calculate ordered
 		Order.aggregate(
@@ -478,7 +506,7 @@ router.route('/calc-sales-info/:infoKey')
 			{$group: {_id: '$items.product', total: {$sum: '$items.number'}}}, 
 			function(err, products) {
 				if (err) return handleError(err, res);
-				updateSalesInfo(products, 'ordered');	
+				updateProductSalesInfo(products, 'ordered', res);	
 			}
 		);
 	} else if (req.params.infoKey === 'sold') {
@@ -489,7 +517,7 @@ router.route('/calc-sales-info/:infoKey')
 			{$group: {_id: '$items.product', total: {$sum: '$items.number'}}}, 
 			function(err, products) {
 				if (err) return handleError(err, res);
-				updateSalesInfo(products, 'sold');
+				updateProductSalesInfo(products, 'sold', res);
 			}
 		);
 	} else if (req.params.infoKey === 'bought') {
@@ -498,7 +526,7 @@ router.route('/calc-sales-info/:infoKey')
 			{$group: {_id: '$product', total: {$sum: '$quantity'}}},
 			function(err, products) {
 				if (err) return handleError(err, res);
-				updateSalesInfo(products, 'bought');
+				updateProductSalesInfo(products, 'bought', res);
 			}
 		);
 	} else if (req.params.infoKey === 'clean') {
