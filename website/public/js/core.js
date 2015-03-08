@@ -1,7 +1,9 @@
 renebuyApp
 .factory('orderService', function($resource, $q) {
 	var Orders = $resource('/api/order');
-	var Order = $resource('/api/order/:orderId', {orderId: '@orderId'});
+	var Order = $resource('/api/order/:orderId', {orderId: '@orderId'}, {
+		ship: {method: 'POST', params:{ship: true}}
+	});
 	
 	return {
 		addOrderItem: function(item) {
@@ -20,8 +22,7 @@ renebuyApp
 			return Order.save({orderId: orderId}, {deleted: deleted, updated: updated, name: name}).$promise;
 		},
 		shipOrder: function(order) {
-			//return Order.save({orderId: orderId, ship: true}).$promise;
-			return $q.when('a');
+			return Order.ship({orderId: order._id}).$promise;
 		}
 	}
 })

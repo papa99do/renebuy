@@ -296,8 +296,6 @@ router.route('/price-alert')
 function updateProductSalesInfo(products, infoKey, res) {
 	var results = [];
 	async.each(products, function(product, callback) {
-		
-		console.log("updating sales info [%s] to [%d] for product: [%s]", infoKey, product.total, product._id)
 
 		Product.findById(product._id, function(err, p) {
 			if (err) return callback(err);
@@ -401,6 +399,38 @@ router.route('/order')
 
 router.route('/order/:orderId')
 .post(function (req, res) {
+	
+	function updateSoldNumber(items) {
+		var soldNumberMap = {};
+		items.forEach(function(item) {
+			soldNumberMap[item.product] = soldNumberMap[item.product] || 0;
+			soldNumberMap[item.product] += item.number;
+		});
+		var soldProducts = [];
+		_.each(soldNumberMap, function(sold, productId) {
+			soldProducts.push({_id: productId, diff: sold});
+		});
+		console.log('sold products: ', soldProducts);
+		updateProductSalesInfo(soldProducts, 'sold', res);
+	}
+	
+	function shipOrder() {
+		Order.findById(req.params.orderId, function(err, order) {
+			if (err) return handleError(err, res);
+			if (order) {
+				order.status = 'shipping';
+				order.save(function(err) {
+					if (err) return handleError(err, res);
+					updateSoldNumber(order.items);
+				})
+			}
+		});
+	}
+	
+	if (req.query.ship) {
+		return shipOrder();
+	}
+	
 	/* Update order items
 	{ 	"deleted" : ["xxxxdf1432432"], 
 	  	"udpated" : { 
