@@ -42,7 +42,11 @@
 				<img src="{{product.photos[0]}}" alt="{{product.name}}" class="prod-img">
 			</div>
 			<div>
-				{{'P.PRICE_IN_STORES' | translate}}:
+				{{'P.PRICE_IN_STORES' | translate}}: 
+				<a href="" ng-click="getNewPrices(product)">
+					<i class="glyphicon glyphicon-refresh"></i>
+				</a>
+				<span ng-if="product.lastPriceUpdated"> (at: {{product.lastPriceUpdated | date: 'dd/MM/yyyy h:mma'}})</span>
 				<ul id="prices">
 					<li ng-repeat="store in product.stores">
 						<a href="{{store.detailUrl}}" target="_blank" title="{{storeMap[store.storeName].fullName}}"> <img ng-src="/images/store-logo/{{storeMap[store.storeName].logo}}" alt="{{store.storeName}}" class="store-logo"></a>

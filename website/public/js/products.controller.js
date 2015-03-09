@@ -9,7 +9,8 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 		updateCategory: {method: 'POST', params:{category: true}},
 		updateName: {method: 'POST', params:{name: true}},
 		updateNameInChinese: {method: 'POST', params:{nameInChinese: true}},
-		updateTaxType: {method: 'POST', params:{taxType: true}}
+		updateTaxType: {method: 'POST', params:{taxType: true}},
+		getNewPrices: {method: 'GET', params: {newPrice: true}},
 	});
 	
 	var defaultScrollQuery = function () {
@@ -132,6 +133,21 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 			console.log('Tax type changed to %s for [%s]', product.isHighTax ? 'high' : 'low', product.name);
 		});
 	};
+	
+	$scope.getNewPrices = function(product) {
+		Product.getNewPrices({id: product._id}, function(newPriceMap) {
+			//console.log('New prices: ', newPriceMap);
+			product.stores.forEach(function(store) {
+				if (newPriceMap[store.storeName]) {
+					store.price = newPriceMap[store.storeName].newPrice;
+					if (store.lowestPrice > store.price) {
+						store.lowestPrice = store.price;
+					}
+				}
+			});
+			product.lastPriceUpdated = new Date();
+		});
+	}
 	
 	$scope.storeMap = {
 		'CW': {logo: 'CW.png', fullName: 'Chemist warehouse'},

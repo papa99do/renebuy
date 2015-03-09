@@ -6,6 +6,8 @@ var Order = require('./models/order')
 var Purchase = require('./models/purchase')
 var _ = require('underscore');
 var async = require('async');
+var PriceCollector = require('./price-collector');
+
 
 // configuration =================
 var mongoUrl = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/renebuy';
@@ -264,6 +266,14 @@ router.route('/product/:id')
 			handleResult(savedProduct, res);
 		});
 	}
+})
+.get(function(req, res) {
+	if (req.query.newPrice) {
+		PriceCollector.collectPrices(req.params.id, function(err, newPriceMap) {
+			if (err) return handleError(err, res);
+			handleResult(newPriceMap, res);
+		})
+	}
 });
 
 router.route('/price-alert')
@@ -289,6 +299,8 @@ router.route('/price-alert')
 		handleResult(result, res);
 	})
 });
+
+
 
 
 /*******     ORDER      ********/
