@@ -201,10 +201,10 @@ textarea {
 
 .alert {
 	width: 300px;
-	position: absolute;
+	position: fixed;
 	left: 50%;
 	margin-left: -150px;
-	top: 100px;
+	top: 200px;
 	z-index:2000;
 }
 
