@@ -25,7 +25,7 @@ $(document).ready(function() {
     function extractProductInfo($enhanceBtn, extractNumber) {
     	// extract product information
         var productElem = $enhanceBtn.parent().parent();
-        var detailUrl = productElem.find('.prod_link').attr('href');
+        var detailUrl = productElem.children('a').attr('href');
         var photoUrl = productElem.find('.product-image').attr('src');
         var id = extractNumber(/(\d+)(_\d+)?\.jpg/, photoUrl);
         var price = extractNumber(/\$([0-9.]+)/, productElem.find('.price').text());
