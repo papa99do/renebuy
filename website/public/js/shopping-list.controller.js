@@ -5,6 +5,7 @@ renebuyApp.controller('ShoppingListCtrl', function($scope, orderService, purchas
 	
 	$scope.buy = function(product, quantity, price) {
 		if (!quantity || quantity < 1 || !price) return;
+		// TODO disable buy botton
 		
 		purchaseService.purchase(product._id, quantity, price).then(function(result) {
 			product.salesInfo.bought += quantity;
@@ -20,7 +21,8 @@ renebuyApp.controller('ShoppingListCtrl', function($scope, orderService, purchas
 		'PO': {logo: 'PO.jpg', fullName: 'Pharmacy online'},
 		'WW': {logo: 'WW.jpg', fullName: 'Woolworths'},
 		'MC': {logo: 'MC.jpg', fullName: 'My chemist'}, 
-		'JJ': {logo: 'JJ.gif', fullName: 'Jack and Jill'}
+		'JJ': {logo: 'JJ.gif', fullName: 'Jack and Jill'},
+		'SK': {logo: 'SK.jpg', fullName: 'Sukin'},
 	};
 	
 	$scope.storeLogo = function(store) {
