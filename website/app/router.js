@@ -342,6 +342,11 @@ router.route('/order')
 			if (err) {handleError(err, res); return;}
 			handleResult(result, res);
 		});
+	} else if (req.query.shipping) {
+		Order.find({status: 'shipping'}).sort('-createdDate').populate('items.product', 'name nameInChinese photos').exec(function(err, result) {
+			if (err) {handleError(err, res); return;}
+			handleResult(result, res);
+		});
 	} else if (req.query.shoppingList) {
 		var projection = req.query.details ? 'name nameInChinese photos stores rrp salesInfo' : 'name stores rrp'
 		

@@ -15,6 +15,9 @@ renebuyApp
 		getActiveOrders: function() {
 			return Orders.query({active: true}).$promise;
 		},
+		getShippingOrders: function() {
+			return Orders.query({shipping: true}).$promise;
+		},
 		getShoppingList: function() {
 			return Orders.query({shoppingList: true, details: true}).$promise;
 		},

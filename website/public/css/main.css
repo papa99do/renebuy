@@ -230,3 +230,103 @@ ul.store {
 	font-size: 2em;
 	font-weight: bold;
 }
+
+ul.shipping {
+	padding: 0;
+	list-style: none;
+	width: 100%;
+}
+ul.shipping li {
+	margin: 5px 0 0 5px;
+	display: block;
+	width: 100%;
+    user-select: none;   
+}
+
+div.box {
+	cursor: move;
+	background-color: #fff;
+	padding:3px;
+	border-radius: 2px 2px 2px 2px;
+	box-shadow: 0px 1px 6px #777;
+	
+}
+
+div.box.unselectable {
+	background-color: #ccc;
+}
+
+div.box.selected {
+	background-color: #aaf;
+}
+
+#boxes div.box {
+	cursor: default;
+}
+
+div.box img {
+	width:50px; 
+	height:50px; 
+	float:left; 
+	margin-right:5px;
+}
+
+a.disabled {
+	color: gray;
+    pointer-events: none;
+}
+
+.vertical-align {
+    display: flex;
+    align-items: center;
+}
+
+.shipping-container {
+	top: 20px;
+	left: 10px;
+    right: 10px;
+	bottom: 0px;
+    position: absolute;
+	width: auto;
+    height: auto;
+}
+
+.shipping-container > .panel {
+	position: absolute;
+	top:0px;
+	bottom: 0px;
+	width:49%;
+}
+
+.shipping-container > .panel > .panel-heading {
+	margin: 0px;
+}
+
+.shipping-container > .panel > .panel-body {
+	padding:10px;
+	height:calc(100% - 60px);
+	overflow-y:scroll;
+}
+
+.shipping-container > .panel > .panel-body .panel-group {
+	margin-bottom: 0px;
+}
+
+#boxes {
+	right:5px;
+}
+
+#orders {
+	left:5px;
+}
+
+.fill {
+    top: 50px;
+    left: 10px;
+    right: 10px;
+    bottom: 0px;
+    position: absolute;
+    width: auto;
+    height: auto;
+	padding: 10px;
+}

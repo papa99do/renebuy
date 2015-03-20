@@ -1,0 +1,75 @@
+<div class="row shipping-container">
+	<div class="panel panel-success" id="orders">
+		<div class="panel-heading row">
+			 <i class="fa fa-server fa-2x"></i><span style="font-size:1.5em; padding-left:10px;">Orders</span>
+		</div>
+		<div class="panel-body">
+		<accordion close-others="false">
+			<accordion-group is-open="true" ng-repeat="order in orders">
+				<accordion-heading>
+					<div class="row">
+						<div class="col-sm-12">
+							{{::order.name}}
+						</div>			
+					</div>
+				</accordion-heading>
+				<ul class="shipping">
+					<li ng-repeat="item in order.items" ng-click="selectItem(item)">
+						<div class="row vertical-align">
+							<div class="col-md-10 box" ng-model="order.items" data-drag="remainder(item) > 0" data-jqyoui-options="{revert: 'invalid', helper: 'clone', scroll: false, appendTo: '#boxes'}" jqyoui-draggable="{index: {{$index}}, animate: false, placeholder: 'keep'}" ng-class="boxClass(item)">
+								<img ng-src="{{item.product.photos[0]}}" alt="{{item.product.name}}">
+								{{item.product.name}} <br> {{item.product.nameInChinese}}
+							</div>
+							<div class="col-md-2">
+								<span style="font-size:2em;">{{remainder(item)}}/{{item.number}}</span>
+							</div>
+						</div> 
+					</li>
+				</ul>
+			</accordion-group>
+		</accordion>
+		</div>
+	</div>
+	
+	<div class="panel panel-info" id="boxes">
+		<div class="panel-heading row">
+			<div class="col-sm-6">
+				<i class="fa fa-dropbox fa-2x"></i><span style="font-size:1.5em; padding-left:10px;">Boxes</span>
+			</div>
+			<div class="col-sm-6 text-right">
+				<a href="" ng-click="addNewBox()"><i class="fa fa-plus-circle fa-2x"></i></a>
+			</div>
+		</div>
+		<div class="panel-body">
+		<accordion close-others="false">
+			<accordion-group is-open="true" ng-repeat="box in boxes">
+				<accordion-heading>
+					<div class="row">
+						<div class="col-sm-6">
+							{{box.name}}
+						</div>
+						<div class="col-sm-6 text-right">
+						</div>
+					</div>
+					
+				</accordion-heading>
+				<ul class="shipping" data-drop="true" ng-model='box.items' jqyoui-droppable="{multiple:true, onDrop:'drop(box)'}" style="width:100%; min-height:100px;">
+				    <li ng-repeat="item in box.items" ng-click="selectItem(item)">
+						<div class="row vertical-align">
+							<div class="col-md-10 box" ng-class="selectedItem._id === item._id ? 'selected' : ''">
+								<img ng-src="{{item.product.photos[0]}}" alt="{{item.product.name}}">
+								{{item.product.name}} <br> {{item.product.nameInChinese}}
+							</div>
+							<div class="col-md-2">
+								<a href="" ng-click="removeFromBox(box, $index, $event)"><i class="glyphicon glyphicon-minus" style="font-size:1.2em;"></i></a>
+								<span style="font-size:2em;">{{box.itemCount[item._id]}}</span>
+								<a href="" ng-click="addToBox(box, $index, $event)" ng-class="remainder(item) > 0 ? '' : 'disabled'"><i class="glyphicon glyphicon-plus" style="font-size:1.2em;"></i></a>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</accordion-group>
+		</accordion>
+		</div>
+	</div>
+</div>

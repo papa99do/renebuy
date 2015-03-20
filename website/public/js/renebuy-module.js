@@ -1,6 +1,6 @@
 var renebuyApp = angular.module('renebuy',
 	['ui.router', 'ngResource', 'xeditable', 'treeControl', 
-	'infinite-scroll', 'ui.bootstrap', 'pascalprecht.translate', 'ngTable']);
+	'infinite-scroll', 'ui.bootstrap', 'pascalprecht.translate', 'ngTable', 'ngDragDrop']);
 
 renebuyApp.config(function($stateProvider, $urlRouterProvider) {
   //
@@ -33,6 +33,11 @@ renebuyApp.config(function($stateProvider, $urlRouterProvider) {
       url: "/shopping-list",
       templateUrl: "partials/shopping-list.html",
       controller: "ShoppingListCtrl"
+    })
+	.state('shipping', {
+      url: "/shipping",
+      templateUrl: "partials/shipping.html",
+      controller: "ShippingCtrl"
     });
 }).config(['$translateProvider', function ($translateProvider) {
   $translateProvider.translations('en', {
@@ -42,6 +47,7 @@ renebuyApp.config(function($stateProvider, $urlRouterProvider) {
 		PRICE_ALERT: 'Price alert',
 		ORDERS: 'Orders',
 		SHOPPING_LIST: 'Shopping list',
+		SHIPPING: 'Shipping',
 		TRANSLATE: '切换中文',
 		EDIT_MODE: 'Toggle edit mode'
 	},
@@ -83,6 +89,7 @@ renebuyApp.config(function($stateProvider, $urlRouterProvider) {
 		PRICE_ALERT: '价格提醒',
 		ORDERS: '订单管理',
 		SHOPPING_LIST: '采购单',
+		SHIPPING: '物流',
 		TRANSLATE: '切换英文',
 		EDIT_MODE: '切换编辑模式'
 	},
