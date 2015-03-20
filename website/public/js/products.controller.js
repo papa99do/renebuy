@@ -135,6 +135,7 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 	};
 	
 	$scope.getNewPrices = function(product) {
+		product.updatingPrice = true;
 		Product.getNewPrices({id: product._id}, function(newPriceMap) {
 			//console.log('New prices: ', newPriceMap);
 			product.stores.forEach(function(store) {
@@ -145,7 +146,9 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 					}
 				}
 			});
+			enhance(product);
 			product.lastPriceUpdated = new Date();
+			product.updatingPrice = false;
 		});
 	}
 	

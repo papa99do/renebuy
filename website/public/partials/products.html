@@ -44,7 +44,7 @@
 			<div>
 				{{'P.PRICE_IN_STORES' | translate}}: 
 				<a href="" ng-click="getNewPrices(product)">
-					<i class="glyphicon glyphicon-refresh"></i>
+					<i class="glyphicon glyphicon-refresh" ng-class="product.updatingPrice ? 'rotate' : ''"></i>
 				</a>
 				<span ng-if="product.lastPriceUpdated"> (at: {{product.lastPriceUpdated | date: 'dd/MM/yyyy h:mma'}})</span>
 				<ul id="prices">
