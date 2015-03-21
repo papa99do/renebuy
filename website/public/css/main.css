@@ -272,7 +272,8 @@ div.box img {
 }
 
 a.disabled {
-	color: gray;
+	color: #ccc;
+	cursor: default;
     pointer-events: none;
 }
 

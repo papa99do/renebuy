@@ -46,13 +46,22 @@
 				<accordion-heading>
 					<div class="row">
 						<div class="col-sm-6">
-							{{box.name}}
+							{{box.trackingNumber || box.name}}  {{box.recipient}}
 						</div>
 						<div class="col-sm-6 text-right">
+							<a href="" ng-class="box.changed ? '' : 'disabled'" ng-click="saveBox(box, $event)"><i class="glyphicon glyphicon-save"></i> Save</a>
 						</div>
 					</div>
 					
 				</accordion-heading>
+				<div class="form-inline">
+					Tracking No. 
+					<input type="text" class="form-control" ng-model="box.trackingNumber" ng-change="box.changed = true">
+					<span style="padding-right:20px;"></span>
+					To 
+					<input type="text" class="form-control" ng-model="box.recipient" ng-change="box.changed = true">
+				</div>
+				<hr />
 				<ul class="shipping" data-drop="true" ng-model='box.items' jqyoui-droppable="{multiple:true, onDrop:'drop(box)'}" style="width:100%; min-height:100px;">
 				    <li ng-repeat="item in box.items" ng-click="selectItem(item)">
 						<div class="row vertical-align">
@@ -66,6 +75,9 @@
 								<a href="" ng-click="addToBox(box, $index, $event)" ng-class="remainder(item) > 0 ? '' : 'disabled'"><i class="glyphicon glyphicon-plus" style="font-size:1.2em;"></i></a>
 							</div>
 						</div>
+					</li>
+					<li ng-if="box.items.length === 0" class="text-center" style="color: #eee; font-size:3em;">
+						<i class="fa fa-caret-square-o-down"></i> Drop items here
 					</li>
 				</ul>
 			</accordion-group>

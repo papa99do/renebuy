@@ -1,4 +1,17 @@
 renebuyApp
+.factory('deliveryService', function($resource) {
+	var Boxes = $resource('/api/box');
+	var Box = $resource('/api/box/:boxId', {boxId: '@boxId'});
+	
+	return {
+		saveBox: function(box) {
+			return box._id ? Box.save({boxId: box._id}, box).$promise : Boxes.save(box).$promise;
+		},
+		getActiveBoxes: function() {
+			return Boxes.query().$promise;
+		}
+	}
+})
 .factory('orderService', function($resource, $q) {
 	var Orders = $resource('/api/order');
 	var Order = $resource('/api/order/:orderId', {orderId: '@orderId'}, {

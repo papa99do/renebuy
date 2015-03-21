@@ -1,15 +1,46 @@
-renebuyApp.controller('ShippingCtrl', function($scope, orderService) { 
+renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliveryService) { 
+	var orderItemMap = {};
+	var boxSeq = 1;
+	$scope.boxes = [];
+	
 	orderService.getShippingOrders().then(function(orders) {
-		console.log(orders);
+		orders.forEach(function(order) {
+			order.items.forEach(function(item) {
+				item.inBox = 0;
+				orderItemMap[item._id] = item;
+			});
+		});
+		//console.log(orderItemMap);
 		$scope.orders = orders;
+	}).then(function() {
+		deliveryService.getActiveBoxes().then(function(boxes) {
+			//console.log(boxes);
+			
+			boxes.forEach(function(box) {
+				var enhancedBox = {
+					_id: box._id,
+					name: box.name,
+					trackingNumber: box.trackingNumber,
+					recipient: box.recipient,
+					items: [],
+					itemCount: {}
+				};
+				
+				box.items.forEach(function(item) {
+					var orderItem = orderItemMap[item.orderItemId]
+					enhancedBox.items.push(orderItem);
+					enhancedBox.itemCount[item.orderItemId] = item.quantity;
+					orderItem.inBox += item.quantity;
+				});
+				
+				$scope.boxes.push(enhancedBox);
+			});
+		});
 	});
 	
-	var boxSeq = 1;
-	
-	$scope.boxes = [];
 	$scope.addNewBox = function() {
 		$scope.boxes.push({
-			name: 'New Box ' + (boxSeq++),
+			name: 'Box ' + (boxSeq++),
 			items: [],
 			itemCount: {}
 		});
@@ -27,12 +58,12 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService) {
 	};
 	
 	$scope.remainder = function(item) {
-		return item.number - (item.inBox || 0);
+		return item.number - item.inBox;
 	};
 	
 	$scope.drop = function(event, ui, box) {
 		var addedItem = box.items[box.items.length - 1];
-		addedItem.inBox = (addedItem.inBox || 0) + 1;
+		addedItem.inBox = addedItem.inBox + 1;
 		
 		if (box.itemCount[addedItem._id] && box.itemCount[addedItem._id] > 0) {
 			box.itemCount[addedItem._id] += 1;
@@ -40,12 +71,15 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService) {
 		} else {
 			box.itemCount[addedItem._id] = 1;
 		}
+		
+		box.changed = true;
 	};
 	
 	$scope.addToBox = function(box, index, $event) {
 		var item = box.items[index];
 		item.inBox += 1;
 		box.itemCount[item._id] += 1;
+		box.changed = true;
 		$event.stopPropagation();
 	};
 	
@@ -56,6 +90,7 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService) {
 		if (box.itemCount[item._id] === 0) {
 			box.items.splice(index, 1);
 		}	
+		box.changed = true;
 		$event.stopPropagation();
 	};
 	
@@ -66,4 +101,25 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService) {
 		});
 		$scope.boxes.splice(index, 1);
 	};
+	
+	$scope.saveBox = function(box, $event) {
+		$event.stopPropagation();
+		var trimmedBox = {
+			_id: box._id,
+			name: box.name,
+			trackingNumber: box.trackingNumber,
+			recipient: box.recipient,
+			items: box.items.map(function(item) {
+				return {
+					orderItemId: item._id,
+					quantity: box.itemCount[item._id]
+				};
+			})
+		};
+		deliveryService.saveBox(trimmedBox).then(function(savedBox) {
+			if (!box._id) box._id = savedBox._id;
+			box.changed = false;
+			$scope.showAlert('success', 'Information about this box has been saved.');
+		});	
+	}
 });
