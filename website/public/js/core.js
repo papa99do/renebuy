@@ -1,14 +1,32 @@
 renebuyApp
-.factory('deliveryService', function($resource) {
+.factory('deliveryService', function($resource, $http) {
 	var Boxes = $resource('/api/box');
-	var Box = $resource('/api/box/:boxId', {boxId: '@boxId'});
+	var Box = $resource('/api/box/:boxId', {boxId: '@boxId'}, {
+		ship: {method: 'POST', params:{ship: true}},
+		receive: {method: 'POST', params:{receive:true}}
+	});
+	
+	var CJEXPRESS_URL = 'http://cjexpress-proxy.herokuapp.com/';
 	
 	return {
+		getActiveBoxes: function() {
+			return Boxes.query().$promise;
+		},
 		saveBox: function(box) {
 			return box._id ? Box.save({boxId: box._id}, box).$promise : Boxes.save(box).$promise;
 		},
-		getActiveBoxes: function() {
-			return Boxes.query().$promise;
+		shipBox: function(box) {
+			return Box.ship({boxId: box._id}, {
+				dateShipped: box.dateShipped,
+				recipient: box.recipient,
+				trackingNumber: box.trackingNumber
+			}).$promise;
+		},
+		receiveBox: function(boxId, dateReceived) {
+			return Box.ship({boxId: boxId}, {dateReceived: dateReceived}).$promise;
+		},
+		trackDelivery: function(trackNo) {
+			return $http.get(CJEXPRESS_URL + trackNo);
 		}
 	}
 })

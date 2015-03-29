@@ -1,9 +1,10 @@
-renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliveryService) { 
+renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliveryService, $modal) { 
 	var orderItemMap = {};
 	var boxSeq = 1;
 	$scope.boxes = [];
 	
 	orderService.getShippingOrders().then(function(orders) {
+		//console.log(orders);
 		orders.forEach(function(order) {
 			order.items.forEach(function(item) {
 				item.inBox = 0;
@@ -14,12 +15,13 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 		$scope.orders = orders;
 	}).then(function() {
 		deliveryService.getActiveBoxes().then(function(boxes) {
-			//console.log(boxes);
+			console.log(boxes);
 			
 			boxes.forEach(function(box) {
 				var enhancedBox = {
 					_id: box._id,
 					name: box.name,
+					status: box.status,
 					trackingNumber: box.trackingNumber,
 					recipient: box.recipient,
 					items: [],
@@ -41,6 +43,7 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 	$scope.addNewBox = function() {
 		$scope.boxes.push({
 			name: 'Box ' + (boxSeq++),
+			status: 'new',
 			items: [],
 			itemCount: {}
 		});
@@ -121,5 +124,66 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 			box.changed = false;
 			$scope.showAlert('success', 'Information about this box has been saved.');
 		});	
+	};
+	
+	$scope.trackDelivery = function(box, $event) {
+		$event.stopPropagation();
+		$modal.open({
+			templateUrl: 'trackBoxModal.html',
+			controller: 'TrackBoxModalCtrl',
+			resolve: {
+				box: function() {
+					return box;
+				}
+			}
+		});	
 	}
+	
+	$scope.confirmShip = function(box, $event) {
+		$modal.open({
+			templateUrl: 'shipBoxModal.html',
+			controller: 'ShipBoxModalCtrl',
+			resolve: {
+				box: function() {
+					return box;
+				},
+				showAlert: function() {
+					return $scope.showAlert;
+				}
+			}
+		});
+		$event.stopPropagation();
+	};
+})
+.controller('ShipBoxModalCtrl', function($scope, $modalInstance, deliveryService, showAlert, box) {
+	$scope.box = box;  
+	
+	$scope.shipBox = function () {
+		console.log($scope.box);
+		deliveryService.shipBox($scope.box).then(function() {
+			$scope.box.status = 'shipped';
+			showAlert('success', 'This box is moved shipped: ' + $scope.box.trackingNumber);
+			$modalInstance.close();
+		});  
+	};
+
+	$scope.cancel = function () {
+	    $modalInstance.dismiss('cancel');
+	};
+})
+.controller('TrackBoxModalCtrl', function($scope, $modalInstance, deliveryService, box) {
+	$scope.box = box; 
+	$scope.loading = true; 
+	
+	deliveryService.trackDelivery(box.trackingNumber).success(function(data) {
+		console.log(data);
+		$scope.loading = false;
+		if (data.status === 'ok') {
+			$scope.history = data.history;
+		}
+	});
+
+	$scope.cancel = function () {
+	    $modalInstance.dismiss('cancel');
+	};
 });

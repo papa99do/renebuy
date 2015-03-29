@@ -348,3 +348,7 @@ a.disabled {
     -webkit-animation-iteration-count:  infinite;
     -webkit-animation-timing-function:  linear;
 }
+
+.modal-backdrop {
+	bottom: 0;
+}

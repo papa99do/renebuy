@@ -49,19 +49,13 @@
 							{{box.trackingNumber || box.name}}  {{box.recipient}}
 						</div>
 						<div class="col-sm-6 text-right">
-							<a href="" ng-class="box.changed ? '' : 'disabled'" ng-click="saveBox(box, $event)"><i class="glyphicon glyphicon-save"></i> Save</a>
+							<a href="" ng-click="confirmShip(box, $event)" ng-if="box.status === 'new' && !box.changed"><i class="glyphicon glyphicon-send"></i> Ship</a>
+							<a href="" ng-if="box.status === 'new'" ng-class="box.changed ? '' : 'disabled'" ng-click="saveBox(box, $event)"><i class="glyphicon glyphicon-save"></i> Save</a>
+							<a href="" ng-click="trackDelivery(box, $event)" ng-if="box.status === 'shipped'"> Track</a>
 						</div>
 					</div>
-					
 				</accordion-heading>
-				<div class="form-inline">
-					Tracking No. 
-					<input type="text" class="form-control" ng-model="box.trackingNumber" ng-change="box.changed = true">
-					<span style="padding-right:20px;"></span>
-					To 
-					<input type="text" class="form-control" ng-model="box.recipient" ng-change="box.changed = true">
-				</div>
-				<hr />
+				
 				<ul class="shipping" data-drop="true" ng-model='box.items' jqyoui-droppable="{multiple:true, onDrop:'drop(box)'}" style="width:100%; min-height:100px;">
 				    <li ng-repeat="item in box.items" ng-click="selectItem(item)">
 						<div class="row vertical-align">
@@ -85,3 +79,55 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/ng-template" id="shipBoxModal.html">
+	<div class="modal-header">
+        <h3 class="modal-title">Ship box</h3>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal">
+        	<div class="form-group">
+				<label for="trackingNumber" class="col-sm-3 control-label">Track No.</label>
+				<div class="col-sm-6">
+        			<input id="trackingNumber" type="text" class="form-control" ng-model="box.trackingNumber" required>
+				</div>
+        	</div>
+			<div class="form-group">
+				<label for="recipient" class="col-sm-3 control-label">To</label>
+				<div class="col-sm-6">
+        			<input id="recipient" type="text" class="form-control" ng-model="box.recipient" required>
+				</div>
+        	</div>
+			<div class="form-group">
+				<label for="dateShipped" class="col-sm-3 control-label">Date</label>
+				<div class="col-sm-6">
+        			<input id="dateShipped" type="text" class="form-control" placeholder="yyyy/mm/dd" ng-model="box.dateShipped" required />
+				</div>
+        	</div>
+        </form>
+    </div>
+    <div class="modal-footer">
+		<button class="btn btn-default" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" ng-click="shipBox()">Ship</button>   
+    </div>
+</script>
+
+<script type="text/ng-template" id="trackBoxModal.html">
+	<div class="modal-header">
+        <h3 class="modal-title">Track Delivery: {{box.trackingNumber}}</h3>
+    </div>
+    <div class="modal-body">
+        <ul>
+        	<li ng-repeat="event in history">{{event.time}}: {{event.event}}</li>
+			<li ng-if="!loading && !history">Tracking data not found</li>
+        </ul>
+		<div class="row" ng-show="loading">
+			<div class="col-sm-12 text-center">
+				<img src="images/spin-progress.gif" alt="Loading...">
+			</div>
+		</div>
+    </div>
+    <div class="modal-footer">
+		<button class="btn btn-default" ng-click="cancel()">OK</button> 
+    </div>
+</script>

@@ -547,11 +547,9 @@ router.route('/purchase')
 
 router.route('/box')
 .post(function(req, res) {
-	/* Create new box (boxId === 'new') or update box:
+	/* Create new box:
 		{
-			name: 'New box 1',
-			trackingNumber: 'CDxxfd2tret'
-			recipient: 'xxx',
+			name: 'Box 1'
 			items: [
 				{orderItemId: 'aaabbbccc', quantity: 2},
 				{orderItemId: 'aaabbbcccdd', quantity: 1}
@@ -560,8 +558,6 @@ router.route('/box')
 	*/
 	new Box({
 		name: req.body.name,
-		trackingNumber: req.body.trackingNumber,
-		recipient: req.body.recipient,
 		items: req.body.items
 	}).save(function(err, savedBox) {
 		if (err) return handleError(err, res);
@@ -569,7 +565,7 @@ router.route('/box')
 	});
 })
 .get(function (req, res) {
-	Box.where('status').ne('received').exec(function(err, boxes) {
+	Box.where('status').ne('received').sort('_id').exec(function(err, boxes) {
 		if (err) return handleError(err, res);
 		handleResult(boxes, res);
 	});
@@ -578,32 +574,28 @@ router.route('/box')
 
 router.route('/box/:boxId')
 .post(function (req, res) {
-	/* update box:
-		{
-			_id: 'xxxdfsdfdf232',
-			name: 'New box 1',
-			trackingNumber: 'CDxxfd2tret'
-			recipient: 'xxx',
-			items: [
-				{orderItemId: 'aaabbbccc', quantity: 2},
-				{orderItemId: 'aaabbbcccdd', quantity: 1}
-			]
-		}
-	*/
-	 Box.findById(req.params.boxId, function(err, box) {
-	 	if (err) return handleError(err, res);
-	 	if (box) {
-	 		box.name = req.body.name;
-	 		box.trackingNumber = req.body.trackingNumber;
-	 		box.recipient = req.body.recipient;
-	 		box.items = req.body.items;
-	 		
-	 		box.save(function(err, savedBox) {
-	 			if (err) return handleError(err, res);
-	 			handleResult(savedBox, res);
-	 		});
-	 	}
-	 });
+	Box.findById(req.params.boxId, function(err, box) {
+		if (err) return handleError(err, res);
+		if (!box) return handelError("No box found", res);
+	
+		if (req.query.ship) {
+			box.shippedDate = req.body.dateShipped;
+			box.trackingNumber = req.body.trackingNumber;
+			box.recipient = req.body.recipient;
+			box.status = 'shipped';
+		} else if (req.query.receive) {
+			box.receivedDate = req.body.dateReceived;
+			box.status = 'received';
+		} else {
+			box.name = req.body.name;
+			box.items = req.body.items;		
+		}	
+		
+		box.save(function(err, savedBox) {
+			if (err) return handleError(err, res);
+			handleResult(savedBox, res);
+		});
+	});
 });
 
 router.route('/calc-sales-info/:infoKey')
