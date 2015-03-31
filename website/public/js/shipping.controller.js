@@ -15,7 +15,7 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 		$scope.orders = orders;
 	}).then(function() {
 		deliveryService.getActiveBoxes().then(function(boxes) {
-			console.log(boxes);
+			//console.log(boxes);
 			
 			boxes.forEach(function(box) {
 				var enhancedBox = {
@@ -24,6 +24,10 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 					status: box.status,
 					trackingNumber: box.trackingNumber,
 					recipient: box.recipient,
+					shippedDate: box.shippedDate,
+					deliveryUpdated : box.deliveryUpdated,
+					deliveryInfo: box.deliveryInfo,
+					open: box.status === 'new',
 					items: [],
 					itemCount: {}
 				};
@@ -36,6 +40,8 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 				});
 				
 				$scope.boxes.push(enhancedBox);
+				
+				boxSeq = Math.max(parseInt(box.name.substring(4)), boxSeq);
 			});
 		});
 	});
@@ -44,6 +50,7 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 		$scope.boxes.push({
 			name: 'Box ' + (boxSeq++),
 			status: 'new',
+			open: true,
 			items: [],
 			itemCount: {}
 		});
@@ -54,6 +61,22 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 		if ($scope.selectedItem && $scope.selectedItem._id === item._id) finalClass += ' selected';
 		if ($scope.remainder(item) === 0) finalClass += ' unselectable'
 		return finalClass;
+	};
+	
+	var panelClasses = {
+		'new': 'panel-active',
+		'shipped': 'panel-warning',
+		'received': 'panel-danger'
+	};
+	
+	$scope.boxHeadingClass = function(box) {
+		var selected = false;
+		box.items.forEach(function(item) {
+			if ($scope.selectedItem && $scope.selectedItem._id === item._id) {
+				selected = true;
+			}
+		});
+		return selected ? 'selected' : panelClasses[box.status];
 	};
 	
 	$scope.selectItem = function(item) {
@@ -173,15 +196,6 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 })
 .controller('TrackBoxModalCtrl', function($scope, $modalInstance, deliveryService, box) {
 	$scope.box = box; 
-	$scope.loading = true; 
-	
-	deliveryService.trackDelivery(box.trackingNumber).success(function(data) {
-		console.log(data);
-		$scope.loading = false;
-		if (data.status === 'ok') {
-			$scope.history = data.history;
-		}
-	});
 
 	$scope.cancel = function () {
 	    $modalInstance.dismiss('cancel');

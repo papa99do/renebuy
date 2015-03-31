@@ -6,8 +6,6 @@ renebuyApp
 		receive: {method: 'POST', params:{receive:true}}
 	});
 	
-	var CJEXPRESS_URL = 'http://cjexpress-proxy.herokuapp.com/';
-	
 	return {
 		getActiveBoxes: function() {
 			return Boxes.query().$promise;
@@ -24,9 +22,6 @@ renebuyApp
 		},
 		receiveBox: function(boxId, dateReceived) {
 			return Box.ship({boxId: boxId}, {dateReceived: dateReceived}).$promise;
-		},
-		trackDelivery: function(trackNo) {
-			return $http.get(CJEXPRESS_URL + trackNo);
 		}
 	}
 })

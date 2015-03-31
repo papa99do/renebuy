@@ -253,11 +253,11 @@ div.box {
 }
 
 div.box.unselectable {
-	background-color: #ccc;
+	background-color: rgba(204,204,204,0.5);
 }
 
 div.box.selected {
-	background-color: #aaf;
+	background-color: rgba(176,176,255,0.5);
 }
 
 #boxes div.box {
@@ -351,4 +351,22 @@ a.disabled {
 
 .modal-backdrop {
 	bottom: 0;
+}
+
+ul#deliveryInfo {
+	padding: 0;
+	list-style: none;
+	width: 100%;
+}
+ul#deliveryInfo li {
+	margin: 5px 0 0 5px;
+	display: block;
+	width: 100%;
+	border-bottom: 1px solid #ccc;
+    user-select: none;   
+}
+
+.panel.selected > .panel-heading {
+    background-image: none;
+    background-color: rgba(176,176,255,0.5);
 }

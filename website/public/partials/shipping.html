@@ -42,17 +42,24 @@
 		</div>
 		<div class="panel-body">
 		<accordion close-others="false">
-			<accordion-group is-open="true" ng-repeat="box in boxes">
+			<accordion-group is-open="box.open" ng-repeat="box in boxes" ng-class="boxHeadingClass(box)">
 				<accordion-heading>
 					<div class="row">
-						<div class="col-sm-6">
-							{{box.trackingNumber || box.name}}  {{box.recipient}}
+						<div class="col-sm-8">
+							<span ng-if="box.status === 'new'">{{::box.name}}</span>
+							<span ng-if="box.status !== 'new'">{{box.shippedDate | date:'yyyy/MM/dd'}} {{box.trackingNumber}}  {{box.recipient}}</span>
+							
 						</div>
-						<div class="col-sm-6 text-right">
+						<div class="col-sm-4 text-right">
 							<a href="" ng-click="confirmShip(box, $event)" ng-if="box.status === 'new' && !box.changed"><i class="glyphicon glyphicon-send"></i> Ship</a>
 							<a href="" ng-if="box.status === 'new'" ng-class="box.changed ? '' : 'disabled'" ng-click="saveBox(box, $event)"><i class="glyphicon glyphicon-save"></i> Save</a>
-							<a href="" ng-click="trackDelivery(box, $event)" ng-if="box.status === 'shipped'"> Track</a>
 						</div>
+					</div>
+					<div ng-if="box.status === 'shipped' && box.deliveryInfo.length > 0" class="row" style="font-size:0.8em; font-weight:normal; padding-top:5px; padding-left:20px;">
+						<a href="" ng-click="trackDelivery(box, $event)" title="click to see details">
+							{{box.deliveryInfo[box.deliveryInfo.length - 1].time}} : 
+							{{box.deliveryInfo[box.deliveryInfo.length - 1].event}}
+						</a>
 					</div>
 				</accordion-heading>
 				
@@ -63,10 +70,13 @@
 								<img ng-src="{{item.product.photos[0]}}" alt="{{item.product.name}}">
 								{{item.product.name}} <br> {{item.product.nameInChinese}}
 							</div>
-							<div class="col-md-2">
+							<div class="col-md-2" ng-if="box.status === 'new'">
 								<a href="" ng-click="removeFromBox(box, $index, $event)"><i class="glyphicon glyphicon-minus" style="font-size:1.2em;"></i></a>
 								<span style="font-size:2em;">{{box.itemCount[item._id]}}</span>
 								<a href="" ng-click="addToBox(box, $index, $event)" ng-class="remainder(item) > 0 ? '' : 'disabled'"><i class="glyphicon glyphicon-plus" style="font-size:1.2em;"></i></a>
+							</div>
+							<div class="col-md-2" ng-if="box.status !== 'new'">
+								<span style="font-size:2em;"> x {{box.itemCount[item._id]}}</span>
 							</div>
 						</div>
 					</li>
@@ -117,17 +127,20 @@
         <h3 class="modal-title">Track Delivery: {{box.trackingNumber}}</h3>
     </div>
     <div class="modal-body">
-        <ul>
-        	<li ng-repeat="event in history">{{event.time}}: {{event.event}}</li>
-			<li ng-if="!loading && !history">Tracking data not found</li>
+        <ul ng-if="box.deliveryUpdated" id="deliveryInfo">
+			Updated at {{box.deliveryUpdated | date:'yyyy/MM/dd hh:mm:ss'}}
+        	<li ng-repeat="event in box.deliveryInfo" class="row">
+				<div class="col-sm-4">
+					{{event.time}}
+				</div> 
+				<div class="col-sm-8">
+					{{event.event}}
+				</div>
+			</li>
         </ul>
-		<div class="row" ng-show="loading">
-			<div class="col-sm-12 text-center">
-				<img src="images/spin-progress.gif" alt="Loading...">
-			</div>
-		</div>
+		<div ng-if="!box.deliveryUpdated">Tracking data not found</div>
     </div>
     <div class="modal-footer">
-		<button class="btn btn-default" ng-click="cancel()">OK</button> 
+		<button class="btn btn-default" ng-click="cancel()">Close</button> 
     </div>
 </script>

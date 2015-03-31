@@ -8,6 +8,7 @@ var Box = require('./models/box')
 var _ = require('underscore');
 var async = require('async');
 var PriceCollector = require('./price-collector');
+var request = require('request');
 
 
 // configuration =================
@@ -513,6 +514,52 @@ router.route('/order/:orderId')
 	});
 });
 
+router.route('/calc-sales-info/:infoKey')
+.get(function (req, res) {	
+	if (req.params.infoKey === 'ordered') {
+		// calculate ordered
+		Order.aggregate(
+			{$unwind: '$items'},
+			{$group: {_id: '$items.product', total: {$sum: '$items.number'}}}, 
+			function(err, products) {
+				if (err) return handleError(err, res);
+				updateProductSalesInfo(products, 'ordered', res);	
+			}
+		);
+	} else if (req.params.infoKey === 'sold') {
+		// calculate sold
+		Order.aggregate(
+			{$match: {status: {$ne : 'active'}}},
+			{$unwind: '$items'},
+			{$group: {_id: '$items.product', total: {$sum: '$items.number'}}}, 
+			function(err, products) {
+				if (err) return handleError(err, res);
+				updateProductSalesInfo(products, 'sold', res);
+			}
+		);
+	} else if (req.params.infoKey === 'bought') {
+		// calculate bought
+		Purchase.aggregate(
+			{$group: {_id: '$product', total: {$sum: '$quantity'}}},
+			function(err, products) {
+				if (err) return handleError(err, res);
+				updateProductSalesInfo(products, 'bought', res);
+			}
+		);
+	} else if (req.params.infoKey === 'clean') {
+		Product.update(
+			{}, // query 
+			{$set: {salesInfo: {ordered: 0, bought: 0, sold: 0}}}, // clean salesInfo
+			{multi: true},  // update all
+			function(err, updated) {
+				if (err) return handleError(err, res);
+				handleResult({'status': 'ok', updated: updated}, res);
+			});
+	} else {
+		handleError('InfoKey should be one of [clean, ordered, sold, bought]', res);
+	}
+});
+
 router.route('/purchase')
 .post(function(req, res) {
 	/*
@@ -598,50 +645,38 @@ router.route('/box/:boxId')
 	});
 });
 
-router.route('/calc-sales-info/:infoKey')
-.get(function (req, res) {	
-	if (req.params.infoKey === 'ordered') {
-		// calculate ordered
-		Order.aggregate(
-			{$unwind: '$items'},
-			{$group: {_id: '$items.product', total: {$sum: '$items.number'}}}, 
-			function(err, products) {
-				if (err) return handleError(err, res);
-				updateProductSalesInfo(products, 'ordered', res);	
-			}
-		);
-	} else if (req.params.infoKey === 'sold') {
-		// calculate sold
-		Order.aggregate(
-			{$match: {status: {$ne : 'active'}}},
-			{$unwind: '$items'},
-			{$group: {_id: '$items.product', total: {$sum: '$items.number'}}}, 
-			function(err, products) {
-				if (err) return handleError(err, res);
-				updateProductSalesInfo(products, 'sold', res);
-			}
-		);
-	} else if (req.params.infoKey === 'bought') {
-		// calculate bought
-		Purchase.aggregate(
-			{$group: {_id: '$product', total: {$sum: '$quantity'}}},
-			function(err, products) {
-				if (err) return handleError(err, res);
-				updateProductSalesInfo(products, 'bought', res);
-			}
-		);
-	} else if (req.params.infoKey === 'clean') {
-		Product.update(
-			{}, // query 
-			{$set: {salesInfo: {ordered: 0, bought: 0, sold: 0}}}, // clean salesInfo
-			{multi: true},  // update all
-			function(err, updated) {
-				if (err) return handleError(err, res);
-				handleResult({'status': 'ok', updated: updated}, res);
+var CJEXPRESS_URL = 'http://cjexpress-proxy.herokuapp.com/';
+
+router.route('/track-shipped-box')
+.get(function (req, res) {
+	Box.find({status: 'shipped'}, function (err, boxes){
+		if (err) return handleError(err, res);
+		
+		var deliveryInfoMap = {};
+		async.eachLimit(boxes, 3, function(box, callback) {
+			request(CJEXPRESS_URL + box.trackingNumber, function(err, response, body) {
+				if (err) return callback(err);
+				var result = JSON.parse(body);
+				if (result.status === 'ok') {
+					deliveryInfoMap[box.trackingNumber] = result.history;
+					box.deliveryInfo = result.history;
+					box.deliveryUpdated = new Date();
+					box.save(function(err, savedBox) {
+						if (err) return callback(err);
+						callback();
+					});
+				} else {
+					callback();
+				}
+				
 			});
-	} else {
-		handleError('InfoKey should be one of [clean, ordered, sold, bought]', res);
-	}
+		},
+		function(err) {
+			if (err) return handleError(err, res);
+			handleResult(deliveryInfoMap, res);
+		});
+	});
 });
+
 
 module.exports = router;

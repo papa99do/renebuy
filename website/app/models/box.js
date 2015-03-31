@@ -14,6 +14,8 @@ var BoxSchema = new Schema({
 	shippedDate: {type: Date},
 	receivedDate: {type: Date},
 	createdDate: {type: Date, default: Date.now},
+	deliveryInfo: { type: [{time: String, event: String, _id: false}], default: []},
+	deliveryUpdated: Date
 });
 
 module.exports = mongoose.model('box', BoxSchema);
