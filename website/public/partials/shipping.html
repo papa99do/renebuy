@@ -5,12 +5,15 @@
 		</div>
 		<div class="panel-body">
 		<accordion close-others="false">
-			<accordion-group is-open="true" ng-repeat="order in orders">
+			<accordion-group is-open="false" ng-repeat="order in orders" ng-if="order.status === 'shipping'">
 				<accordion-heading>
 					<div class="row">
-						<div class="col-sm-12">
+						<div class="col-sm-8">
 							{{::order.name}}
 						</div>			
+						<div class="col-sm-4 text-right">
+							<a href="" ng-click="fulfill(order, $event)" ng-if="canFulfill(order)"><i class="glyphicon glyphicon-send"></i> Fulfill</a>
+						</div>
 					</div>
 				</accordion-heading>
 				<ul class="shipping">
@@ -64,7 +67,7 @@
 				</accordion-heading>
 				
 				<ul class="shipping" data-drop="true" ng-model='box.items' jqyoui-droppable="{multiple:true, onDrop:'drop(box)'}" style="width:100%; min-height:100px;">
-				    <li ng-repeat="item in box.items" ng-click="selectItem(item)">
+				    <li ng-repeat="item in box.items">
 						<div class="row vertical-align">
 							<div class="col-md-10 box" ng-class="selectedItem._id === item._id ? 'selected' : ''">
 								<img ng-src="{{item.product.photos[0]}}" alt="{{item.product.name}}">
@@ -142,5 +145,18 @@
     </div>
     <div class="modal-footer">
 		<button class="btn btn-default" ng-click="cancel()">Close</button> 
+    </div>
+</script>
+
+<script type="text/ng-template" id="confirmationModal.html">
+	<div class="modal-header">
+        <h3 class="modal-title">{{title}}</h3>
+    </div>
+    <div class="modal-body">
+        {{text}}
+    </div>
+    <div class="modal-footer">
+		<button class="btn btn-default" ng-click="cancel()">No</button> 
+		<button class="btn btn-primary" ng-click="confirm()">Yes</button>
     </div>
 </script>

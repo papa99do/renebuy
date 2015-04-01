@@ -446,8 +446,23 @@ router.route('/order/:orderId')
 		});
 	}
 	
+	function fulfillOrder() {
+		Order.findById(req.params.orderId, function(err, order) {
+			if (err) return handleError(err, res);
+			if (order) {
+				order.status = 'fulfilled';
+				order.save(function(err, updatedOrder) {
+					if (err) return handleError(err, res);
+					handleResult(updatedOrder, res);
+				})
+			}
+		});
+	}
+	
 	if (req.query.ship) {
 		return shipOrder();
+	} else if (req.query.fulfill) {
+		return fulfillOrder();
 	}
 	
 	/* Update order items

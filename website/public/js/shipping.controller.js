@@ -7,7 +7,7 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 		//console.log(orders);
 		orders.forEach(function(order) {
 			order.items.forEach(function(item) {
-				item.inBox = 0;
+				item.boxes = [];
 				orderItemMap[item._id] = item;
 			});
 		});
@@ -36,7 +36,7 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 					var orderItem = orderItemMap[item.orderItemId]
 					enhancedBox.items.push(orderItem);
 					enhancedBox.itemCount[item.orderItemId] = item.quantity;
-					orderItem.inBox += item.quantity;
+					orderItem.boxes.push(enhancedBox);
 				});
 				
 				$scope.boxes.push(enhancedBox);
@@ -84,18 +84,64 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 	};
 	
 	$scope.remainder = function(item) {
-		return item.number - item.inBox;
+		var inBox = 0;
+		item.boxes.forEach(function(box) {
+			inBox += box.itemCount[item._id];
+		});
+		return item.number - inBox;
 	};
+	
+	$scope.canFulfill = function(order) {
+		for (var i = 0; i < order.items.length; i++) {
+			var item = order.items[i];
+			var inBox = 0, received = 0;
+			for (var j = 0; j < item.boxes.length; j++) {
+				var box = item.boxes[j];
+				if (box.changed) return false;
+				inBox += box.itemCount[item._id];
+				if (box.status === 'received') received += box.itemCount[item._id];
+			}
+			
+			if (inBox > 0 && received < item.number) {
+				return false;
+			}
+		}
+		return true;
+	};
+	
+	$scope.fulfill = function(order, $event) {
+		$event.stopPropagation();
+		$modal.open({
+			templateUrl: 'confirmationModal.html',
+			controller: 'ConfirmationModalCtrl',
+			resolve: {
+				title: function() {
+					return 'Fulfill Order';
+				},
+				text: function() {
+					return 'Are you sure you want to fulfill order: "' + order.name + '"?';
+				},
+				confirm: function() {
+					return function() {
+						orderService.fulfillOrder(order).then(function() {
+							$scope.showAlert('success', 'The order has been fulfilled.');
+							order.status = 'fulfilled';
+						});
+					}
+				}
+			}
+		});
+	}
 	
 	$scope.drop = function(event, ui, box) {
 		var addedItem = box.items[box.items.length - 1];
-		addedItem.inBox = addedItem.inBox + 1;
 		
 		if (box.itemCount[addedItem._id] && box.itemCount[addedItem._id] > 0) {
 			box.itemCount[addedItem._id] += 1;
 			box.items.splice(-1, 1);
 		} else {
 			box.itemCount[addedItem._id] = 1;
+			addedItem.boxes.push(box);
 		}
 		
 		box.changed = true;
@@ -103,7 +149,6 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 	
 	$scope.addToBox = function(box, index, $event) {
 		var item = box.items[index];
-		item.inBox += 1;
 		box.itemCount[item._id] += 1;
 		box.changed = true;
 		$event.stopPropagation();
@@ -111,21 +156,13 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 	
 	$scope.removeFromBox = function(box, index, $event) {
 		var item = box.items[index];
-		item.inBox -= 1;
 		box.itemCount[item._id] -= 1;
 		if (box.itemCount[item._id] === 0) {
+			item.boxes.splice(item.boxes.indexOf(box), 1);
 			box.items.splice(index, 1);
 		}	
 		box.changed = true;
 		$event.stopPropagation();
-	};
-	
-	$scope.removeBox = function(index) {
-		var box = $scope.boxes[index];
-		box.items.forEach(function(item) {
-			item.inBox -= box.itemCount[item._id];
-		});
-		$scope.boxes.splice(index, 1);
 	};
 	
 	$scope.saveBox = function(box, $event) {
@@ -196,6 +233,18 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 })
 .controller('TrackBoxModalCtrl', function($scope, $modalInstance, deliveryService, box) {
 	$scope.box = box; 
+
+	$scope.cancel = function () {
+	    $modalInstance.dismiss('cancel');
+	};
+})
+.controller('ConfirmationModalCtrl', function($scope, $modalInstance, title, text, confirm) {
+	$scope.title = title;
+	$scope.text = text;
+	$scope.confirm = function () {
+		confirm();
+		$modalInstance.close();
+	}; 
 
 	$scope.cancel = function () {
 	    $modalInstance.dismiss('cancel');

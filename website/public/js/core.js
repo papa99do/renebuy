@@ -28,7 +28,8 @@ renebuyApp
 .factory('orderService', function($resource, $q) {
 	var Orders = $resource('/api/order');
 	var Order = $resource('/api/order/:orderId', {orderId: '@orderId'}, {
-		ship: {method: 'POST', params:{ship: true}}
+		ship: {method: 'POST', params:{ship: true}},
+		fulfill: {method: 'POST', params:{fulfill: true}}
 	});
 	
 	return {
@@ -52,6 +53,9 @@ renebuyApp
 		},
 		shipOrder: function(order) {
 			return Order.ship({orderId: order._id}).$promise;
+		},
+		fulfillOrder: function(order) {
+			return Order.fulfill({orderId: order._id}).$promise;
 		}
 	}
 })
