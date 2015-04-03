@@ -5,14 +5,14 @@
 		</div>
 		<div class="panel-body">
 		<accordion close-others="false">
-			<accordion-group is-open="false" ng-repeat="order in orders" ng-if="order.status === 'shipping'">
+			<accordion-group is-open="false" ng-repeat="order in orders"  ng-class="orderHeadingClass(order)">
 				<accordion-heading>
 					<div class="row">
 						<div class="col-sm-8">
 							{{::order.name}}
 						</div>			
 						<div class="col-sm-4 text-right">
-							<a href="" ng-click="fulfill(order, $event)" ng-if="canFulfill(order)"><i class="glyphicon glyphicon-send"></i> Fulfill</a>
+							<a href="" ng-click="fulfill(order, $event)" ng-if="canFulfill(order)"><i class="glyphicon glyphicon-thumbs-up"></i> Fulfill</a>
 						</div>
 					</div>
 				</accordion-heading>
@@ -55,10 +55,11 @@
 						</div>
 						<div class="col-sm-4 text-right">
 							<a href="" ng-click="confirmShip(box, $event)" ng-if="box.status === 'new' && !box.changed"><i class="glyphicon glyphicon-send"></i> Ship</a>
+							<a href="" ng-click="confirmReceive(box, $event)" ng-if="box.status === 'shipped'"><i class="glyphicon glyphicon-import"></i> Receive</a>
 							<a href="" ng-if="box.status === 'new'" ng-class="box.changed ? '' : 'disabled'" ng-click="saveBox(box, $event)"><i class="glyphicon glyphicon-save"></i> Save</a>
 						</div>
 					</div>
-					<div ng-if="box.status === 'shipped' && box.deliveryInfo.length > 0" class="row" style="font-size:0.8em; font-weight:normal; padding-top:5px; padding-left:20px;">
+					<div ng-if="box.deliveryInfo.length > 0" class="row" style="font-size:0.8em; font-weight:normal; padding-top:5px; padding-left:20px;">
 						<a href="" ng-click="trackDelivery(box, $event)" title="click to see details">
 							{{box.deliveryInfo[box.deliveryInfo.length - 1].time}} : 
 							{{box.deliveryInfo[box.deliveryInfo.length - 1].event}}
@@ -67,7 +68,7 @@
 				</accordion-heading>
 				
 				<ul class="shipping" data-drop="true" ng-model='box.items' jqyoui-droppable="{multiple:true, onDrop:'drop(box)'}" style="width:100%; min-height:100px;">
-				    <li ng-repeat="item in box.items">
+				    <li ng-repeat="item in box.items" ng-click="selectItem(item)">
 						<div class="row vertical-align">
 							<div class="col-md-10 box" ng-class="selectedItem._id === item._id ? 'selected' : ''">
 								<img ng-src="{{item.product.photos[0]}}" alt="{{item.product.name}}">
@@ -122,6 +123,26 @@
     <div class="modal-footer">
 		<button class="btn btn-default" ng-click="cancel()">Cancel</button>
         <button class="btn btn-primary" ng-click="shipBox()">Ship</button>   
+    </div>
+</script>
+
+<script type="text/ng-template" id="receiveBoxModal.html">
+	<div class="modal-header">
+        <h3 class="modal-title">Receive box</h3>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal">
+			<div class="form-group">
+				<label for="dateReceived" class="col-sm-3 control-label">Date</label>
+				<div class="col-sm-6">
+        			<input id="dateReceived" type="text" class="form-control" placeholder="yyyy/mm/dd" ng-model="box.dateReceived" required />
+				</div>
+        	</div>
+        </form>
+    </div>
+    <div class="modal-footer">
+		<button class="btn btn-default" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" ng-click="receiveBox()">Receive</button>   
     </div>
 </script>
 

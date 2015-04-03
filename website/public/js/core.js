@@ -21,7 +21,7 @@ renebuyApp
 			}).$promise;
 		},
 		receiveBox: function(boxId, dateReceived) {
-			return Box.ship({boxId: boxId}, {dateReceived: dateReceived}).$promise;
+			return Box.receive({boxId: boxId}, {dateReceived: dateReceived}).$promise;
 		}
 	}
 })

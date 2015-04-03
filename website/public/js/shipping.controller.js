@@ -34,6 +34,7 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 				
 				box.items.forEach(function(item) {
 					var orderItem = orderItemMap[item.orderItemId]
+					if (!orderItem) return;
 					enhancedBox.items.push(orderItem);
 					enhancedBox.itemCount[item.orderItemId] = item.quantity;
 					orderItem.boxes.push(enhancedBox);
@@ -41,7 +42,7 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 				
 				$scope.boxes.push(enhancedBox);
 				
-				boxSeq = Math.max(parseInt(box.name.substring(4)), boxSeq);
+				boxSeq = Math.max(parseInt(box.name.substring(4)) + 1, boxSeq);
 			});
 		});
 	});
@@ -66,7 +67,8 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 	var panelClasses = {
 		'new': 'panel-active',
 		'shipped': 'panel-warning',
-		'received': 'panel-danger'
+		'received': 'panel-danger',
+		'fulfilled': 'panel-danger'
 	};
 	
 	$scope.boxHeadingClass = function(box) {
@@ -77,6 +79,16 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 			}
 		});
 		return selected ? 'selected' : panelClasses[box.status];
+	};
+	
+	$scope.orderHeadingClass = function(order) {
+		var selected = false;
+		order.items.forEach(function(item) {
+			if ($scope.selectedItem && $scope.selectedItem._id === item._id) {
+				selected = true;
+			}
+		});
+		return selected ? 'selected': panelClasses[order.status];
 	};
 	
 	$scope.selectItem = function(item) {
@@ -92,6 +104,10 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 	};
 	
 	$scope.canFulfill = function(order) {
+		if (order.status === 'fulfilled') {
+			return false;
+		}
+		
 		for (var i = 0; i < order.items.length; i++) {
 			var item = order.items[i];
 			var inBox = 0, received = 0;
@@ -214,6 +230,22 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 		});
 		$event.stopPropagation();
 	};
+	
+	$scope.confirmReceive = function(box, $event) {
+		$modal.open({
+			templateUrl: 'receiveBoxModal.html',
+			controller: 'ReceiveBoxModalCtrl',
+			resolve: {
+				box: function() {
+					return box;
+				},
+				showAlert: function() {
+					return $scope.showAlert;
+				}
+			}
+		});
+		$event.stopPropagation();
+	};
 })
 .controller('ShipBoxModalCtrl', function($scope, $modalInstance, deliveryService, showAlert, box) {
 	$scope.box = box;  
@@ -222,7 +254,29 @@ renebuyApp.controller('ShippingCtrl', function($scope, orderService, deliverySer
 		console.log($scope.box);
 		deliveryService.shipBox($scope.box).then(function() {
 			$scope.box.status = 'shipped';
-			showAlert('success', 'This box is moved shipped: ' + $scope.box.trackingNumber);
+			showAlert('success', 'This box is shipped: ' + $scope.box.trackingNumber);
+			$modalInstance.close();
+		});  
+	};
+
+	$scope.cancel = function () {
+	    $modalInstance.dismiss('cancel');
+	};
+})
+.controller('ReceiveBoxModalCtrl', function($scope, $modalInstance, deliveryService, showAlert, box) {
+	if (box.deliveryInfo.length > 0) {
+		var dateReceived = box.deliveryInfo[box.deliveryInfo.length - 1].time;
+		box.dateReceived = dateReceived.substring(0, 10);
+	}
+	
+	$scope.box = box;  
+	
+	
+	$scope.receiveBox = function () {
+		console.log($scope.box);
+		deliveryService.receiveBox($scope.box._id, $scope.box.dateReceived).then(function() {
+			$scope.box.status = 'received';
+			showAlert('success', 'This box is received: ' + $scope.box.trackingNumber);
 			$modalInstance.close();
 		});  
 	};

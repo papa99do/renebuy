@@ -627,9 +627,19 @@ router.route('/box')
 	});
 })
 .get(function (req, res) {
-	Box.where('status').ne('received').sort('_id').exec(function(err, boxes) {
+	Order.find({status: 'shipping'}).select('items').exec(function (err, orders) {
 		if (err) return handleError(err, res);
-		handleResult(boxes, res);
+		var itemIds = [];
+		orders.forEach(function(order) {
+			order.items.forEach(function(item) {
+				itemIds.push(item._id);
+			});
+		});
+		
+		Box.where('items.orderItemId').in(itemIds).sort('_id').exec(function(err, boxes) {
+			if (err) return handleError(err, res);
+			handleResult(boxes, res);
+		});
 	});
 });
 
