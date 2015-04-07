@@ -68,6 +68,33 @@ renebuyApp
 		}
 	};
 })
+.factory('excelService', function($templateCache) {
+	var uri = 'data:application/vnd.ms-excel;base64,',
+        template = $templateCache.get('excelTemplate.html'),
+        base64 = function (s) {
+            return window.btoa(unescape(encodeURIComponent(s)))
+        }, 
+		format = function (s, c) {
+            return s.replace(/{(\w+)}/g, function (m, p) {
+                return c[p];
+            });
+        };
+	
+	return {
+		exportExcel: function(fileName, worksheetName, tableHtml) {
+			var context = {
+				worksheet: worksheetName,
+				table: tableHtml
+			};
+			var href = uri + base64(format(template, context));
+			// $('#' + linkElemId).attr('href', href).attr('download', fileName).trigger('click');
+			var linkElem = document.getElementById('exportLink');
+			linkElem.href = href;
+	        linkElem.download = fileName;
+	        linkElem.click();
+		}
+	};
+})
 .controller('MainCtrl', function($scope, $translate, $timeout) {
 	$scope.editMode = false;
 	$('.navbar-collapse a').click(function(){

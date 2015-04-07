@@ -1,4 +1,4 @@
-renebuyApp.controller('OrderCtrl', function($scope, orderService, $modal) {
+renebuyApp.controller('OrderCtrl', function($scope, orderService, $modal, excelService, $templateCache, $compile, $timeout) {
 	$scope.productStock = {};
 	
 	function enhance(order) {
@@ -73,6 +73,16 @@ renebuyApp.controller('OrderCtrl', function($scope, orderService, $modal) {
 			order.editable = false;
 			
 			$scope.showAlert('success', 'Order updated successfully!');
+		});
+	};
+	
+	$scope.exportOrder = function(order, $event) {
+		$event.stopPropagation();
+		$scope.order = order;
+		var tableHtml = $compile($templateCache.get('orderExcel.html'))($scope);
+		$timeout(function() {
+			excelService.exportExcel('Order-' + order.name + '.xls', order.name, tableHtml.html());
+		    //console.log(tableHtml.html());
 		});
 	};
 	

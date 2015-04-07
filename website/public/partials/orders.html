@@ -7,6 +7,9 @@
 					<input type="text" ng-if="order.editable" class="form-control" ng-model="order.name" safe-input/>
 				</div>
 				<div class="col-sm-6 text-right">
+					<a href="" class="btn btn-default" ng-click="exportOrder(order, $event)">
+						<i class="glyphicon glyphicon-floppy-save"></i> Export
+					</a>
 					<a class="btn btn-default" href="" ng-click="confirmShip(order, $event)" ng-if=" canShip(order)">
 						<i class="glyphicon glyphicon-send"></i> Ship
 					</a>
@@ -80,4 +83,37 @@
 		<button class="btn btn-default" ng-click="cancel()">Cancel</button>
         <button class="btn btn-primary" ng-click="shipOrder()">Ship</button>   
     </div>
+</script>
+
+<script type="text/ng-template" id="orderExcel.html">
+	<table>
+		<thead>
+			<tr>
+				<th>英文名称</th>
+				<th>中文名称</th>
+				<th>单价￥</th>
+				<th>数量</th>
+				<th>合计￥</th>
+				<th>说明</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="item in order.items">
+				<td>{{::item.product.name}}</td>
+				<td>{{::item.product.nameInChinese}}</td>
+				<td>{{::item.price}}</td>
+				<td>{{::item.number}}</td>
+				<td>{{::item.price * item.number}}</td>
+				<td>{{::item.description}}</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="3">总计</td>
+				<td>{{::order.totalQuantity}}</td>
+				<td>{{::order.totalAmount}}</td>
+				<td></td>
+			</tr>
+		</tfoot>
+	</table>
 </script>

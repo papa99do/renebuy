@@ -80,5 +80,46 @@
 		<alert ng-model="alert" type="{{alert.type}}" close="alert = null">{{alert.msg}}</alert>
 	</div>
 
+	<a id="exportLink" style="display:none;"></a>
+	<script type="text/ng-template" id="excelTemplate.html">
+		<html xmlns:o="urn:schemas-microsoft-com:office:office"
+			xmlns:x="urn:schemas-microsoft-com:office:excel"
+			xmlns="http://www.w3.org/TR/REC-html40">
+
+			<head>
+			<meta http-equiv=Content-Type content="text/html; charset=UTF-8">
+			<meta name=ProgId content=Excel.Sheet>
+			<meta name=Generator content="Microsoft Excel 11">
+
+			<!--[if gte mso 9]><xml>
+			 <x:ExcelWorkbook>
+			  <x:ExcelWorksheets>
+			   <x:ExcelWorksheet>
+			    <x:Name>{worksheet}</x:Name>
+			    <x:WorksheetOptions>
+			     <x:Selected/>
+			     <x:ProtectContents>False</x:ProtectContents>
+			     <x:ProtectObjects>False</x:ProtectObjects>
+			     <x:ProtectScenarios>False</x:ProtectScenarios>
+			    </x:WorksheetOptions>
+			   </x:ExcelWorksheet>
+			  </x:ExcelWorksheets>
+			  <x:ProtectStructure>False</x:ProtectStructure>
+			  <x:ProtectWindows>False</x:ProtectWindows>
+			 </x:ExcelWorkbook>
+			</xml><![endif]-->
+			<style>
+				td,th {border: .5pt solid black;}
+				tfoot td {font-weight: bold;}
+			</style>
+			
+			</head>
+			<body>
+				<table>
+					{table}
+				</table>
+			</body>
+		</html>
+	</script>
 </body>
 </html>
