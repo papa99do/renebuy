@@ -5,6 +5,7 @@ var PriceCollector = require('./price-collector');
 var ProductHandler = {};
 var DEFAULT_PAGE_SIZE = 20;
 
+// TODO reuse these two common methods
 function handleError(err, res) {
 	console.error(err);
 	var statusCode = err.statusCode || 503;
@@ -51,6 +52,13 @@ ProductHandler.findProducts = function(req, res) {
 			var products = productsWithScore.map(function(value) {return value.obj;});
 			handleResult(products, res);
 		});
+
+		// 'text' command is removed from mongodb 3.0, need to figure out a workaround
+		// Product.find({$text: {$search: req.query.q}}, { score: { $meta: "textScore" } })
+		// 	.sort({ score: { $meta: "textScore" } })
+		// 	.limit(req.query.sm ? 3 : (page + 1) * pageSize + 1)
+		// 	//.project('name nameInChinese category weight isHighTax')
+		// 	.exec(returnProducts);
 
 	} else if (req.query.all) {
 		/* used by update price */
