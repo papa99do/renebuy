@@ -3,7 +3,7 @@
 	<form class="form-inline" role="search" id="search-form">
 		<div class="input-group">
 			<input type="text" class="form-control" ng-model="searchText" id="search-text" placeholder="Search"
-				typeahead="product.name as product.name + ' (' + product.nameInChinese + ')' for product in engine.index.search($viewValue)"
+				typeahead="product.name as product.name + ' (' + product.nameInChinese + ')' for product in engine.index.search($viewValue) | limitTo:10"
 				typeahead-wait-ms="100" typeahead-min-length="1" typeahead-focus-first="false">
 			<span class="searchclear glyphicon glyphicon-remove-circle" ng-show="searchText" ng-click="searchText = ''"></span>
 		    <div class="input-group-btn">
