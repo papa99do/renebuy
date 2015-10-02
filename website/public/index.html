@@ -15,7 +15,7 @@
 	<link rel="stylesheet" href="css/tree-control-attribute.css" />
 	<link rel="stylesheet" href="css/ng-table.css" />
 	<link rel="stylesheet" href="css/main.css" />
-
+	
 	<!-- JS libs -->
 	<script src="js/libs/jquery.js"></script>
 	<script src="js/libs/jquery-ui.min.js"></script>
@@ -30,8 +30,7 @@
 	<script src="js/libs/ng-infinite-scroll.js"></script>
 	<script src="js/libs/ng-table.js"></script>
 	<script src="js/libs/angular-dragdrop.js"></script>
-	<script src="js/libs/bloodhound.js"></script>
-
+	
 	<script src="js/renebuy-module.js"></script>
 	<script src="js/core.js"></script>
 	<script src="js/products.controller.js"></script>
@@ -40,11 +39,11 @@
 	<script src="js/orders.controller.js"></script>
 	<script src="js/shopping-list.controller.js"></script>
 	<script src="js/shipping.controller.js"></script>
-
+	
 
 </head>
 <body ng-controller="MainCtrl">
-
+	
 	<nav class="navbar navbar-default navbar-fixed-top">
 	  <div class="container-fluid">
 	    <div class="navbar-header">
@@ -74,9 +73,9 @@
 		</div>
 	  </div>
 	</nav>
-
+		
 	<div ui-view class="container fill"></div>
-
+	
 	<div class="alert" ng-show="alert">
 		<alert ng-model="alert" type="{{alert.type}}" close="alert = null">{{alert.msg}}</alert>
 	</div>
@@ -113,7 +112,7 @@
 				td,th {border: .5pt solid black;}
 				tfoot td {font-weight: bold;}
 			</style>
-
+			
 			</head>
 			<body>
 				<table>
