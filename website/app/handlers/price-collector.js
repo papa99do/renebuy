@@ -1,6 +1,6 @@
 var mongoose = require('mongoose'); 					// mongoose for mongodb
-var Product  = require('./models/product');
-var PriceAlert = require('./models/price-alert');
+var Product  = require('../models/product');
+var PriceAlert = require('../models/price-alert');
 var async = require('async');
 var request = require('request');
 var cheerio = require('cheerio');
@@ -84,26 +84,26 @@ function getNewPrice(newPriceMap, store, callback) {
 	}
 }
 
-/** 
+/**
  * @param productId
  * @param allDoneCallback function(err, newPriceMap) {}
  */
 function collectPrices(productId, allDoneCallback) {
 	console.log('fetching product: ', productId);
-	
+
 	Product.findById(productId, 'stores', function(err, product) {
 		if (err) return allDoneCallback && allDoneCallback(err);
 		if (!product) return allDoneCallback && allDoneCallback('product not found');
-		
+
 		var newPriceMap = {};
-		
+
 		async.each(product.stores, function(store, callback) {
-			getNewPrice(newPriceMap, store, callback);	
+			getNewPrice(newPriceMap, store, callback);
 		}, function (err) {
 			if (err) return allDoneCallback && allDoneCallback(err);
 			product.save(function(err) {
 				allDoneCallback && allDoneCallback(null, newPriceMap);
-			});	
+			});
 		});
 	});
 }

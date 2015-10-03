@@ -2,7 +2,9 @@
 	<div id="product-search">
 	<form class="form-inline" role="search" id="search-form">
 		<div class="input-group">
-			<input type="text" class="form-control" ng-model="searchText" id="search-text" placeholder="Search" typeahead="term for term in productNames | filter:$viewValue | limitTo:10" typeahead-wait-ms="100" typeahead-min-length="1" typeahead-focus-first="false">
+			<input type="text" class="form-control" ng-model="searchText" id="search-text" placeholder="Search"
+				typeahead="product.name as product.name + ' (' + product.nameInChinese + ')' for product in engine.index.search($viewValue) | limitTo:10"
+				typeahead-wait-ms="100" typeahead-min-length="1" typeahead-focus-first="false">
 			<span class="searchclear glyphicon glyphicon-remove-circle" ng-show="searchText" ng-click="searchText = ''"></span>
 		    <div class="input-group-btn">
 		        <button type="submit" ng-click="search($event)" class="btn btn-primary"><i class="fa fa-search"></i></button>
@@ -10,18 +12,18 @@
 		</div>
 	</form>
 	</div>
-	
+
 	<div class="row" id="product-list" infinite-scroll="load()" infinite-scroll-distance="0" infinite-scroll-disabled="!shouldLoad()">
-		
+
 		<div class="col-xs-12 col-sm-6 col-lg-4" ng-repeat="product in products">
 		<div class="product-tile">
-			
+
 			<div>
-				{{'P.CATEGORY' | translate}}: 
+				{{'P.CATEGORY' | translate}}:
 				<a href="#" ng-if="editMode" editable-text="product.categoryStr" onaftersave="updateCategory(product)">
 				    {{ product.categoryStr }}
 				</a>
-				
+
 				<ol class="category-breadcrumb" ng-if="!editMode">
 				  <li ng-repeat="c in product.category"><a href="#" ng-click="searchCategory(c)">{{c}}</a></li>
 				</ol>
@@ -42,7 +44,7 @@
 				<img src="{{product.photos[0]}}" alt="{{product.name}}" class="prod-img">
 			</div>
 			<div>
-				{{'P.PRICE_IN_STORES' | translate}}: 
+				{{'P.PRICE_IN_STORES' | translate}}:
 				<a href="" ng-click="getNewPrices(product)">
 					<i class="glyphicon glyphicon-refresh" ng-class="product.updatingPrice ? 'rotate' : ''"></i>
 				</a>
@@ -63,31 +65,31 @@
 					<span ng-if="editMode">
 						<input type="text" ng-model="product.weight" size="4" ng-change="updateWeight(product)" ng-model-options="{ updateOn: 'blur' }">g
 					</span>
-					<span ng-if="!editMode">{{product.weight}}g</span>, 
-					
+					<span ng-if="!editMode">{{product.weight}}g</span>,
+
 					<span ng-if="editMode"><input type="checkbox" ng-model="product.isHighTax" ng-change="updateTaxType(product)"> {{'P.HIGH_TAX' | translate}}</span>
-					<span ng-if="!editMode">{{product.isHighTax ? 'P.HIGH_TAX' : 'P.LOW_TAX' | translate}}</span>, 
-					
+					<span ng-if="!editMode">{{product.isHighTax ? 'P.HIGH_TAX' : 'P.LOW_TAX' | translate}}</span>,
+
 					{{'P.POSTAGE' | translate}}: {{postage(product) | currency}}
 				</div>
 				<div>
-					{{'P.CALC_PRICE' | translate}}: 
+					{{'P.CALC_PRICE' | translate}}:
 					<span class="price">{{calculatedPrice(product) | currency:'&yen;'}} </span>
 					{{'P.PROFIT' | translate}}:
 					<span ng-style="{color: calculatedProfit(product) < 0 ? 'red' : 'black' }">{{calculatedProfit(product) | currency:'&yen;'}} ({{calculatedProfit(product) / costInRmb(product) | percentage:0}})</span>
 				</div>
 				<div ng-if="product.adjustedPrice">
-					{{'P.ADJ_PRICE' | translate}}: 
+					{{'P.ADJ_PRICE' | translate}}:
 					<span class="price">{{adjustedPrice(product) | currency:'&yen;'}} </span>
 					{{'P.PROFIT' | translate}}:
 					<span ng-style="{color: adjustedProfit(product) < 0 ? 'red' : 'black' }">{{adjustedProfit(product) | currency:'&yen;'}} ({{adjustedProfit(product) / costInRmb(product) | percentage:0}})</span>
 				</div>
-				
+
 				<div class="orderBtn">
 					<button class="btn btn-info" ng-click="openOrderModal(product)"><i class="glyphicon glyphicon-shopping-cart"></i></button>
 				</div>
 			</div>
-			
+
 		</div>
 		</div>
 	</div>
@@ -96,7 +98,7 @@
 			<img id="spin-progress" src="images/spin-progress.gif" alt="Loading...">
 		</div>
 	</div>
-	
+
 	<script type="text/ng-template" id="orderModal.html">
 		<div class="modal-header">
             <h3 class="modal-title">Add item to order</h3>
@@ -117,14 +119,14 @@
 					<div class="form-group">
 						<label for="order-name" class="col-sm-2 control-label">Order:</label>
 						<div class="col-sm-10">
-							
+
 								<select style="width:300px;" class="form-control" ng-model="item.orderId" ng-disabled="item.newOrderName">
 								  <option></option>
 								  <option ng-repeat="o in activeOrderNames" value="{{o._id}}">{{o.name}}</option>
 								</select>
 								Or create new order:
 								<input type="text" style="width:300px;" class="form-control" ng-model="item.newOrderName" placeholder="New order" ng-disabled="item.orderId">
-							
+
 						</div>
 					</div>
 					<div class="form-group">
@@ -153,6 +155,6 @@
         </div>
         <div class="modal-footer">
 			<button class="btn btn-default" ng-click="cancel()">Cancel</button>
-            <button class="btn btn-primary" ng-click="addToOrder()">Order</button>   
+            <button class="btn btn-primary" ng-click="addToOrder()">Order</button>
         </div>
 	</script>
