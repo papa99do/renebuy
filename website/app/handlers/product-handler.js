@@ -46,19 +46,23 @@ ProductHandler.findProducts = function(req, res) {
 			limit: (page + 1) * pageSize + 1
 		};
 
-		Product.textSearch(req.query.q, opt, function(err, result) {
-			if (err) {handleError(err, res); return;}
-			var productsWithScore = req.query.sm ? result.results : result.results.slice(page * pageSize);
-			var products = productsWithScore.map(function(value) {return value.obj;});
-			handleResult(products, res);
-		});
+		// Product.textSearch(req.query.q, opt, function(err, result) {
+		// 	if (err) {handleError(err, res); return;}
+		// 	var productsWithScore = req.query.sm ? result.results : result.results.slice(page * pageSize);
+		// 	var products = productsWithScore.map(function(value) {return value.obj;});
+		// 	handleResult(products, res);
+		// });
 
 		// 'text' command is removed from mongodb 3.0, need to figure out a workaround
-		// Product.find({$text: {$search: req.query.q}}, { score: { $meta: "textScore" } })
-		// 	.sort({ score: { $meta: "textScore" } })
-		// 	.limit(req.query.sm ? 3 : (page + 1) * pageSize + 1)
-		// 	//.project('name nameInChinese category weight isHighTax')
-		// 	.exec(returnProducts);
+		Product.find({$text: {$search: req.query.q}}, { score: { $meta: "textScore" } })
+			.sort({ score: { $meta: "textScore" } })
+			.limit(opt.limit)
+			//.project('name nameInChinese category weight isHighTax')
+			.exec(function(err, products) {
+				if (err) return handleError(err, res);
+				var slicedProducts = req.query.sm ? products : products.slice(page * pageSize);
+				handleResult(slicedProducts, res);
+			});
 
 	} else if (req.query.all) {
 		/* used by update price */

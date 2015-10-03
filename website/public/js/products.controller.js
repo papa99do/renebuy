@@ -1,7 +1,7 @@
 renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $modal) {
 
 	$scope.exchangeRate = 5.5;
-	$scope.realTimeExchangeRate = 5.1;
+	$scope.realTimeExchangeRate = 4.5;
 	$scope.ratio = 1.2;
 
 	var Product = $resource('/api/product/:id', {id: '@id'}, {
