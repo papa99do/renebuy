@@ -1,6 +1,6 @@
 function renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProductInfo, reneBuyUrl, test) {
 	var enhanceBtnHtml = '<div class="enhance"><button class="addBtn">Add to ReneBuy</button></div>';
-	
+
 	var init = function() {
 		addEnhanceBtn(enhanceBtnHtml);
 		addEnhanceBtnEvent(extractProductInfo);
@@ -8,7 +8,7 @@ function renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProduc
 		addConfirmBtnEvent();
 		appendStyle();
 	};
-	
+
 	function addEnhanceBtnEvent(extractProductInfo) {
 		$('.addBtn').click(function() {
 			var product = extractProductInfo($(this), extractNumber);
@@ -16,16 +16,17 @@ function renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProduc
 			if (!test) {
 				getSimilarProducts(product);
 			}
-		});	
+			return false;
+		});
 	}
-	
+
 	function extractNumber(pattern, text) {
 	    var result = text.match(pattern);
 	    if (result && result.length > 1) {
 	    	return Number(result[1]);
-	    } 
+	    }
 	}
-	
+
 	function getSimilarProducts(product) {
         GM_xmlhttpRequest({
             method: 'Get',
@@ -39,7 +40,7 @@ function renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProduc
                 //console.log(similarProducts);
                 showPopup(product, similarProducts);
             }
-        });	
+        });
     }
 
 	function showPopup(product, similarProducts) {
@@ -49,7 +50,7 @@ function renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProduc
 		$('#nameInChinese').val('');
 	    $('.message').html('');
 	    $('#productName').val(product.name);
-    
+
 	    if (similarProducts.length > 0) {
 	    	$('#productCategory').val(similarProducts[0].category.join(' > '));
 	        if (similarProducts[0].name === product.name) {
@@ -58,35 +59,35 @@ function renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProduc
 	            if (similarProducts[0].isHighTax) {$('#productHighTax').prop('checked', true)}
 	        }
 	    } else {
-	    	$('#productCategory').val('');	
+	    	$('#productCategory').val('');
 	    }
-    
+
 	    $('#productCache').val(JSON.stringify(product));
-    
+
 	    $('#similarProducts').html('');
 	    for (var i = 0; i < similarProducts.length; i++) {
 	        var id = similarProducts[i]._id;
 	        var name = similarProducts[i].name;
 	        var category = similarProducts[i].category.join(' > ');
 	        $('#similarProducts').append('<li>' + name + ', Use this <a href="#" title="' + name + '" id="' + id + '">product</a> or <a href="#" title="' + category + '" id="c_' + id + '">category</a></li>');
-    
-	        $('#' + id).click(function() {  
+
+	        $('#' + id).click(function() {
 	        	$('#reneBuyId').val($(this).attr('id'));
 	            $('#productName').val($(this).attr('title'));
 	            return false;
 	        });
-    
-	        $('#c_' + id).click(function() { 
+
+	        $('#c_' + id).click(function() {
 	            console.log('assign category :', $(this).attr('title'));
 	            $('#productCategory').val($(this).attr('title'));
 	            return false;
 	        });
-    
+
 	    }
-    
-		$("#gmPopupContainer").show();	
+
+		$("#gmPopupContainer").show();
 	}
-	
+
 	function appendPopUp() {
 		$('body').append('\
 		    <div id="gmPopupContainer">\
@@ -113,7 +114,7 @@ function renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProduc
 		    </div>                                                                    \
 		');
 	}
-	
+
 	function addConfirmBtnEvent() {
 		$("#gmConfirmBtn").click (function () {
 		    $(this).attr('disabled', 'disabled');
@@ -125,17 +126,17 @@ function renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProduc
 		    product.category = $('#productCategory').val();
 		    product.weight = parseInt($('#productWeight').val());
 		    product.isHighTax = $('#productHighTax').is(":checked");
-        
+
 		    console.log('aaaaaaa', product);
-        
+
 		    $('#spinProgress').show();
-        
+
 		    GM_xmlhttpRequest({
 		        method: 'POST',
 		        url: reneBuyUrl,
 		        headers: {'Content-Type': 'application/json'},
-		        data: JSON.stringify(product),            
-		        onload: function(data) {       
+		        data: JSON.stringify(product),
+		        onload: function(data) {
 		            console.log('Product added: ', data);
 		            if (data.status === 200) {
 		                $('#successMessage').html('Product added!');
@@ -157,14 +158,15 @@ function renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProduc
 		            $('#spinProgress').hide();
 		        }
 		    });
-        
+        return false;
 		});
-        
+
 		$("#gmCloseDlgBtn").click ( function () {
 		    $("#gmPopupContainer").hide ();
+				return false;
 		});
 	}
-	
+
 	function appendStyle() {
 		//--- CSS styles make it work...
 		GM_addStyle ( '                                                \
@@ -202,7 +204,7 @@ function renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProduc
 		    #successMessage {color: green } \
 		' );
 	}
-	
+
 	return {
 		init: init
 	};
