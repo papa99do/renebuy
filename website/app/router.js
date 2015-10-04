@@ -3,6 +3,7 @@ var express  = require('express');
 var ProductHandler  = require('./handlers/product-handler');
 var OrderHandler  = require('./handlers/order-handler');
 var BoxHandler  = require('./handlers/box-handler');
+var ParcelHandler  = require('./handlers/parcel-handler');
 var PriceAlertHandler  = require('./handlers/price-alert-handler');
 
 // configuration of the router
@@ -50,5 +51,9 @@ router.route('/box/:boxId')
 
 router.route('/track-shipped-box')
 	.get(BoxHandler.track);
+
+router.route('/parcel')
+	.post(ParcelHandler.create)
+	.get(ParcelHandler.getAll);
 
 module.exports = router;

@@ -6,6 +6,7 @@
   "author"       : "Yihan <yihanzhao@gmail.com>",
   "dependencies" : {
     "express"    : "~4.7.2",
+    "cors"       : "~2.7.1",
     "mongoose"   : "~4.1.8",
     "mongoose-text-search"  : "~0.0.2",
     "morgan"     : "~1.2.2",
