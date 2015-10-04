@@ -1,0 +1,250 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>运单查询</title>
+<meta name="keywords" content='运单查询'>
+<meta name="description" content='运单查询'>
+
+<!-- css -->
+<!-- 最新 Bootstrap 核心 CSS 文件 -->
+<link rel="stylesheet" href="http://www.polarexpress.com.au//static/common/bootstrap/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="http://www.polarexpress.com.au//static/common/editor/themes/default/default.css" />
+<link rel="stylesheet" href="http://www.polarexpress.com.au//static/common/css/iosOverlay.css">
+<link rel="stylesheet" href="http://www.polarexpress.com.au//static/css/public.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="http://www.polarexpress.com.au//static/css/css.css" rel="stylesheet" type="text/css" />
+
+
+<!-- js -->
+<script type="text/javascript" SRC="http://www.polarexpress.com.au//static/common/js/jquery-1.9.0.min.js"></script>
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script type="text/javascript" src="http://www.polarexpress.com.au//static/common/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" SRC="http://www.polarexpress.com.au//static/js/layer.min.js"></script>
+<script type="text/javascript" SRC="http://www.polarexpress.com.au//static/common/js/jquery.form.js"></script>
+<script type="text/javascript" SRC="http://www.polarexpress.com.au//static/common/js/iosOverlay.js"></script>
+<script type="text/javascript" SRC="http://www.polarexpress.com.au//static/common/js/spin.min.js"></script>
+<script type="text/javascript" SRC="http://www.polarexpress.com.au//static/common/js/Validform_v5.3.2_min.js"></script>
+<script type="text/javascript" SRC="http://www.polarexpress.com.au//static/js/g_common.js"></script>
+<script type="text/javascript" SRC="http://www.polarexpress.com.au//static/js/g_functions.js"></script>
+</head>
+<body>
+
+
+
+    <div class="new_top">
+        <div class="allwrap">
+            <div class="fr" style="margin-right:25px;">
+                             <span ><a href="/member/">[会员中心]</a></span>
+                <span>，</span>
+                <span><a  href="javascript:void()" onClick="if($.gconfirm('确认退出么?')){ajax_request('/member/login_out')}">退出</a></span>
+
+            </div>
+        </div>
+    </div>
+    <div id="top" class="top">
+        <div class="allwrap">
+            <div class="logo"><img src="/static/imgs/logo1.png"></div>
+            <div class="top_nav">
+                <ul class="navs">
+                    <li class="active" ><a href="/index">首页</a></li>
+                    <li>
+                        <div class="dropdown"><a data-toggle="dropdown" href="#">关于我们</a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <li  ><a href="/p/1">公司简介</a></li>
+                                <li><a href="/p/4">服务报价</a></li>
+                                <li><a href="/p/3">配送范围</a></li>
+                                <li><a href="/p/5">联系我们</a></li>
+                            </ul>
+                        </div>
+
+                    </li>
+                    <li  ><a href="/page/alist/13">新闻中心</a></li>
+                    <li  ><a href="/torder">在线填单</a></li>
+                    <li  ><a href="/icard">身份证上传</a></li>
+                    <li ><a href="/member">会员中心</a></li>
+                </ul>
+            </div>
+            <div class="tell">
+                <span class="number"><img src="/static/imgs/phone.gif"> 03 9988 3219</span>
+            </div>
+
+        </div>
+    </div>
+    <div class="bannerbg">
+        <div class="batxt allwrap">运单查询</div>
+
+
+    </div>
+
+<div class="allwrap">
+<ol class="breadcrumb fl">
+
+        <li> <a href="/index">首页</a></li>
+
+        <li> <a style=" color:#999;">物流追踪</a></li>
+    </ol>
+
+<div class="cl"></div>
+</div>
+<div class="allwrap">
+
+        <div class="cl"></div>
+        <div class="cont_left fl">
+            <ul>
+                 <li  ><a href="/p/1">公司简介</a></li>
+                <li  ><a href="/page/alist/13">新闻中心</a></li>
+                <li  ><a href="/index/track">物流追踪</a></li>
+                <li  ><a href="/torder">在线填单</a></li>
+                <li  ><a href="/p/3">配送范围</a></li>
+                <li  ><a href="/p/4">服务报价</a></li>
+                <li  ><a href="/p/5">联系我们</a></li>
+                <li  ><a href="/p/6">禁寄物品</a></li>
+            </ul>
+            <div class="left_img">
+                <a href="/p/6">
+                <img src="/static/imgs/Contact_us.png">
+                </a>
+            </div>
+        </div>
+        <div class="cont_right fr">
+            <div class="right_top">
+                <span class="font18"><b>物流追踪</b></span>
+            </div>
+            <div class="right_box">
+                <div class="numb">
+                    <form id="orderform" action="/track" method="get" >
+                        <div class="num_top">
+                            <span class="fonb"><b>运单查询：</b></span><span class="fons"></span>
+                        </div>
+                        <textarea id="textareainput" name="num" class="textarea" placeholder=" |请输入运单号追踪您的包裹" style="height:100px;"></textarea><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;*输入一个单号
+                        <div class="cl"></div>
+                        <span class="submit1 fr">
+                            <input value="开始查询" class="buttonSubmit yh" type="submit">
+                        </span>
+                    </form>
+                    <br><br><br><br>
+                    <div class="cl"></div>
+                </div>
+
+                        <div class="formTable3">
+                            <table id="tbody" width="100%" border="0" cellspacing="0" cellpadding="0">
+                                    <tbody class="ft_tbody">
+                                             <tr>
+                                                    <td style="background-color:#eef4f7; color:#333;border-bottom: 1px solid #d2d2d2;">收件人：李佳意</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="background-color:#eef4f7; color:#333;border-bottom: 1px solid #d2d2d2;">发往：江苏苏州</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="background-color:#eef4f7; color:#333;border-bottom: 1px solid #d2d2d2;">收货人手机：1XX XXXX 8066</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="background-color:#eef4f7; color:#333;border-bottom: 1px solid #d2d2d2;">包裹重量：4.40 KGs</td>
+                                                </tr>
+                                            <tr>
+                                                <td style="background-color:#eef4f7; color:#333;border-bottom: 1px solid #d2d2d2;">物流单号：PE000107115GW</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="background-color:#eef4f7; color:#333;border-bottom: 1px solid #d2d2d2;">发自：澳大利亚 墨尔本</td>
+                                            </tr>
+
+                                          <tr>
+                                                    <td style="background-color:#eef4f7; color:#333;border-bottom: 1px solid #d2d2d2;">&nbsp;&nbsp;国外段转运信息：</td>
+                                                </tr>
+
+                                                                                            <tr>
+                                                    <td ><b style="color:#000">时间：</b>2015-09-19 14:44:01&nbsp;&nbsp;&nbsp;<b style="color:#000">货物状态：</b>欢迎使用极地快递，Glen Waverley分店已经收货，等待客户上传并匹配身份证,等待发送至总部</td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <td ><b style="color:#000">时间：</b>2015-09-19 14:44:02&nbsp;&nbsp;&nbsp;<b style="color:#000">货物状态：</b>客户已经上传并匹配身份证 </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <td ><b style="color:#000">时间：</b>2015-09-19 22:29:47&nbsp;&nbsp;&nbsp;<b style="color:#000">货物状态：</b>一键绑定身份证成功 </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <td ><b style="color:#000">时间：</b>2015-09-20 13:18:59&nbsp;&nbsp;&nbsp;<b style="color:#000">货物状态：</b>总部已经收货，等待处理</td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <td ><b style="color:#000">时间：</b>2015-09-20 13:19:34&nbsp;&nbsp;&nbsp;<b style="color:#000">货物状态：</b>仓库处理中</td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <td ><b style="color:#000">时间：</b>2015-09-20 19:13:45&nbsp;&nbsp;&nbsp;<b style="color:#000">货物状态：</b>已发往机场仓库，等待安检</td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <td ><b style="color:#000">时间：</b>2015-09-21 20:19:24&nbsp;&nbsp;&nbsp;<b style="color:#000">货物状态：</b>机场安检结束，货物已运上飞机</td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <td ><b style="color:#000">时间：</b>2015-09-22 17:20:50&nbsp;&nbsp;&nbsp;<b style="color:#000">货物状态：</b>货物已抵达中国海关，清关中...</td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <td ><b style="color:#000">时间：</b>2015-09-24 19:05:56&nbsp;&nbsp;&nbsp;<b style="color:#000">货物状态：</b>清关完毕，请登录http://www.ems.com.cn 查询国内转运信息</td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <td ><b style="color:#000">时间：</b>2015-09-25 09:06:22&nbsp;&nbsp;&nbsp;<b style="color:#000">货物状态：</b>转接国内</td>
+                                                </tr>
+
+
+
+                                                <tr>
+                                               <td style="background-color:#eef4f7; color:#333;border-bottom: 1px solid #d2d2d2;">国内物流信息[运单号：BE146419397AU]：</td>
+                                               </tr>
+                                               <tr>
+                                               <td><div id="track_cn"></div></td>
+                                               </tr>
+
+                                    </tbody>
+                                </table>
+                        </div>
+                        <div class="cl"></div>
+                        <br><br><br>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $('#track_cn').html('<img src="/static/common/images/loading.gif">');
+        $.getJSON("/api/track_cn?num=BE146419397AU&com=ems", function(data){
+            if (data.message == 'ok') {
+                $('#track_cn').html('');
+                  $.each(data.data, function(i,item){
+                        var html = '<p>操作时间：'+item.time+'&nbsp;&nbsp;&nbsp;货物状态：'+item.context+'</p>';
+                        $('#track_cn').append(html);
+                });
+            }
+            else
+            {
+                $('#track_cn').html('暂无物流信息');
+            }
+        });
+    });
+</script>
+
+<div class="cl"></div>
+<br><br><br>
+
+
+
+
+<div class="footbt">
+    	<div class="allwrap">
+            Copyright © 2014 Polarexpress.com.au ALL Rights Reserved
+            <br>
+            <span><script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254797525'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1254797525' type='text/javascript'%3E%3C/script%3E"));</script> | <a href="http://www.aikuaidi.cn/" target="_blank" >快递单号查询</a></span>
+        </div>
+    </div>
+</body>
+<!-- Live800默认跟踪代码: 开始-->
+<script language="javascript" src="http://f88.live800.com/live800/chatClient/monitor.js?jid=4886760225&companyID=512606&configID=128453&codeType=custom"></script>
+<!-- Live800默认跟踪代码: 结束-->
+<!-- <div class="prewx" style="  position: fixed;bottom: 20%;right: 30px;"><img src="/static/imgs/prewx.jpg"></div> -->
+
+<!-- Live800在线客服图标:默认图标[浮动图标] 开始-->
+<div style='display:none;'><a href='http://www.live800.com'>在线聊天</a></div><script language="javascript" src="http://f88.live800.com/live800/chatClient/floatButton.js?jid=4886760225&companyID=512606&configID=128454&codeType=custom"></script><div style='display:none;'><a href='http://en.live800.com'>live chat</a></div>
+<!-- 在线客服图标:默认图标 结束-->
+</html>
