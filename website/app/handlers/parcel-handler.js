@@ -39,8 +39,8 @@ ParcelHandler.create = function(req, res) {
 };
 
 ParcelHandler.getAll = function(req, res) {
-  Parcel.find().select('trackingNumber recipient status lastUpdated')
-    .sort({'lastUpdated': -1}).exec(respond(res));
+  Parcel.find().select('trackingNumber recipient status sentDate')
+    .sort({'sentDate': -1}).exec(respond(res));
 };
 
 ParcelHandler.update = function(req, res) {
@@ -87,19 +87,21 @@ function handleUpdate(update, req, res) {
   update.status = 'new';
   for (var i = update.tracking.length - 1; i >= 0; i--) {
     var info = update.tracking[i];
-    if (info.event.indexOf('投递并签收')) {
+    if (info.event.indexOf('投递并签收') > -1) {
       update.status = 'delivered';
       break;
-    } else if (info.event.indexOf('转接国内')) {
+    } else if (info.event.indexOf('转接国内') > -1) {
       update.status = 'domestic';
       break;
-    } else if (info.event.indexOf('清关中')) {
+    } else if (info.event.indexOf('清关中') > -1) {
       update.status = 'custom';
       break;
     }
   }
 
-  update.lastUpdated = update.tracking[update.tracking.length - 1].time;
+  if (update.tracking.length > 0) {
+    update.sentDate = update.tracking[0].time;
+  }
 
   update.trackingNumber = req.params.trackingNumber;
 
