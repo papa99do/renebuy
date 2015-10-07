@@ -58,6 +58,7 @@ router.route('/parcel')
 
 router.route('/parcel/:trackingNumber')
 	.put(ParcelHandler.update)
-	.get(ParcelHandler.getOne);
+	.get(ParcelHandler.getOne)
+	.delete(ParcelHandler.archive);
 
 module.exports = router;

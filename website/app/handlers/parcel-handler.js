@@ -39,7 +39,7 @@ ParcelHandler.create = function(req, res) {
 };
 
 ParcelHandler.getAll = function(req, res) {
-  Parcel.find().select('trackingNumber recipient status sentDate')
+  Parcel.find({status: {$ne: 'archived'}}).select('trackingNumber recipient status sentDate')
     .sort({'sentDate': -1}).exec(respond(res));
 };
 
@@ -77,11 +77,16 @@ ParcelHandler.update = function(req, res) {
 
 
   });
-}
+};
+
+ParcelHandler.archive = function(req,res) {
+  Parcel.findOneAndUpdate({trackingNumber: req.params.trackingNumber},
+    {status: 'archived'}, {new: true}, respond(res));
+};
 
 ParcelHandler.getOne = function(req, res) {
   Parcel.findOne({trackingNumber: req.params.trackingNumber}).exec(respond(res));
-}
+};
 
 function handleUpdate(update, req, res) {
   update.status = 'new';
