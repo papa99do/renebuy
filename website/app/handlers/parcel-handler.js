@@ -92,7 +92,7 @@ function handleUpdate(update, req, res) {
   update.status = 'new';
   for (var i = update.tracking.length - 1; i >= 0; i--) {
     var info = update.tracking[i];
-    if (info.event.indexOf('投递并签收') > -1) {
+    if (info.event.indexOf('已签收') > -1) {
       update.status = 'delivered';
       break;
     } else if (info.event.indexOf('转接国内') > -1) {
