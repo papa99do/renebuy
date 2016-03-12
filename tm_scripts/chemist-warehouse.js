@@ -3,9 +3,9 @@
 // @namespace  http://yihanzhao.com/
 // @version    0.1
 // @description  Chemist warehouse enhancements
-// @match      http://www.chemistwarehouse.com.au/*
+// @match      https://www.chemistwarehouse.com.au/*
 // @copyright  2015+, Yihan Zhao, yihanzhao@gmail.com
-// @require http://code.jquery.com/jquery-latest.js
+// @require https://code.jquery.com/jquery-latest.js
 // @require http://renebuy.yihanzhao.com/js/monkey/renebuy-enhance.js?1
 // @grant      GM_xmlhttpRequest
 // @grant       GM_addStyle
@@ -14,7 +14,7 @@
 var reneBuyUrl = "http://renebuy.yihanzhao.com/api/product";
 //var reneBuyUrl = "http://localhost:3001/api/product";
 
-var CM_URL = "http://www.chemistwarehouse.com.au";
+var CM_URL = "https://www.chemistwarehouse.com.au";
 
 $(document).ready(function() {
 
@@ -26,7 +26,10 @@ $(document).ready(function() {
 
     function extractProductInfo($enhanceBtn, extractNumber) {
     	// extract product information
-        var productElem = $enhanceBtn.parent().parent().parent();
+        var productElem = $enhanceBtn.parent().parent().find('a');
+        if (!productElem.attr('href')) {
+            productElem = $enhanceBtn.parent().parent().parent();
+        }
         var detailUrl = productElem.attr('href');
         var name = productElem.attr('title').trim();
         var id = extractNumber(/\/(\d+)\//, detailUrl);
