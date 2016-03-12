@@ -8,6 +8,7 @@ var cheerio = require('cheerio');
 var CW_URL = 'http://www.chemistwarehouse.com.au';
 var MC_URL = 'http://www.mychemist.com.au';
 var PRICE_URL_FOR_CW_MC = '/inc_product_updater_json_shortlive.asp?callback=getPrice&ID=';
+var WW_URL = 'https://www.woolworths.com.au/apis/ui/product/detail/'
 
 function extractPrice(text, pattern) {
 	var pattern = pattern || /\$([0-9.]+)/;
@@ -46,6 +47,14 @@ function getPricelinePrice(store, withNewPrice) {
 	});
 }
 
+function getWoolwoothsPrice(store, withNewPrice) {
+	request(WW_URL + store.productId, function(err, response, json) {
+		if (err) return withNewPrice(err);
+		var price = JSON.parse(json).Product.Price;
+		withNewPrice(null, price);
+	});
+}
+
 function getPriceInPriceClassSpan(store, withNewPrice) {
 	request(store.detailUrl, function(err, response, html) {
 		if (err) return withNewPrice(err);
@@ -60,7 +69,7 @@ var getPriceFunctionMap = {
 	'MC': getCWorMCPrice(MC_URL),
 	'PL': getPricelinePrice,
 	'PO': getPriceInPriceClassSpan,
-	'WW': getPriceInPriceClassSpan,
+	'WW': getWoolwoothsPrice,
 	'CO': getPriceInPriceClassSpan,
 	'JJ': getPriceInPriceClassSpan
 }
