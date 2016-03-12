@@ -56,6 +56,7 @@ function getWoolwoothsPrice(store, withNewPrice) {
 }
 
 function getPriceInPriceClassSpan(store, withNewPrice) {
+	if (!store.detailUrl) return withNewPrice('DetailUrl required!');
 	request(store.detailUrl, function(err, response, html) {
 		if (err) return withNewPrice(err);
 		var price = cheerio.load(html)('.price').text();
