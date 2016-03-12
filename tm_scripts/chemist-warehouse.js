@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name       Chemist warehouse enhancements
 // @namespace  http://yihanzhao.com/
-// @version    0.1
+// @version    0.2
 // @description  Chemist warehouse enhancements
 // @match      https://www.chemistwarehouse.com.au/*
 // @copyright  2015+, Yihan Zhao, yihanzhao@gmail.com
 // @require https://code.jquery.com/jquery-latest.js
 // @require http://renebuy.yihanzhao.com/js/monkey/renebuy-enhance.js?1
+// @updateURL https://raw.githubusercontent.com/papa99do/renebuy/master/tm_scripts/chemist-warehouse.js
+// @downloadURL https://raw.githubusercontent.com/papa99do/renebuy/master/tm_scripts/chemist-warehouse.js
 // @grant      GM_xmlhttpRequest
 // @grant       GM_addStyle
 // ==/UserScript==
