@@ -3,7 +3,7 @@
 // @namespace  http://yihanzhao.com/
 // @version    0.2
 // @description  Chemist warehouse enhancements
-// @match      https://www.chemistwarehouse.com.au/*
+// @match      www.chemistwarehouse.com.au/*
 // @copyright  2015+, Yihan Zhao, yihanzhao@gmail.com
 // @require https://code.jquery.com/jquery-latest.js
 // @require http://renebuy.yihanzhao.com/js/monkey/renebuy-enhance.js?1
@@ -16,7 +16,7 @@
 var reneBuyUrl = "http://renebuy.yihanzhao.com/api/product";
 //var reneBuyUrl = "http://localhost:3001/api/product";
 
-var CM_URL = "https://www.chemistwarehouse.com.au";
+var CM_URL = "http://www.chemistwarehouse.com.au";
 
 $(document).ready(function() {
 
