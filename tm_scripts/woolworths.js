@@ -3,7 +3,7 @@
 // @namespace  http://yihanzhao.com/
 // @version    0.1
 // @description Woolworths enhancements
-// @match      http://*.woolworthsonline.com.au/*
+// @match      *.woolworthsonline.com.au/*
 // @copyright  2015+, Yihan Zhao, yihanzhao@gmail.com
 // @require http://code.jquery.com/jquery-latest.js
 // @require http://renebuy.yihanzhao.com/js/monkey/renebuy-enhance.js?1
@@ -17,13 +17,13 @@ var reneBuyUrl = "http://renebuy.yihanzhao.com/api/product";
 var WW_URL = 'http://www2.woolworthsonline.com.au';
 
 $(document).ready(function() {
-	
+
 	function addEnhanceBtn(enhanceBtnHtml) {
 		$('.product-stamp').each(function() {
 	        $(this).append(enhanceBtnHtml);
 	    });
     }
-    
+
     function extractProductInfo($enhanceBtn, extractNumber) {
     	// extract product information
         var productElem = $enhanceBtn.parent().parent();
@@ -34,7 +34,7 @@ $(document).ready(function() {
         var price = extractNumber(/\$([0-9.]+)/, productElem.find('.price-container .price').text());
         var rrpText = productElem.find('.price-container .was-price').text();
         var rrp = rrpText ? extractNumber(/\$([0-9.]+)/, rrpText) : price;
-        
+
         var product = {
             productId: id,
             name: name.trim(),
@@ -44,10 +44,10 @@ $(document).ready(function() {
             detailUrl: WW_URL + detailUrl,
 			store: 'WW'
         };
-       
+
         return product;
     }
     
     renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProductInfo, reneBuyUrl).init();
-    
+
 });

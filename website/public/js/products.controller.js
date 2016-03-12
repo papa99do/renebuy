@@ -62,7 +62,7 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 
 	function enhance(product) {
 
-		product.buyPrice = product.stores[0].price;
+		product.buyPrice = product.stores[0] ? product.stores[0].price : product.rrp;
 		product.isLowPrice = false;
 
 		for(var i = 0; i < product.stores.length; i++) {
