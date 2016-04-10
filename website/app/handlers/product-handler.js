@@ -64,9 +64,9 @@ ProductHandler.findProducts = function(req, res) {
 				handleResult(slicedProducts, res);
 			});
 
-	} else if (req.query.all) {
+	} else if (req.query.watched) {
 		/* used by update price */
-		Product.find().select('name stores rrp').exec(returnProducts);
+		Product.find({watchPrice: true}).select('name stores rrp').exec(returnProducts);
 
 	} else if (req.query.suggest) {
 		/* used by search suggestion */
