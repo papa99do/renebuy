@@ -86,7 +86,12 @@
 				</div>
 
 				<div class="orderBtn">
-					<button class="btn btn-info" ng-click="openOrderModal(product)"><i class="glyphicon glyphicon-shopping-cart"></i></button>
+					<button class="btn btn-info" ng-click="openOrderModal(product)"><i class="glyphicon glyphicon-shopping-cart"></i>
+				</div>
+
+				<div class="watchPrice">
+						<i class="glyphicon" ng-click="toggleWatchPriceFlag(product)"
+								ng-class="product.watchPrice ? 'glyphicon-eye-open watched' : 'glyphicon-eye-close unwatched'"></i>
 				</div>
 			</div>
 

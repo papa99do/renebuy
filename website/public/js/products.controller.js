@@ -10,6 +10,7 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 		updateName: {method: 'POST', params:{name: true}},
 		updateNameInChinese: {method: 'POST', params:{nameInChinese: true}},
 		updateTaxType: {method: 'POST', params:{taxType: true}},
+		toggleWatchPriceFlag: {method: 'POST', params: {watchPrice: true}},
 		getNewPrices: {method: 'GET', params: {newPrice: true}},
 	});
 
@@ -131,6 +132,13 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 	$scope.updateTaxType = function(product) {
 		Product.updateTaxType({id: product._id}, JSON.stringify({isHighTax: product.isHighTax}), function(result) {
 			console.log('Tax type changed to %s for [%s]', product.isHighTax ? 'high' : 'low', product.name);
+		});
+	};
+
+	$scope.toggleWatchPriceFlag = function(product) {
+		Product.toggleWatchPriceFlag({id: product._id}, JSON.stringify({watchPrice: !product.watchPrice}), function(result) {
+			product.watchPrice = !product.watchPrice;
+			console.log('Toggled watch price flag for %s', product.name);
 		});
 	};
 

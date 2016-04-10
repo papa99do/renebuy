@@ -16,6 +16,7 @@ var ProcuctSchema = new Schema({
 	photos: {type: [String], default: []},
 	weight: Number,
 	isHighTax: Boolean,
+	watchPrice: Boolean,
 	rrp: Number,
 	adjustedPrice: Number,
 	category: [String],

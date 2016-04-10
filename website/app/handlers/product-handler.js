@@ -184,6 +184,9 @@ ProductHandler.updateProduct = function(req, res) {
 		} else if (req.query.taxType) {
 			/* {"isHighTax": true} */
 			updateTaxType(product);
+		} else if (req.query.watchPrice) {
+			/* {"watchPrice": true} */
+			updateWatchPriceFlag(product);
 		}
 	});
 
@@ -209,6 +212,11 @@ ProductHandler.updateProduct = function(req, res) {
 
 	function updateWeight(product) {
 		product.weight = req.body.weight;
+		saveProduct(product);
+	}
+
+	function updateWatchPriceFlag(product) {
+		product.watchPrice = req.body.watchPrice;
 		saveProduct(product);
 	}
 
