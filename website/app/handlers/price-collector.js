@@ -7,7 +7,6 @@ var cheerio = require('cheerio');
 
 var CW_URL = 'http://www.chemistwarehouse.com.au';
 var MC_URL = 'http://www.mychemist.com.au';
-var PRICE_URL_FOR_CW_MC = '/inc_product_updater_json_shortlive.asp?callback=getPrice&ID=';
 var WW_URL = 'https://www.woolworths.com.au/apis/ui/product/detail/'
 
 function extractPrice(text, pattern) {
@@ -19,21 +18,22 @@ function extractPrice(text, pattern) {
 	return null;
 }
 
-function getCWorMCPrice(urlDomain) {
-	return function(store, withNewPrice) {
-		request(urlDomain + PRICE_URL_FOR_CW_MC + store.productId, function(err, response, html) {
-			if (err) return withNewPrice(err);
-			// In html, we try to extract result from "price":"$9.99"
-			newPrice = extractPrice(html, /"price":"\$([0-9.]+)"/);
-			if (!newPrice) {
-				console.error("Cannot extract price from: ", html);
-				return withNewPrice(null, store.price);
-			}
-			withNewPrice(null, newPrice);
-		});
-	};
+function getCWPrice(store, withNewPrice) {
+	request(store.detailUrl, function(err, response, html) {
+		if (err) return withNewPrice(err);
+		var newPrice = extractPrice(cheerio.load(html)('[itemprop=price]').text());
+		if (!newPrice) {
+			console.error("Cannot extract price from: ", html);
+			return withNewPrice(null, store.price);
+		}
+		//console.log("new price: ", newPrice);
+		withNewPrice(null, newPrice);
+	});
 }
 
+function getOldPrice(store, withNewPrice) {
+	withNewPrice(null, store.price);
+}
 
 function getPricelinePrice(store, withNewPrice) {
 	request(store.detailUrl, function(err, response, html) {
@@ -69,8 +69,8 @@ function getPriceInPriceClassSpan(store, withNewPrice) {
 }
 
 var getPriceFunctionMap = {
-	'CW': getCWorMCPrice(CW_URL),
-	'MC': getCWorMCPrice(MC_URL),
+	'CW': getCWPrice,
+	'MC': getOldPrice,
 	'PL': getPricelinePrice,
 	'PO': getPriceInPriceClassSpan,
 	'WW': getWoolwoothsPrice,
