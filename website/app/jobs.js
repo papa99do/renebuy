@@ -1,11 +1,14 @@
 var schedule = require('node-schedule');
-var dwPriceUpdater = require('./handlers/dw-price-updater');
+var dwPriceUpdater = require('./handlers/cw-price-updater');
 
 // run sheduled job to update price every day
-var updatePriceJobCron = '*/20 20 * * * *'; 
+var updatePriceJobCron = '0 1 * * *';
 function scheduleUpdateDwPriceJob() {
   schedule.scheduleJob(updatePriceJobCron, function() {
-  	dwPriceUpdater.updatePrices();
+    console.log("====JOB(dwPriceUpdater)==== Start updating prices");
+  	dwPriceUpdater.updatePrices(function() {
+      console.log("====JOB(dwPriceUpdater)==== Done: All prices updated");
+    });
   });
 }
 
