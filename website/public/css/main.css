@@ -122,8 +122,10 @@ textarea {
 .product-tile .watchPrice {
   z-index: 100;
   position: absolute;;
-  right: 30px;
-  top: 30px;
+  left: 30px;
+  bottom: 10px;
+  font-size: 1.5em;
+  cursor: pointer;
   opacity: 0.8;
 }
 
