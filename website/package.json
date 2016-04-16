@@ -15,7 +15,6 @@
     "mongoose": "~4.1.8",
     "mongoose-text-search": "~0.0.2",
     "morgan": "~1.2.2",
-    "node-schedule": "^1.1.0",
     "promise": "^7.1.1",
     "request": "~2.51.0",
     "rx": "^4.1.0",

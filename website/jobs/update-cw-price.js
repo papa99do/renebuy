@@ -5,10 +5,19 @@ var request = require('request');
 var cheerio = require('cheerio');
 var mongoose = require('mongoose');
 
-var Product  = require('../models/product');
-var PriceAlert = require('../models/price-alert');
+var Product  = require('../app/models/product');
+var PriceAlert = require('../app/models/price-alert');
 
 var GET_PRICE_INTERVAL = 2000; //ms
+var MONGO_URL = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/renebuy';
+
+onStart();
+findWatchedProducts()
+  .then(emitOverTime)
+  .then(function(productStream) {
+    productStream.subscribe(updatePrice, null, onComplete);
+  });
+
 
 Rx.Observable.fromTimedArray = function(array, interval) {
   return Rx.Observable.from(array).zip(Rx.Observable.interval(interval || 1000), function(a, b) { return a; });
@@ -25,14 +34,6 @@ function findWatchedProducts() {
 
 function emitOverTime(products) {
   return Rx.Observable.fromTimedArray(products, GET_PRICE_INTERVAL);
-}
-
-function updatePrices(completeCallback) {
-  findWatchedProducts()
-    .then(emitOverTime)
-    .then(function(productStream) {
-      productStream.subscribe(updatePrice, null, completeCallback || logComplete);
-    });
 }
 
 function updatePrice(product) {
@@ -109,7 +110,8 @@ function createPriceAlert(product) {
   		store: 'CW',
   		oldPrice: product.price,
   		newPrice: product.newPrice,
-  		rrp: product.rrp
+  		rrp: product.rrp,
+      alertType: product.price < product.newPrice ? 'up' : 'down'
   	}, function(err) {
   		if(err) return reject(err);
       console.log("Price alert created for product '%s'", product.name);
@@ -118,11 +120,13 @@ function createPriceAlert(product) {
   });
 }
 
-function logComplete() {
-  console.log('Price update complete!');
+function onStart() {
+  mongoose.connect(MONGO_URL);
+  mongoose.set('debug', true);
+  console.log("====JOB(dwPriceUpdater)==== Start updating prices");
 }
 
-
-module.exports = {
-  updatePrices: updatePrices
-};
+function onComplete() {
+  console.log("====JOB(dwPriceUpdater)==== Done: All prices updated");
+  mongoose.connection.close();
+}
