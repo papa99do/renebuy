@@ -13,6 +13,12 @@
 	</form>
 	</div>
 
+	<div class="row" id="listTypes">
+		<div class="col-sm-12">
+			<button class="btn" ng-class="bestselling ? 'btn-default': 'btn-primary'" ng-click="listLatest()">Latest products</button>
+			<button class="btn" ng-class="bestselling ? 'btn-primary': 'btn-default'" ng-click="listBestsellings()">Bestsellings</button>
+		</div>
+	</div>
 	<div class="row" id="product-list" infinite-scroll="load()" infinite-scroll-distance="0" infinite-scroll-disabled="!shouldLoad()">
 
 		<div class="col-xs-12 col-sm-6 col-lg-4" ng-repeat="product in products">

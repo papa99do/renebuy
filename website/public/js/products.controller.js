@@ -35,7 +35,7 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 		 	($scope.scroll.page + 1) * $scope.scroll.pageSize);
 
 		$scope.scroll.busy = true;
-		Product.query({q: $scope.searchText, p: $scope.scroll.page, ps: $scope.scroll.pageSize}, function(products) {
+		Product.query({q: $scope.searchText, p: $scope.scroll.page, ps: $scope.scroll.pageSize, bestselling:$scope.bestselling}, function(products) {
 			$scope.scroll.hasMore = products.length > $scope.scroll.pageSize;
 			if ($scope.scroll.hasMore) {
 				$scope.scroll.page++;
@@ -58,6 +58,18 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 
 	$scope.searchCategory = function(category) {
 		$scope.searchText = 'c:' + category;
+		$scope.search();
+	}
+
+	$scope.listBestsellings = function() {
+		$scope.searchText = null;
+		$scope.bestselling = true;
+		$scope.search();
+	}
+
+	$scope.listLatest = function() {
+		$scope.searchText = null;
+		$scope.bestselling = null;
 		$scope.search();
 	}
 

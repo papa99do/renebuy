@@ -78,9 +78,10 @@ ProductHandler.findProducts = function(req, res) {
 		Product.find({category: {$all: categories}}).exec(returnProducts);
 
 	} else {
+		var order = req.query.bestselling ? {'salesInfo.ordered': -1, '_id': -1} : {'_id': -1};
 		/* used by default search */
 		console.log('Retrieving products, page: %d, pageSize: %d', page, pageSize);
-		Product.find().sort({'_id': -1}).skip(page * pageSize).limit(pageSize + 1).exec(returnProducts);
+		Product.find().sort(order).skip(page * pageSize).limit(pageSize + 1).exec(returnProducts);
 	}
 };
 
