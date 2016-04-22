@@ -29,7 +29,7 @@ $(document).ready(function() {
     function extractProductInfo($enhanceBtn, extractNumber) {
     	// extract product information
         var productElem = $enhanceBtn.parent().parent();
-        var productInfo = productElem.find('.shelfProductStamp-productNameInnerDescription')
+        var productInfo = productElem.find('.shelfProductStamp-productNameInnerDescription');
         var name = productInfo.attr('title');
         var detailUrl = productInfo.attr('href');
         var photoUrl = productElem.find('img.shelfProductStamp-productImage').attr('src');
