@@ -70,7 +70,7 @@ function getPriceInPriceClassSpan(store, withNewPrice) {
 
 var getPriceFunctionMap = {
 	'CW': getCWPrice,
-	'MC': getOldPrice,
+	'MC': getCWPrice,
 	'PL': getPricelinePrice,
 	'PO': getPriceInPriceClassSpan,
 	'WW': getWoolwoothsPrice,
