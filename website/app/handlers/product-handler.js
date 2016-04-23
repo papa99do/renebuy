@@ -108,12 +108,13 @@ ProductHandler.createProduct = function(req, res) {
 
 	Product.findOne(query, function(err, product) {
 		if (err) {handleError(err, res); return;}
-
+		var lowPrice = null;
 		if (product) {
 			for (var i = 0; i < product.stores.length; i++) {
 				if (product.stores[i].storeName === req.body.store) {
-					handleError({statusCode: 409, message: 'Product already exists for this store'}, res);
-					return;
+					lowPrice == product.stores[i].lowestPrice;
+					product.stores.splice(i, 1);
+					break;
 				}
 			}
 		} else {
@@ -135,7 +136,7 @@ ProductHandler.createProduct = function(req, res) {
 			productId: req.body.productId,
 			detailUrl: req.body.detailUrl,
 			price: req.body.price,
-			lowestPrice: req.body.price
+			lowestPrice: (lowPrice && lowPrice < req.body.price ? lowPrice : req.body.price)
 		});
 
 		product.photos = _.union(product.photos, req.body.photos);
