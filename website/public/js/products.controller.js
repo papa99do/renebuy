@@ -175,12 +175,14 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 	$scope.storeMap = {
 		'CW': {logo: 'CW.png', fullName: 'Chemist warehouse'},
 		'CO': {logo: 'CO.png', fullName: 'Coles'},
-		'PL': {logo: 'PL.jpg', fullName: 'Priceline'},
+		'PL': {logo: 'PL.jpeg', fullName: 'Priceline'},
 		'PO': {logo: 'PO.jpg', fullName: 'Pharmacy online'},
-		'WW': {logo: 'WW.jpg', fullName: 'Woolworths'},
-		'MC': {logo: 'MC.jpg', fullName: 'My chemist'},
-		'JJ': {logo: 'JJ.gif', fullName: 'Jack and Jill'},
+		'WW': {logo: 'WW.jpeg', fullName: 'Woolworths'},
+		'MC': {logo: 'MC.png', fullName: 'My chemist'},
+		'JJ': {logo: 'JJ.jpeg', fullName: 'Jack and Jill'},
 		'SK': {logo: 'SK.jpg', fullName: 'Sukin'},
+		'TR': {logo: 'TR.png', fullName: 'ToysRus'},
+		'BB': {logo: 'BB.png', fullName: 'Baby Bunting'},
 	};
 
 	$scope.storeLogo = function(store) {
