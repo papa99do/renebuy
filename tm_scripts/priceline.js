@@ -32,7 +32,7 @@ $(document).ready(function() {
         var name = productElem.find('.product-name > a').attr('title');
         var detailUrl = productElem.find('.product-name > a').attr('href');
         var photoUrl = productElem.find('.product-image-container img').attr('src');
-        var id = extractNumber(/(\d+)/, productElem.find('button').attr('data-product-id'));
+        var id = extractNumber(/product-price-(\d+)/, productElem.find('.price-box .regular-price').attr('id'));
         var price = extractNumber(/\$([0-9.]+)/, productElem.find('.price-box .price').text());
         var rrp = price;
 
