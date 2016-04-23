@@ -7,6 +7,8 @@
 // @copyright  2015+, Yihan Zhao, yihanzhao@gmail.com
 // @require http://code.jquery.com/jquery-latest.js
 // @require http://renebuy.yihanzhao.com/js/monkey/renebuy-enhance.js?1
+// @updateURL https://raw.githubusercontent.com/papa99do/renebuy/master/tm_scripts/my-chemist.js
+// @downloadURL https://raw.githubusercontent.com/papa99do/renebuy/master/tm_scripts/my-chemist.js
 // @grant      GM_xmlhttpRequest
 // @grant       GM_addStyle
 // ==/UserScript==
@@ -17,14 +19,14 @@ var reneBuyUrl = "http://renebuy.yihanzhao.com/api/product";
 var MC_URL = "http://www.mychemist.com.au";
 
 $(document).ready(function() {
-	
+
 	function addEnhanceBtn(enhanceBtnHtml) {
         $('.column').each(function() {
         	$(this).removeAttr('onclick').removeAttr('onmouseover').removeAttr('onmouseout');
         	$(this).find('.content_section').append(enhanceBtnHtml);
     	});
     }
-    
+
     function extractProductInfo($enhanceBtn, extractNumber) {
     	// extract product information
         var productElem = $enhanceBtn.parent().parent();
@@ -36,7 +38,7 @@ $(document).ready(function() {
         if (photoUrl.indexOf('?') > -1) {
         	photoUrl = photoUrl.substring(0, photoUrl.indexOf('?'));
         }
-        
+
         var product = {
             store: 'MC',
             productId: id,
@@ -45,12 +47,11 @@ $(document).ready(function() {
             rrp: Math.round((price + save) * 100) / 100,
             photos: [MC_URL + photoUrl],
             detailUrl: MC_URL + '/' + detailUrl
-        };	
-        
+        };
+
         return product;
     }
-    
+
     renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProductInfo, reneBuyUrl).init();
 
 });
-

@@ -7,6 +7,8 @@
 // @copyright  2015+, Yihan Zhao, yihanzhao@gmail.com
 // @require http://code.jquery.com/jquery-latest.js
 // @require http://renebuy.yihanzhao.com/js/monkey/renebuy-enhance.js?1
+// @updateURL https://raw.githubusercontent.com/papa99do/renebuy/master/tm_scripts/coles.js
+// @downloadURL https://raw.githubusercontent.com/papa99do/renebuy/master/tm_scripts/coles.js
 // @grant      GM_xmlhttpRequest
 // @grant       GM_addStyle
 // ==/UserScript==
@@ -17,16 +19,16 @@ var reneBuyUrl = "http://renebuy.yihanzhao.com/api/product";
 var CO_URL = 'http://shop.coles.com.au'
 
 $(document).ready(function() {
-	
+
 	function addEnhanceBtn(enhanceBtnHtml) {
 		$('.prodtile').each(function() {
 	        $(this).append(enhanceBtnHtml);
 	    });
     }
-    
+
     function extractProductInfo($enhanceBtn, extractNumber) {
     	// extract product information
-        var productElem = $enhanceBtn.parent().parent();        
+        var productElem = $enhanceBtn.parent().parent();
         var name = productElem.find('.detail .brand').text() + ' ' + productElem.find('.detail .item a').text();
         var detailUrl = productElem.find('.product-url').attr('href');
         var photoUrl = productElem.find('.product-url img').attr('src');
@@ -34,7 +36,7 @@ $(document).ready(function() {
         var price = extractNumber(/\$([0-9.]+)/, productElem.find('.price').text());
         var rrpText = productElem.find('.saving').text().trim();
         var rrp = rrpText ? extractNumber(/was \$([0-9.]+)/, rrpText) : price;
-        
+
         var product = {
             productId: id,
             name: name.replace(/\s+/g, ' ').trim(),
@@ -44,10 +46,10 @@ $(document).ready(function() {
             detailUrl: detailUrl,
 			store: 'CO'
         };
-       
+
         return product;
     }
-    
+
     renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProductInfo, reneBuyUrl).init();
-    
+
 });

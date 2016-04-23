@@ -7,6 +7,8 @@
 // @copyright  2015+, Yihan Zhao, yihanzhao@gmail.com
 // @require http://code.jquery.com/jquery-latest.js
 // @require http://renebuy.yihanzhao.com/js/monkey/renebuy-enhance.js?1
+// @updateURL https://raw.githubusercontent.com/papa99do/renebuy/master/tm_scripts/jack-and-jill.js
+// @downloadURL https://raw.githubusercontent.com/papa99do/renebuy/master/tm_scripts/jack-and-jill.js
 // @grant      GM_xmlhttpRequest
 // @grant       GM_addStyle
 // ==/UserScript==
@@ -15,23 +17,23 @@ var reneBuyUrl = "http://renebuy.yihanzhao.com/api/product";
 //var reneBuyUrl = "http://localhost:3001/api/product";
 
 $(document).ready(function() {
-	
+
 	function addEnhanceBtn(enhanceBtnHtml) {
 		$('.item').each(function() {
 	        $(this).append(enhanceBtnHtml);
 	    });
     }
-    
+
     function extractProductInfo($enhanceBtn, extractNumber) {
     	// extract product information
-        var productElem = $enhanceBtn.parent().parent();        
+        var productElem = $enhanceBtn.parent().parent();
         var name = productElem.find('.product-name > a').text();
         var detailUrl = productElem.find('.product-name > a').attr('href');
         var photoUrl = productElem.find('img').attr('src');
         var id = extractNumber(/product\/(\d+)\/form/, productElem.find('.actions > button').attr('onclick'));
         var price = extractNumber(/\$([0-9.]+)/, productElem.find('.price').text());
         var rrp = price;
-        
+
         var product = {
             productId: id,
             name: name.replace(/\s+/g, ' ').trim(),
@@ -41,10 +43,10 @@ $(document).ready(function() {
             detailUrl: detailUrl,
 			store: 'JJ'
         };
-       
+
         return product;
     }
-    
+
     renebuy($, GM_xmlhttpRequest, GM_addStyle, addEnhanceBtn, extractProductInfo, reneBuyUrl).init();
-    
+
 });
