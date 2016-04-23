@@ -7,8 +7,8 @@
 // @copyright  2015+, Yihan Zhao, yihanzhao@gmail.com
 // @require http://code.jquery.com/jquery-latest.js
 // @require http://renebuy.yihanzhao.com/js/monkey/renebuy-enhance.js?1
-// @updateURL https://raw.githubusercontent.com/papa99do/renebuy/master/tm_scripts/babybunting.js
-// @downloadURL https://raw.githubusercontent.com/papa99do/renebuy/master/tm_scripts/babybunting.js
+// @updateURL https://raw.githubusercontent.com/papa99do/renebuy/master/tm_scripts/baby-bunting.js
+// @downloadURL https://raw.githubusercontent.com/papa99do/renebuy/master/tm_scripts/baby-bunting.js
 // @grant      GM_xmlhttpRequest
 // @grant       GM_addStyle
 // ==/UserScript==
