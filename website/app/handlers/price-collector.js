@@ -1,106 +1,36 @@
 var mongoose = require('mongoose'); 					// mongoose for mongodb
-var Product  = require('../models/product');
-var PriceAlert = require('../models/price-alert');
 var async = require('async');
 var request = require('request');
 var cheerio = require('cheerio');
 
-var CW_URL = 'http://www.chemistwarehouse.com.au';
-var MC_URL = 'http://www.mychemist.com.au';
-var WW_URL = 'https://www.woolworths.com.au/apis/ui/product/detail/'
-
-function extractPrice(text, pattern) {
-	var pattern = pattern || /\$([0-9.]+)/;
-    var result = text.match(pattern);
-    if (result && result.length > 1) {
-    	return Number(result[1]);
-    }
-	return null;
-}
-
-function getCWPrice(store, withNewPrice) {
-	request(store.detailUrl, function(err, response, html) {
-		if (err) return withNewPrice(err);
-		var newPrice = extractPrice(cheerio.load(html)('[itemprop=price]').text());
-		if (!newPrice) {
-			console.error("Cannot extract price from: ", html);
-			return withNewPrice(null, store.price);
-		}
-		//console.log("new price: ", newPrice);
-		withNewPrice(null, newPrice);
-	});
-}
-
-function getOldPrice(store, withNewPrice) {
-	withNewPrice(null, store.price);
-}
-
-function getPricelinePrice(store, withNewPrice) {
-	request(store.detailUrl, function(err, response, html) {
-		if (err) return withNewPrice(err);
-		var price = cheerio.load(html)('.basket-right-price').text();
-		//console.log('Priceline new price: ', price);
-		if (price.indexOf('NOW') >= 0) {
-			price = price.substring(price.indexOf('NOW'));
-		}
-		withNewPrice(null, extractPrice(price));
-	});
-}
-
-function getWoolwoothsPrice(store, withNewPrice) {
-	request(WW_URL + store.productId, function(err, response, json) {
-		if (err) return withNewPrice(err);
-		var price = JSON.parse(json).Product.Price;
-		withNewPrice(null, price);
-	});
-}
-
-function getPriceInPriceClassSpan(store, withNewPrice) {
-	if (!store.detailUrl) {
-		console.log('Detail Url is missing.');
-		return withNewPrice(null, store.price);
-	}
-	request(store.detailUrl, function(err, response, html) {
-		if (err) return withNewPrice(err);
-		var price = cheerio.load(html)('.price').text();
-		//console.log('new price for %s, %s', store.storeName, price);
-		withNewPrice(null, extractPrice(price));
-	});
-}
-
-var getPriceFunctionMap = {
-	'CW': getCWPrice,
-	'MC': getCWPrice,
-	'PL': getPricelinePrice,
-	'PO': getPriceInPriceClassSpan,
-	'WW': getWoolwoothsPrice,
-	'CO': getPriceInPriceClassSpan,
-	'JJ': getPriceInPriceClassSpan
-}
+var Product  = require('../models/product');
+var stores = require('../../common/store-price-helper').stores;
 
 function getNewPrice(newPriceMap, store, callback) {
-	var getPriceFunction = getPriceFunctionMap[store.storeName];
-	if (getPriceFunction) {
-		getPriceFunction(store, function(err, newPrice) {
-			if (err) return callback(err);
-			if (newPrice !== store.price) {
-				newPriceMap[store.storeName] = {newPrice: newPrice, oldPrice: store.price};
-				store.price = newPrice;
-				if (store.lowestPrice > newPrice) {
-					store.lowestPrice = newPrice;
-				}
-			}
-			callback();
-		})
-	} else {
-		callback();
+	var storeEx = stores[store.storeName] || {};
+	if (!storeEx.priceExtractor) {
+		return callback('No price extractor for store ' + storeEx.name);
 	}
+
+	var priceUrl = storeEx.priceUrlGenerator && storeEx.priceUrlGenerator(store) || store.detailUrl;
+	//console.log('Url for store %s: %s', storeEx.name, priceUrl);
+
+	request(priceUrl, function(err, response, body) {
+		if (err) return callback(err);
+		var newPrice = storeEx.priceExtractor(body);
+		if (!newPrice) return callback('Cannot find price for store ' + storeEx.name);
+
+		if (newPrice !== store.price) {
+			newPriceMap[store.storeName] = {newPrice: newPrice, oldPrice: store.price};
+			store.price = newPrice;
+			if (store.lowestPrice > newPrice) {
+				store.lowestPrice = newPrice;
+			}
+		}
+		callback();
+	});
 }
 
-/**
- * @param productId
- * @param allDoneCallback function(err, newPriceMap) {}
- */
 function collectPrices(productId, allDoneCallback) {
 	console.log('fetching product: ', productId);
 

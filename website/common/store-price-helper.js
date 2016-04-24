@@ -7,7 +7,7 @@ var stores = {
   'CO': {name:'Coles', priceExtractor: priceFrom('.price') },
   'WW': {name:'Woolworths', priceUrlGenerator: woolworthsPriceUrl, priceExtractor: woolworthsPriceExtractor },
   'TR': {name:'ToysRus', priceExtractor: priceFrom('.prodPrice .price')},
-  'BB': {name:'Baby Bunting', priceExtractor: priceFrom('[itemprop=price]') },
+  'BB': {name:'Baby Bunting', priceExtractor: priceFrom('.price-info .price') },
   'PO': {name:'Pharmacy online', priceExtractor: priceFrom('.m-price .price')},
   'JJ': {name:'Jack and Jill'},
   'SK': {name:'Sukin'},
