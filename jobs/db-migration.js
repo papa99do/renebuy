@@ -1,10 +1,13 @@
 /*This document contains the templates for database migration*/
 
-// log to production db: 
-heroku config | grep MONGOLAB_URI 
+// log to production db:
+heroku config | grep MONGOLAB_URI
 // to extract the url: mongodb://<user>:<password>0@<instance>, and login
 mongo <instance> -u <user> -p <password>
 
+
+// change price and lowestPrice
+db.products.update({'name': 'a2 Platinum Infant Formula  Stage 1 900 g'}, {$set: {'stores.0.price': 34.8, 'stores.0.lowestPrice': 34.7}});
 
 // Change tax type for a whole category
 db.products.find({'category': {$all: ['Baby Bath, Hair & Skin']}}).count();
@@ -32,6 +35,6 @@ db.purchases.aggregate([{$group: {_id: '$product', inStock: {$sum: '$quantityInS
 db.products.find({name: 'Sukin Rose Hip Oil 50ml'}).pretty();
 db.products.remove({name: 'Sukin Rose Hip Oil 50ml'});
 
-// delete product store 
+// delete product store
 db.products.find({name: 'Sukin Certified Organic Rose Hip Oil 25ml'}).pretty();
 db.products.update({name: 'Sukin Certified Organic Rose Hip Oil 25ml'}, {$pull: {stores: {storeName: 'PO'}}});
