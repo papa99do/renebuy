@@ -1,4 +1,4 @@
-renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $modal) {
+renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $modal, $http) {
 
 	$scope.exchangeRate = 5.5;
 	$scope.realTimeExchangeRate = 4.5;
@@ -237,6 +237,17 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 	$scope.suggesttedName = function(product) {
 		if (!product) return '';
 		return product.name + ' (' + product.nameInChinese + ')';
+	};
+
+
+	// polar express category
+	$http.get('polar/polar-cates.json').then(function(res){
+			//console.log("polar categories", res.data);
+			$scope.polarCates = res.data;
+  });
+
+	$scope.polarSubCates = function(topCate) {
+		return $scope.polarCates[topCate] || [];
 	};
 
 }).controller('OrderModalCtrl', function($scope, $modalInstance, product, showAlert, orderService) {

@@ -23,7 +23,7 @@
 
 		<div class="col-xs-12 col-sm-6 col-lg-4" ng-repeat="product in products">
 		<div class="product-tile">
-
+			<!-- Category -->
 			<div>
 				{{'P.CATEGORY' | translate}}:
 				<a href="#" ng-if="editMode" editable-text="product.categoryStr" onaftersave="updateCategory(product)">
@@ -34,6 +34,19 @@
 				  <li ng-repeat="c in product.category"><a href="#" ng-click="searchCategory(c)">{{c}}</a></li>
 				</ol>
 			</div>
+			<!-- Polar Express Category -->
+			<div id="polar-category" ng-if="editMode">
+				PolarEx:
+				<select name="polar-top-category" id="polar-top-category" ng-model="product.polarCategory.top">
+					<option ng-repeat="option in polarCates.top" value="{{option.id}}">{{option.name}}</option>
+				</select>
+				<select name="polar-sub-category" id="polar-sub-category" ng-model="product.polarCategory.sub">
+					<option ng-repeat="option in polarSubCates(product.polarCategory.top)" value="{{option.id}}">{{option.name}}</option>
+				</select>
+				<button class="btn btn-primary btn-xs" ng-click="savePolarCategory()">Save</button>
+			</div>
+
+			<!-- Name and chinese name -->
 			<h4 class="productName">
 				<a ng-if="editMode" href="#" editable-text="product.name" onaftersave="updateName(product)">{{product.name}}</a>
 				<span ng-if="!editMode">{{product.name}}</span>
@@ -45,23 +58,29 @@
 				<span ng-if="!editMode">{{product.nameInChinese || '暂无中文名'}}</span>
 			</h5>
 
+			<!-- RRP -->
 			{{'P.RRP' | translate}}:
 			<a href="#" ng-if="editMode" editable-text="product.rrp" onaftersave="updateRrp(product)">
 					{{product.rrp || '0.0'}}
 			</a>
 			<span ng-if="!editMode" class="rrp">{{product.rrp | currency}}</span>
 
-
+			<!-- Image -->
 			<div class="col-xs-12 text-center">
 				<img src="/images/low-price.png" class="low-price-tag" ng-show="product.isLowPrice">
 				<img src="{{product.photos[0]}}" alt="{{product.name}}" class="prod-img">
 			</div>
+
+			<!-- Prices -->
 			<div>
 				{{'P.PRICE_IN_STORES' | translate}}:
+				<!-- Update store price -->
 				<a href="" ng-click="getNewPrices(product)">
 					<i class="glyphicon glyphicon-refresh" ng-class="product.updatingPrice ? 'rotate' : ''"></i>
 				</a>
 				<span ng-if="product.lastPriceUpdated"> (at: {{product.lastPriceUpdated | date: 'dd/MM/yyyy h:mma'}})</span>
+
+				<!-- Store prices -->
 				<ul id="prices">
 					<li ng-repeat="store in product.stores">
 						<a href="{{store.detailUrl}}" target="_blank" title="{{storeMap[store.storeName].fullName}}"> <img ng-src="/images/store-logo/{{storeMap[store.storeName].logo}}" alt="{{store.storeName}}" class="store-logo"></a>
@@ -73,6 +92,8 @@
 						<span><a href="http://s.taobao.com/search?q={{product.name}}&style=list" target="_blank">{{'P.TAOBAO_PRICE' | translate}}</a></span>
 					</li>
 				</ul>
+
+				<!-- Weight and tax -->
 				<div>
 					{{'P.WEIGHT' | translate}}:
 					<span ng-if="editMode">
@@ -85,6 +106,8 @@
 
 					{{'P.POSTAGE' | translate}}: {{postage(product) | currency}}
 				</div>
+
+				<!-- Sale price in RMB and adjusted price -->
 				<div>
 					{{'P.CALC_PRICE' | translate}}:
 					<span class="price">{{calculatedPrice(product) | currency:'&yen;'}} </span>
@@ -98,16 +121,17 @@
 					<span ng-style="{color: adjustedProfit(product) < 0 ? 'red' : 'black' }">{{adjustedProfit(product) | currency:'&yen;'}} ({{adjustedProfit(product) / costInRmb(product) | percentage:0}})</span>
 				</div>
 
-				<div class="orderBtn">
-					<button class="btn btn-info" ng-click="openOrderModal(product)"><i class="glyphicon glyphicon-shopping-cart"></i>
-				</div>
-
-				<div class="watchPrice">
-						<i class="glyphicon" ng-click="toggleWatchPriceFlag(product)"
-								ng-class="product.watchPrice ? 'glyphicon-eye-open watched' : 'glyphicon-eye-close unwatched'"></i>
-				</div>
 			</div>
 
+			<!-- Actions -->
+			<div class="orderBtn">
+				<button class="btn btn-info" ng-click="openOrderModal(product)"><i class="glyphicon glyphicon-shopping-cart"></i>
+			</div>
+
+			<div class="watchPrice">
+					<i class="glyphicon" ng-click="toggleWatchPriceFlag(product)"
+							ng-class="product.watchPrice ? 'glyphicon-eye-open watched' : 'glyphicon-eye-close unwatched'"></i>
+			</div>
 		</div>
 		</div>
 	</div>
