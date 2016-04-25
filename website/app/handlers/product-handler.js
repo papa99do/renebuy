@@ -180,6 +180,9 @@ ProductHandler.updateProduct = function(req, res) {
 		} else if (req.query.nameInChinese) {
 			/* {"nameInChinese": "好东西"} */
 			updateNameInChinese(product);
+		} else if (req.query.rrp) {
+			/* {"rrp": 12.5} */
+			updateRrp(product);
 		} else if (req.query.name) {
 			/* {"name": "some new name"} */
 			updateName(product);
@@ -204,6 +207,11 @@ ProductHandler.updateProduct = function(req, res) {
 
 	function updateNameInChinese(product) {
 		product.nameInChinese = req.body.nameInChinese;
+		saveProduct(product);
+	}
+
+	function updateRrp(product) {
+		product.rrp = req.body.rrp;
 		saveProduct(product);
 	}
 

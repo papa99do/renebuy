@@ -9,6 +9,7 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 		updateCategory: {method: 'POST', params:{category: true}},
 		updateName: {method: 'POST', params:{name: true}},
 		updateNameInChinese: {method: 'POST', params:{nameInChinese: true}},
+		updateRrp: {method: 'POST', params:{rrp: true}},
 		updateTaxType: {method: 'POST', params:{taxType: true}},
 		toggleWatchPriceFlag: {method: 'POST', params: {watchPrice: true}},
 		getNewPrices: {method: 'GET', params: {newPrice: true}},
@@ -132,6 +133,12 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 	$scope.updateNameInChinese = function(product) {
 		Product.updateNameInChinese({id: product._id}, JSON.stringify({nameInChinese: product.nameInChinese}), function(result) {
 			console.log('Chinese name changed to %s for [%s]' , product.nameInChinese, product.name);
+		});
+	};
+
+	$scope.updateRrp = function(product) {
+		Product.updateRrp({id: product._id}, JSON.stringify({rrp: product.rrp}), function(result) {
+			console.log('RRP changed to %s for [%s]' , product.rrp, product.name);
 		});
 	};
 

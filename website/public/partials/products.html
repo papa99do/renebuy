@@ -44,7 +44,14 @@
 				</a>
 				<span ng-if="!editMode">{{product.nameInChinese || '暂无中文名'}}</span>
 			</h5>
-			{{'P.RRP' | translate}}: <span class="rrp">{{product.rrp | currency}}</span>
+
+			{{'P.RRP' | translate}}:
+			<a href="#" ng-if="editMode" editable-text="product.rrp" onaftersave="updateRrp(product)">
+					{{product.rrp || '0.0'}}
+			</a>
+			<span ng-if="!editMode" class="rrp">{{product.rrp | currency}}</span>
+
+
 			<div class="col-xs-12 text-center">
 				<img src="/images/low-price.png" class="low-price-tag" ng-show="product.isLowPrice">
 				<img src="{{product.photos[0]}}" alt="{{product.name}}" class="prod-img">
