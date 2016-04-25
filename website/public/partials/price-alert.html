@@ -3,10 +3,12 @@
 	<table ng-table="tableParams" show-filter="true" class="table table-condensed table-bordered">
 		<tr ng-repeat="alert in $data">
 			<td data-title="'Product'" filter="{ 'productName': 'text' }">
-				<img ng-src="{{alert.product.photos[0]}}" style="height:100px; width:100px; position: absolute;" alt="{{alert.product.name}}">
-				<div style="position: absolute; margin-left: 120px;">
-					<h4 class="productName">{{::alert.productName}}</h4>
-					<h5>{{::alert.product.nameInChinese}}</h5>
+				<div class="price-alert-product">
+					<img ng-src="{{alert.product.photos[0]}}" alt="{{alert.product.name}}">
+					<div class="product-info">
+						<h4 class="productName">{{::alert.productName}}</h4>
+						<h5>{{::alert.product.nameInChinese}}</h5>
+					</div>
 				</div>
 			</td>
 			<td data-title="'Stores'">

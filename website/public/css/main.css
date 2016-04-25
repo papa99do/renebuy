@@ -389,10 +389,21 @@ ul#deliveryInfo li {
     background-color: rgba(176,176,255,0.5);
 }
 
+.price-alert-product img {
+  height: 100px;
+  weight: 100px;
+  float: left;
+  margin-bottom: 5px;
+}
+
+.price-alert-product .product-info {
+  margin-left: 120px;
+}
+
 .price-alert-store {
   padding: 3px;
 }
 
-.price + .price-down {
+.price-up {
   color: red;
 }
