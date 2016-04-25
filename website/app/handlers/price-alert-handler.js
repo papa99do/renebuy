@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
-var PriceAlert = require('../models/price-alert')
+var PriceAlert = require('../models/price-alert');
+var Product = require('../models/product');
 
 var PriceAlertHandler = {};
 
@@ -19,10 +20,18 @@ PriceAlertHandler.getRecentAlerts = function(req, res) {
 	var cutoff = new Date();
 	cutoff.setDate(cutoff.getDate() - 7);
 
-	PriceAlert.find({alertDate: {$gt: cutoff}}).populate('product', '-_id name nameInChinese photos').exec(function(err, result) {
-		if(err) {handleError(err, res); return;}
-		handleResult(result, res);
-	})
+	PriceAlert.aggregate([
+		{$match: {alertDate: {$gt: cutoff}}},
+		{$group: {_id: '$product', stores: {$push:
+			{name: '$store', oldPrice: '$oldPrice', newPrice: '$newPrice', alertType: '$alertType', alertDate: '$alertDate'}}}},
+		{$project: {product: '$_id', stores: 1, _id: 0}}
+	]).exec(function(err, result) {
+		if(err) return handleError(err, res);
+		Product.populate(result, {path: 'product', select: '-_id name nameInChinese photos'}, function(err, populated) {
+			if (err) return handleError(err, res);
+			handleResult(result, res);
+		});
+	});
 };
 
 PriceAlertHandler.create = function(req, res) {

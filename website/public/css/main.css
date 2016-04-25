@@ -388,3 +388,11 @@ ul#deliveryInfo li {
     background-image: none;
     background-color: rgba(176,176,255,0.5);
 }
+
+.price-alert-store {
+  padding: 3px;
+}
+
+.price + .price-down {
+  color: red;
+}

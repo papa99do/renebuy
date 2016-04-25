@@ -1,14 +1,26 @@
 <div>
-	<h4>Price change / low price for this week: </h4>
+	<h4>Price changes for last 7 days: </h4>
 	<table ng-table="tableParams" show-filter="true" class="table table-condensed table-bordered">
-	    <tr ng-repeat="alert in $data" ng-class="rowClass(alert.alertType)">
-			<td data-title="'Image'"><img ng-src="{{alert.product.photos[0]}}" style="height:50px; width:50px;" alt="{{alert.product.name}}"></td>
-	        <td data-title="'Name'" filter="{ 'productName': 'text' }">{{alert.productName}}</td>
-	        <!-- <td data-title="'Chinese name'">{{alert.product.nameInChinese}}</td> -->
-	        <td data-title="'Store'" sortable="'store'">{{alert.store}}</td>
-	        <td data-title="'Type'" sortable="'alertType'">{{alert.alertType}}</td>
-	        <td data-title="'Now'"><span class="price">{{::alert.newPrice | currency}}</span> (was {{::alert.oldPrice | currency}})</td>
-			<td data-title="'RRP'"><span class="rrp">{{::alert.rrp | currency}}</span> ({{::(alert.rrp - alert.newPrice) / alert.rrp | percentage:0}}off)</td>
-	    </tr>
+		<tr ng-repeat="alert in $data">
+			<td data-title="'Product'" filter="{ 'productName': 'text' }">
+				<img ng-src="{{alert.product.photos[0]}}" style="height:100px; width:100px; position: absolute;" alt="{{alert.product.name}}">
+				<div style="position: absolute; margin-left: 120px;">
+					<h4 class="productName">{{::alert.productName}}</h4>
+					<h5>{{::alert.product.nameInChinese}}</h5>
+				</div>
+			</td>
+			<td data-title="'Stores'">
+				<div ng-repeat="store in alert.stores" class="price-alert-store">
+					<img ng-src="/images/store-logo/{{storeMap[store.name].logo}}" alt="{{storeMap[store.name].fullName}}" class="store-logo">
+					<span class="price price-{{::store.alertType}}">
+						{{::store.newPrice | currency}}
+						<i class="glyphicon glyphicon-arrow-{{::store.alertType}}"></i>
+						{{priceDifference(store) | currency}}
+					</span>
+					(At {{::store.alertDate | date}})
+					(was {{::store.oldPrice | currency}})
+				</div>
+			</td>
+		</tr>
 	</table>
 </div>
