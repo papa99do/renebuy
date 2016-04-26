@@ -7,6 +7,7 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 	var Product = $resource('/api/product/:id', {id: '@id'}, {
 		updateWeight: {method: 'POST', params:{weight: true}},
 		updateCategory: {method: 'POST', params:{category: true}},
+		updatePolarCategory: {method: 'POST', params:{polarCategory: true}},
 		updateName: {method: 'POST', params:{name: true}},
 		updateNameInChinese: {method: 'POST', params:{nameInChinese: true}},
 		updateRrp: {method: 'POST', params:{rrp: true}},
@@ -89,6 +90,7 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 		}
 
 		product.categoryStr = product.category.join(" > ");
+		product.polarCategory = product.polarCategory || {};
 
 		return product;
 	}
@@ -127,6 +129,14 @@ renebuyApp.controller('ProductCtrl', function($scope, $timeout, $resource, $moda
 	$scope.updateCategory = function(product) {
 		Product.updateCategory({id: product._id}, JSON.stringify({category: product.categoryStr}), function(result) {
 			console.log('Category changed to: %s for [%s]', product.categoryStr, product.name);
+		});
+	};
+
+	$scope.updatePolarCategory = function(product) {
+		console.log('Updating polarCategory to ', product.polarCategory);
+		Product.updatePolarCategory({id: product._id}, JSON.stringify({polarCategory: product.polarCategory}), function(result) {
+			console.log('Polar category changed to: %s for [%s]', product.polarCategory.sub, product.name);
+			$scope.showAlert('success', 'Polar category has been updated');
 		});
 	};
 

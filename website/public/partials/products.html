@@ -37,13 +37,13 @@
 			<!-- Polar Express Category -->
 			<div id="polar-category" ng-if="editMode">
 				PolarEx:
-				<select name="polar-top-category" id="polar-top-category" ng-model="product.polarCategory.top">
-					<option ng-repeat="option in polarCates.top" value="{{option.id}}">{{option.name}}</option>
+				<select name="polar-top-category" id="polar-top-category" ng-model="product.polarCategory.top"
+					ng-options="option.id as option.name for option in polarCates.top">
 				</select>
-				<select name="polar-sub-category" id="polar-sub-category" ng-model="product.polarCategory.sub">
-					<option ng-repeat="option in polarSubCates(product.polarCategory.top)" value="{{option.id}}">{{option.name}}</option>
+				<select name="polar-sub-category" id="polar-sub-category" ng-model="product.polarCategory.sub"
+					ng-options="option.id as option.name for option in polarSubCates(product.polarCategory.top)">
 				</select>
-				<button class="btn btn-primary btn-xs" ng-click="savePolarCategory()">Save</button>
+				<button class="btn btn-primary btn-xs" ng-click="updatePolarCategory(product)">Save</button>
 			</div>
 
 			<!-- Name and chinese name -->

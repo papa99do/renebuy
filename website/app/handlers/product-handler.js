@@ -192,8 +192,16 @@ ProductHandler.updateProduct = function(req, res) {
 		} else if (req.query.watchPrice) {
 			/* {"watchPrice": true} */
 			updateWatchPriceFlag(product);
+		} else if (req.query.polarCategory) {
+			/* {"polarCategory": {"top": "11", "sub": "1203"}} */
+			updatePolarCategory(product);
 		}
 	});
+
+	function updatePolarCategory(product) {
+		product.polarCategory = req.body.polarCategory;
+		saveProduct(product);
+	}
 
 	function updateTaxType(product) {
 		product.isHighTax = req.body.isHighTax;

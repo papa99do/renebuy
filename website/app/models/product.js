@@ -20,6 +20,10 @@ var ProcuctSchema = new Schema({
 	rrp: Number,
 	adjustedPrice: Number,
 	category: [String],
+	polarCategory: {
+		top: String,
+		sub: String
+	},
 	stores: {type: [ProductInStoreSchema], default: [], _id: false},
 	salesInfo: {
 		ordered: { type: Number, default: 0 },
