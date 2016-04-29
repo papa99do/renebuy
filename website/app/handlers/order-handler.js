@@ -61,6 +61,11 @@ OrderHandler.getOrders = function(req, res) {
 			if (err) {handleError(err, res); return;}
 			handleResult(result, res);
 		});
+	} else if (req.query.shippingWithPolarExpress) {
+		Order.find({status: 'shipping'}).sort('-createdDate').populate('items.product', 'name nameInChinese polarCategory').exec(function(err, result) {
+			if (err) {handleError(err, res); return;}
+			handleResult(result, res);
+		});
 	} else if (req.query.shoppingList) {
 		var projection = req.query.details ? 'name nameInChinese photos stores rrp salesInfo' : 'name stores rrp'
 
