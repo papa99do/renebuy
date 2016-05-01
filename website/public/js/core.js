@@ -5,7 +5,14 @@ renebuyApp
 		ship: {method: 'POST', params:{ship: true}},
 		receive: {method: 'POST', params:{receive:true}}
 	});
-	
+
+	var Parcels = $resource('/api/parcel');
+	var Parcel = $resource('/api/parcel/:trackingNumber', {trackingNumber: '@trackingNumber'}, {
+		track: {method: 'PUT'},
+		archive: {method: 'DELETE'}
+	});
+
+
 	return {
 		getActiveBoxes: function() {
 			return Boxes.query().$promise;
@@ -22,6 +29,15 @@ renebuyApp
 		},
 		receiveBox: function(boxId, dateReceived) {
 			return Box.receive({boxId: boxId}, {dateReceived: dateReceived}).$promise;
+		},
+		getActiveParcels: function() {
+			return Parcels.query().$promise;
+		},
+		trackParcel: function(trackingNumber) {
+			return Parcel.track({trackingNumber: trackingNumber}).$promise;
+		},
+		archiveParcel: function(trackingNumber) {
+			return Parcel.archive({trackingNumber: trackingNumber}).$promise;
 		}
 	}
 })
@@ -31,7 +47,7 @@ renebuyApp
 		ship: {method: 'POST', params:{ship: true}},
 		fulfill: {method: 'POST', params:{fulfill: true}}
 	});
-	
+
 	return {
 		addOrderItem: function(item) {
 			return Orders.save(item).$promise;
@@ -61,7 +77,7 @@ renebuyApp
 })
 .factory('purchaseService', function($resource) {
 	var Purchases = $resource('/api/purchase');
-	
+
 	return {
 		purchase: function(productId, quantity, price) {
 			return Purchases.save({productId: productId, price: price, quantity: quantity}).$promise;
@@ -73,13 +89,13 @@ renebuyApp
         template = $templateCache.get('excelTemplate.html'),
         base64 = function (s) {
             return window.btoa(unescape(encodeURIComponent(s)))
-        }, 
+        },
 		format = function (s, c) {
             return s.replace(/{(\w+)}/g, function (m, p) {
                 return c[p];
             });
         };
-	
+
 	return {
 		exportExcel: function(fileName, worksheetName, tableHtml) {
 			var context = {
@@ -100,13 +116,13 @@ renebuyApp
 	$('.navbar-collapse a').click(function(){
 	    $(".navbar-collapse").collapse('hide');
 	});
-	
+
 	$scope.lang = 'en';
 	$scope.changeLang = function() {
 		$scope.lang = ($scope.lang === 'en' ? 'ch' : 'en');
 		$translate.use($scope.lang);
 	}
-	
+
 	$scope.alert = null;
 	$scope.showAlert = function(type, msg) {
 		$scope.alert = {type: type, msg: msg};

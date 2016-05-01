@@ -29,18 +29,33 @@ function respond(res) {
 
 /* Create new parcel:
   {
-    trackingNumber: 'PE000107115GW'
+    "trackingNumber": "PE000275384GW",
+    "sentDate": "2016-04-30T00:05:10.000Z",
+    "weight": "3.50",
+    "totalQuantity": "3",
+    "recipient": "钱程",
+    "destination": "（ 钱程  13376255122  江苏，常州，公园路18号云庭A座3105）",
+    "itemDetails": [
+      {
+        "name": "Aptamil 金装 婴儿奶粉4段 k4",
+        "quantity": 3
+      }
+    ]
   }
 */
 ParcelHandler.create = function(req, res) {
-  new Parcel({
-    trackingNumber: req.body.trackingNumber
-  }).save(respond(res));
+  Parcel.findOne({trackingNumber: req.body.trackingNumber}).exec(function (err, parcel) {
+    if (err) return handleError(err, res);
+    if (parcel) {
+      res.status(409).send('Parcel ' + parcel.trackingNumber + ' already exists');
+    } else {
+      new Parcel(req.body).save(respond(res));
+    }
+  });
 };
 
 ParcelHandler.getAll = function(req, res) {
-  Parcel.find({status: {$ne: 'archived'}}).select('trackingNumber recipient status sentDate')
-    .sort({'sentDate': -1}).exec(respond(res));
+  Parcel.find({status: {$ne: 'archived'}}).sort({'sentDate': -1}).exec(respond(res));
 };
 
 ParcelHandler.update = function(req, res) {
@@ -55,26 +70,7 @@ ParcelHandler.update = function(req, res) {
     var tracking = $('div.formTable3').text().split(/\n/).map(trim).filter(truthy);
     var update = extractInfo(tracking);
 
-    if (update.domesticNumber) {
-      var cnUrl = POLAR_EXPRESS_TRACKCN_URL + update.domesticNumber;
-      //console.log(cnUrl);
-      request(cnUrl, function(err, response, json) {
-        if (err) return handleError(err, res);
-        var trackCn = JSON.parse(json);
-        //console.log(trackCn);
-        if (trackCn.data) {
-          trackCn.data.forEach(function(data) {
-            update.tracking.push({time: Date.parse(data.time), event: data.context});
-          });
-        }
-        update.tracking.sort(byTime);
-
-        handleUpdate(update, req, res);
-      });
-    } else {
-        handleUpdate(update, req, res);
-    }
-
+    handleUpdate(update, req, res);
 
   });
 };
@@ -89,7 +85,7 @@ ParcelHandler.getOne = function(req, res) {
 };
 
 function handleUpdate(update, req, res) {
-  update.status = 'new';
+  update.status = 'shipped';
   for (var i = update.tracking.length - 1; i >= 0; i--) {
     var info = update.tracking[i];
     if (info.event.indexOf('已签收') > -1) {
@@ -104,12 +100,6 @@ function handleUpdate(update, req, res) {
     }
   }
 
-  if (update.tracking.length > 0) {
-    update.sentDate = update.tracking[0].time;
-  }
-
-  update.trackingNumber = req.params.trackingNumber;
-
   console.log(update);
 
   var query = {trackingNumber: req.params.trackingNumber};
@@ -118,11 +108,8 @@ function handleUpdate(update, req, res) {
 }
 
 var trackingInfoPatterns = [
-  {pattern: /^收件人：(.*)/, handler: function(matched, info) {info.recipient = matched[1];}},
-  {pattern: /^发往：(.*)/, handler: function(matched, info) {info.destination = matched[1];}},
-  {pattern: /^包裹重量：([\d\.]*) KGs/, handler: function(matched, info) {info.weight = matched[1];}},
   {pattern: /^国内物流信息\[运单号：(.*)\]/, handler: function(matched, info) {info.domesticNumber = matched[1];}},
-  {pattern: /^时间：([\d-]+ [\d:]+).*货物状态：(.*)/,
+  {pattern: /^时间：([\d-]+ [\d:]+).*状态：(.*)/,
    handler: function(matched, info) {
     info.tracking.push({time: Date.parse(matched[1]), event: matched[2]});
   }},

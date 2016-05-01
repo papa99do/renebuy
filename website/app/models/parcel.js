@@ -8,6 +8,8 @@ var ParcelSchema = new Schema({
   recipient: String,
   destination: String,
   weight: Number,
+	totalQuantity: Number,
+	itemDetails: [{name: String, quantity: Number, _id: false}],
 	sentDate: {type: Date, default: Date.now},
   tracking: { type: [{time: Date, event: String, _id: false}], default: []}
 });
