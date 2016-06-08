@@ -29,7 +29,7 @@
 				<th>Product</th>
 				<th style="width:100px;">Price</th>
 				<th style="width:70px;">Qty</th>
-				<th style="width:70px;">Stock</th>
+				<!-- <th style="width:70px;">Stock</th> -->
 				<th style="width:70px;">Subtotal</th>
 				<th style="width:230px;">Description</th>
 				<th ng-if="order.editable" style="width:105px;"></th>
@@ -53,7 +53,7 @@
 	    			<input ng-if="order.editable" type="number" class="form-control" ng-change="item.updated = true" ng-model="item.number" style="width:50px;" id="ordered-number">
 					<span style="font-size:1.2em;" ng-if="!order.editable">{{item.number}}</span>
 	    		</td>
-				<td><span style="font-size:1.2em;" ng-style="sufficient(item, order) ? {color: 'green'} : {color: 'red'}">{{productStock[item.product._id]}}</span></td>
+				<!-- <td><span style="font-size:1.2em;" ng-style="sufficient(item, order) ? {color: 'green'} : {color: 'red'}">{{productStock[item.product._id]}}</span></td> -->
 	    		<td><span style="font-size:1.2em;">{{item.price * item.number | currency:'&yen;'}}</span></td>
 				<td class="form-inline">
 					<input ng-if="order.editable"  type="text" class="form-control" ng-change="item.updated = true" ng-model="item.description" id="order-desc" style="width:200px;">
@@ -81,7 +81,7 @@
     </div>
     <div class="modal-footer">
 		<button class="btn btn-default" ng-click="cancel()">Cancel</button>
-        <button class="btn btn-primary" ng-click="shipOrder()">Ship</button>   
+        <button class="btn btn-primary" ng-click="shipOrder()">Ship</button>
     </div>
 </script>
 
