@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+  <input type="text" placeholder="Search" onkeyup="autoComplete()" id="search-input">
+  <div id="auto-complete">
+    Auto-complete
+  </div>
+  <script>
+    function autoComplete() {
+      var searchTerm = document.getElementById('search-input').value;
+      document.getElementById('auto-complete').innerHTML = suggestedTerm(searchTerm);
+    }
+
+    function suggestedTerm(searchTerm) {
+      var term = searchTerm.trim().toLowerCase();
+      if (!term) return [];
+      result = termMap;
+      for (var i = 0; i < term.length; i++) {
+        var char = term.charAt(i);
+        if(!result[char]) break;
+        result = result[char];
+      }
+      return result.$w || []
+    }
+
+    termMap = {
+      'a': {
+        $w : ['apple', 'able', 'adam', 'all'],
+        'l': {
+          $w: ['all', 'allround', 'almond']
+        },
+        'p': {
+          $w: ['apple', 'application']
+        }
+      }
+    }
+
+    
+  </script>
+</body>
+</html>

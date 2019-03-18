@@ -25,6 +25,10 @@ mongoose.set('debug', true);
 // set up routing
 app.use('/api', router);
 
+app.get('/mobile', function(req, res) {
+	res.sendfile('mobile/index.html')
+});
+
 app.get('*', function(req, res) {
 	res.sendfile('public/index.html');
 });
